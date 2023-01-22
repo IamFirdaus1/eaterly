@@ -8,9 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.google.firebase.database.core.Context
 import kotlin.math.exp
 
-class IntroAdapter(private val explanationlist: ArrayList<String>,private val subtitlelist: ArrayList<String>,private val titleslist: ArrayList<String>, private val imageList : ArrayList<Int>, private val viewPager2: ViewPager2)
+class IntroAdapter(public var context: MainActivity, private val explanationlist: ArrayList<String>, private val subtitlelist: ArrayList<String>, private val titleslist: ArrayList<String>, private val imageList: ArrayList<String>, private val viewPager2: ViewPager2)
     :RecyclerView.Adapter<IntroAdapter.MyHolder>(){
 
     class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -21,12 +23,14 @@ class IntroAdapter(private val explanationlist: ArrayList<String>,private val su
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+
         val view =
             LayoutInflater
                 .from(parent.context)
                 .inflate(R.layout.intro_screen,
                     parent,
                     false)
+
         return MyHolder(view)
     }
 
@@ -34,7 +38,7 @@ class IntroAdapter(private val explanationlist: ArrayList<String>,private val su
         holder.titleslider.text = titleslist[position]
         holder.subtitleslidier.text = subtitlelist[position]
         holder.explanationslider.text = explanationlist[position]
-        holder.imageView.setImageResource(imageList[position])
+        Glide.with(context).load(imageList[position]).into(holder.imageView)
         if (position == imageList.size-1){
             viewPager2.post(runnable)
         }

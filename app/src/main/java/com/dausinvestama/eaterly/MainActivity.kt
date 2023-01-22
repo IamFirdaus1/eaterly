@@ -7,21 +7,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.initialize
-import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var handler: Handler
-    private lateinit var imageList: ArrayList<Int>
+    private lateinit var imageList: ArrayList<String>
     private lateinit var titlelist: ArrayList<String>
     private lateinit var subtitlelist: ArrayList<String>
     private lateinit var explanationlist: ArrayList<String>
@@ -85,13 +78,17 @@ class MainActivity : AppCompatActivity() {
 
 
         db.collection("eaterlytesting").get().addOnSuccessListener {result ->
+            var ar: ArrayList<Int>
             for (document in result) {
+
                 var x: String = document.get("explain") as String
                 var y: String = document.get("title") as String
                 var z: String = document.get("subtitle") as String
+                var u: String = document.get("link") as String
                 Log.d(TAG, "init: " + x + y + z)
                 explanationlist.add(x)
-                imageList.add(R.drawable.handput)
+
+                imageList.add(u)
                 titlelist.add(y)
                 subtitlelist.add(z)
                 var tesvariable = 0
@@ -99,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(imagetes, "inittes: " )
                 tesvariable += 1
             }
-            adapter = IntroAdapter(explanationlist, subtitlelist, titlelist ,imageList, viewPager2)
+            adapter = IntroAdapter(this , explanationlist, subtitlelist, titlelist ,imageList, viewPager2)
             viewPager2.adapter = adapter
             viewPager2.offscreenPageLimit = 3
             viewPager2.clipToPadding = false
