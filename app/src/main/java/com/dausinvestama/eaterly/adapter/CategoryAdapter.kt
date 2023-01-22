@@ -15,6 +15,7 @@ import com.dausinvestama.eaterly.fragment.HomeFragment
 
 class CategoryAdapter( var context: HomeFragment, private var Categorylist: ArrayList<String>, private var ImageList: ArrayList<String>) :
     RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+
     class ViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
         val CategoryName: TextView = itemView.findViewById(R.id.categoryname)
         val CategoryPhoto: ImageView = itemView.findViewById(R.id.categoryphoto)

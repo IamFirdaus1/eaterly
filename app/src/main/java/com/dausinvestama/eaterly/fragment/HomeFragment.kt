@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
+import com.dausinvestama.eaterly.adapter.KantinAdapter
 import com.dausinvestama.eaterly.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,7 +23,9 @@ class HomeFragment : Fragment() {
 
     val db = FirebaseFirestore.getInstance()
     private lateinit var listcategory: RecyclerView
+    private lateinit var listkantin: RecyclerView
     private lateinit var adapter: CategoryAdapter
+    private lateinit var adapterkantin: KantinAdapter
 
 
 
@@ -32,10 +35,43 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater!!.inflate(R.layout.fragment_home, container, false)
         listcategory = view.findViewById(R.id.listcategory)
+        listkantin = view.findViewById(R.id.listkantin)
         init()
+        initkantin()
         Log.d(TAG, "inikepanggil1")
         // Inflate the layout for this fragment
         return view
+    }
+
+    private fun initkantin() {
+        Log.d(TAG, "inikepanggil3")
+        var imageList: ArrayList<String> = ArrayList()
+        var namakantin: ArrayList<String> = ArrayList()
+        var idkantin: ArrayList<Int> = ArrayList()
+        Log.d(imageList.size.toString(), "dbkuss")
+
+        db.collection("kantin").get().addOnSuccessListener {result ->
+            for (document in result) {
+
+                var x: String = document.get("nama_kantin") as String
+                var y: String = document.get("logo_kantin") as String
+                var z: Long = document.get("id_kantin") as Long
+
+                imageList.add(y)
+                namakantin.add(x)
+                idkantin.add(z.toInt())
+                Log.d(y, "dbku")
+            }
+            Log.d(TAG, "inikepanggil4")
+            adapterkantin = KantinAdapter(this, imageList, namakantin, idkantin)
+            listkantin.adapter = adapterkantin
+            listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
+
+
+        }
+            .addOnFailureListener { exception ->
+                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -14,12 +14,16 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
             android:elevation="30dp"
             app:cardCornerRadius="30dp">
 
 
             <TextView
+                android:layout_marginRight="50dp"
                 android:id="@+id/categoryname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -35,6 +39,7 @@
     </RelativeLayout>
 
     <ImageView
+
         android:layout_alignParentRight="true"
         android:id="@+id/categoryphoto"
         android:layout_width="100dp"
