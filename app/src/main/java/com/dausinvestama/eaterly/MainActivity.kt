@@ -1,44 +1,71 @@
 package com.dausinvestama.eaterly
 
+import android.content.ContentValues
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.widget.Button
-import android.widget.TextView
-import androidx.viewpager2.widget.ViewPager2
+import android.os.Looper
+import android.util.Log
+import android.view.View
+import android.widget.Adapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.adapter.IntroAdapter
+import com.dausinvestama.eaterly.databinding.ActivityMainBinding
+import com.dausinvestama.eaterly.fragment.Cart
+import com.dausinvestama.eaterly.fragment.HomeFragment
+import com.dausinvestama.eaterly.fragment.Orderlist
+import com.dausinvestama.eaterly.fragment.Profile
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+
 class MainActivity : AppCompatActivity() {
 
     val db = FirebaseFirestore.getInstance()
+    private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        replaceFragment(HomeFragment())
 
-        auth = FirebaseAuth.getInstance()
-
-        val email = intent.getStringExtra("email")
-        val username = intent.getStringExtra("name")
-
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
 
+        binding.bottomnav.setOnItemSelectedListener {
 
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
-        //findViewById<TextView>(R.id.email).text = email
-        //findViewById<TextView>(R.id.username).text = username
+            when(it.itemId){
+                R.id.homes -> replaceFragment(HomeFragment())
+                R.id.orderlist -> replaceFragment(Orderlist())
+                R.id.cart -> replaceFragment(Cart())
+                R.id.profile -> replaceFragment(Profile())
 
-//        findViewById<Button>(R.id.btnlogout).setOnClickListener {
-//            signOut()
-//        }
+                else -> {
+
+                }
+            }
+            true
+        }
+
 
     }
+
+    private fun replaceFragment(fragment: Fragment){
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.commit()
+    }
+
 
     fun signOut(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

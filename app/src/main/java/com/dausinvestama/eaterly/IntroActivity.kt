@@ -110,6 +110,7 @@ class IntroActivity : AppCompatActivity() {
                 Log.d(imagetes, "inittes: " )
                 tesvariable += 1
             }
+            Log.d(result.toString(), "dbkusss")
             adapter = IntroAdapter(this , explanationlist, subtitlelist, titlelist ,imageList, viewPager2)
             viewPager2.adapter = adapter
             viewPager2.offscreenPageLimit = 3

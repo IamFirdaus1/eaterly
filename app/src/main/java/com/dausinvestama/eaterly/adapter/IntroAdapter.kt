@@ -1,5 +1,6 @@
 package com.dausinvestama.eaterly.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class IntroAdapter(public var context: IntroActivity, private val explanationlis
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
+        Log.d(titleslist[position], "dariku: ")
         holder.titleslider.text = titleslist[position]
         holder.subtitleslidier.text = subtitlelist[position]
         holder.explanationslider.text = explanationlist[position]
