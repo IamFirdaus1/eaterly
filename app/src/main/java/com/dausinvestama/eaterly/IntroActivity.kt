@@ -39,7 +39,7 @@ class IntroActivity : AppCompatActivity() {
 
 
         if (pre.firstinstall) {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -61,7 +61,7 @@ class IntroActivity : AppCompatActivity() {
 
         btnstart.setOnClickListener {
             pre.firstinstall = true
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             finish()
         }
