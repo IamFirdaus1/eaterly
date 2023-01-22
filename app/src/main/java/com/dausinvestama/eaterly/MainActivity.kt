@@ -22,28 +22,34 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        val googlesigninclient = GoogleSignIn.getClient(this,gso)
-
         auth = FirebaseAuth.getInstance()
 
         val email = intent.getStringExtra("email")
         val username = intent.getStringExtra("name")
 
-        findViewById<TextView>(R.id.email).text = email
-        findViewById<TextView>(R.id.username).text = username
 
-        findViewById<Button>(R.id.btnlogout).setOnClickListener {
-            auth.signOut()
-            googlesigninclient.signOut()
-            startActivity(Intent(this, SignInActivity::class.java))
-            finish()
-        }
 
+
+
+        //findViewById<TextView>(R.id.email).text = email
+        //findViewById<TextView>(R.id.username).text = username
+
+//        findViewById<Button>(R.id.btnlogout).setOnClickListener {
+//            signOut()
+//        }
+
+    }
+
+    fun signOut(){
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        val googlesigninclient = GoogleSignIn.getClient(this,gso)
+        auth.signOut()
+        googlesigninclient.signOut()
+        startActivity(Intent(this, SignInActivity::class.java))
+        finish()
     }
 
 

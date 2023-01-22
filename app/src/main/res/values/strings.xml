@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Eaterly</string>
+    <string name="underline_location"><u>Tempatnya ga bener? Ubah</u></string>
 </resources>
