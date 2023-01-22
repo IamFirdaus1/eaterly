@@ -1,6 +1,5 @@
-package com.dausinvestama.eaterly
+package com.dausinvestama.eaterly.adapter
 
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.google.firebase.database.core.Context
-import kotlin.math.exp
+import com.dausinvestama.eaterly.IntroActivity
+import com.dausinvestama.eaterly.R
 
-class IntroAdapter(public var context: MainActivity, private val explanationlist: ArrayList<String>, private val subtitlelist: ArrayList<String>, private val titleslist: ArrayList<String>, private val imageList: ArrayList<String>, private val viewPager2: ViewPager2)
+class IntroAdapter(public var context: IntroActivity, private val explanationlist: ArrayList<String>, private val subtitlelist: ArrayList<String>, private val titleslist: ArrayList<String>, private val imageList: ArrayList<String>, private val viewPager2: ViewPager2)
     :RecyclerView.Adapter<IntroAdapter.MyHolder>(){
 
     class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -27,7 +26,8 @@ class IntroAdapter(public var context: MainActivity, private val explanationlist
         val view =
             LayoutInflater
                 .from(parent.context)
-                .inflate(R.layout.intro_screen,
+                .inflate(
+                    R.layout.intro_screen,
                     parent,
                     false)
 
