@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "927116745672",
+    "firebase_url": "https://eaterlytestapi-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "eaterlytestapi",
+    "storage_bucket": "eaterlytestapi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927116745672:android:57fb290fae19615e6bfefd",
+        "android_client_info": {
+          "package_name": "com.dausinvestama.eaterly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927116745672-doo6nqoqa28hgbup48him51gql4opi6b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dausinvestama.eaterly",
+            "certificate_hash": "9e2ed01d24191bfb235c212ab47d240a1848d6ca"
+          }
+        },
+        {
+          "client_id": "927116745672-git1ttkn4dr32bco7ttvge85un1dq9lg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7rM2LcETyKafyyD8ILkzF5zgrcSCEZcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "927116745672-git1ttkn4dr32bco7ttvge85un1dq9lg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
