@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.KantinAdapter
 import com.dausinvestama.eaterly.databinding.ActivityMainBinding
@@ -24,8 +26,10 @@ class HomeFragment : Fragment() {
     val db = FirebaseFirestore.getInstance()
     private lateinit var listcategory: RecyclerView
     private lateinit var listkantin: RecyclerView
+    private lateinit var listjenis: RecyclerView
     private lateinit var adapter: CategoryAdapter
     private lateinit var adapterkantin: KantinAdapter
+    private lateinit var adapterjenis: AdapterJenis
 
 
 
@@ -36,11 +40,45 @@ class HomeFragment : Fragment() {
         val view = inflater!!.inflate(R.layout.fragment_home, container, false)
         listcategory = view.findViewById(R.id.listcategory)
         listkantin = view.findViewById(R.id.listkantin)
+        listjenis = view.findViewById(R.id.listJenis)
         init()
         initkantin()
+        initjenis()
         Log.d(TAG, "inikepanggil1")
         // Inflate the layout for this fragment
         return view
+    }
+
+    private fun initjenis() {
+        Log.d(TAG, "inikepanggil3")
+        var imageList: ArrayList<String> = ArrayList()
+        var namaJenis: ArrayList<String> = ArrayList()
+        var idJenis: ArrayList<Int> = ArrayList()
+        Log.d(imageList.size.toString(), "dbkuss")
+
+        db.collection("jenis").get().addOnSuccessListener {result ->
+            for (document in result) {
+
+                var x: String = document.get("nama_jenis") as String
+                var y: String = document.get("gambar") as String
+                var z: Long = document.get("id_jenis") as Long
+
+                imageList.add(y)
+                namaJenis.add(x)
+                idJenis.add(z.toInt())
+                Log.d(y, "dbku")
+            }
+            Log.d(TAG, "inikepanggil4")
+            adapterjenis = AdapterJenis(this, imageList, idJenis, namaJenis)
+            listjenis.adapter = adapterjenis
+            var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
+            listjenis.layoutManager = layoutmanager
+
+
+        }
+            .addOnFailureListener { exception ->
+                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+            }
     }
 
     private fun initkantin() {
