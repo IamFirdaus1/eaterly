@@ -1,5 +1,7 @@
 package com.dausinvestama.eaterly.adapter
 
+import android.content.Intent
+import android.icu.number.IntegerWidth
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +13,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.dausinvestama.eaterly.IntroActivity
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.data.IntroList
 
-class IntroAdapter(public var context: IntroActivity, private val explanationlist: ArrayList<String>, private val subtitlelist: ArrayList<String>, private val titleslist: ArrayList<String>, private val imageList: ArrayList<String>, private val viewPager2: ViewPager2)
+class IntroAdapter(var context: IntroActivity, private var introList:ArrayList<IntroList>, var viewPager2: ViewPager2)
     :RecyclerView.Adapter<IntroAdapter.MyHolder>(){
 
     class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -36,25 +39,22 @@ class IntroAdapter(public var context: IntroActivity, private val explanationlis
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        Log.d(titleslist[position], "dariku: ")
-        holder.titleslider.text = titleslist[position]
-        holder.subtitleslidier.text = subtitlelist[position]
-        holder.explanationslider.text = explanationlist[position]
-        Glide.with(context).load(imageList[position]).into(holder.imageView)
-        if (position == imageList.size-1){
+        val ils = introList[position]
+        holder.titleslider.text = ils.titleslist
+        holder.subtitleslidier.text = ils.subtitlelist
+        holder.explanationslider.text = ils.explanationlist
+        Glide.with(context).load(ils.imageList).into(holder.imageView)
+        if (position == introList.size-1){
             viewPager2.post(runnable)
         }
+
     }
 
     override fun getItemCount(): Int {
-        return imageList.size
+        return introList.size
     }
 
     private val runnable = Runnable{
-        imageList.addAll(imageList)
-        titleslist.addAll(titleslist)
-        subtitlelist.addAll(subtitlelist)
-        explanationlist.addAll(explanationlist)
-        notifyDataSetChanged()
+        introList.addAll(introList)
     }
 }

@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.dausinvestama.eaterly.adapter.IntroAdapter
+import com.dausinvestama.eaterly.data.CategoryList
+import com.dausinvestama.eaterly.data.IntroList
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -18,10 +20,6 @@ class IntroActivity : AppCompatActivity() {
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var handler: Handler
-    private lateinit var imageList: ArrayList<String>
-    private lateinit var titlelist: ArrayList<String>
-    private lateinit var subtitlelist: ArrayList<String>
-    private lateinit var explanationlist: ArrayList<String>
     private lateinit var adapter: IntroAdapter
     val db = FirebaseFirestore.getInstance()
     lateinit var pre: SharedPreferences
@@ -85,11 +83,8 @@ class IntroActivity : AppCompatActivity() {
 
     private fun init(){
         viewPager2 = findViewById(R.id.viewPager2)
+        var listintro: ArrayList<IntroList> = ArrayList()
         handler = Handler(Looper.myLooper()!!)
-        imageList = ArrayList()
-        titlelist = ArrayList()
-        subtitlelist = ArrayList()
-        explanationlist = ArrayList()
 
 
         db.collection("eaterlytesting").get().addOnSuccessListener {result ->
@@ -101,17 +96,10 @@ class IntroActivity : AppCompatActivity() {
                 var z: String = document.get("subtitle") as String
                 var u: String = document.get("link") as String
 
-                explanationlist.add(x)
-                imageList.add(u)
-                titlelist.add(y)
-                subtitlelist.add(z)
-                var tesvariable = 0
-                var imagetes: String = imageList.get(tesvariable).toString()
-                Log.d(imagetes, "inittes: " )
-                tesvariable += 1
+                listintro.add(IntroList( x, z, y, u))
             }
             Log.d(result.toString(), "dbkusss")
-            adapter = IntroAdapter(this , explanationlist, subtitlelist, titlelist ,imageList, viewPager2)
+            adapter = IntroAdapter(this , listintro , viewPager2)
             viewPager2.adapter = adapter
             viewPager2.offscreenPageLimit = 3
             viewPager2.clipToPadding = false
