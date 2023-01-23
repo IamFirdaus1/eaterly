@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dausinvestama.eaterly.MainActivity
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.data.KantinList
 import com.dausinvestama.eaterly.fragment.HomeFragment
 
@@ -25,6 +26,11 @@ class KantinAdapter(private var context: HomeFragment, var kantinList: ArrayList
         val CanteenLogo: ImageView = itemView.findViewById(R.id.categoryphoto)
         val CardViews: CardView = itemView.findViewById(R.id.cardviewclicker)
 
+    }
+
+    fun onApplySearch(kantisearch: ArrayList<KantinList>){
+        this.kantinList = kantisearch
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {

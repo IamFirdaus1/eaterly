@@ -17,7 +17,7 @@ import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.fragment.HomeFragment
 
-class CategoryAdapter(private val context: Context, private val categoryList:ArrayList<CategoryList>) :
+class CategoryAdapter(private val context: Context, private var categoryList:ArrayList<CategoryList>) :
     RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     var OnItemClick: ((CategoryList) -> Unit)? = null
@@ -27,6 +27,11 @@ class CategoryAdapter(private val context: Context, private val categoryList:Arr
         val CategoryPhoto: ImageView = itemView.findViewById(R.id.categoryphoto)
         val CardViewClicker: CardView = itemView.findViewById(R.id.cardviewclicker)
 
+    }
+
+    fun onApplySearch(kategorisearch: ArrayList<CategoryList>){
+        this.categoryList = kategorisearch
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

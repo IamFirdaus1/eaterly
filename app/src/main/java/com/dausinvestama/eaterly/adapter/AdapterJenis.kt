@@ -20,6 +20,11 @@ RecyclerView.Adapter<AdapterJenis.MyHolder>(){
         val FotoJenis: ImageView = itemView.findViewById(R.id.categoryphoto)
     }
 
+    fun OnApplySearch(jenissearch: ArrayList<JenisList>){
+        this.jenisList = jenissearch
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutInflater
             .from(parent.context)
@@ -38,5 +43,6 @@ RecyclerView.Adapter<AdapterJenis.MyHolder>(){
 
     override fun getItemCount(): Int {
         return jenisList.size
+
     }
 }
