@@ -2,9 +2,8 @@ package com.dausinvestama.eaterly.fragment
 
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,17 +17,13 @@ import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.KantinAdapter
 import com.dausinvestama.eaterly.data.CategoryList
-import com.dausinvestama.eaterly.databinding.ActivityMainBinding
+import com.dausinvestama.eaterly.DetailedList
 import com.google.firebase.firestore.FirebaseFirestore
 
 
 class HomeFragment : Fragment() {
 
     val db = FirebaseFirestore.getInstance()
-    private lateinit var listcategory: RecyclerView
-    private lateinit var listkantin: RecyclerView
-    private lateinit var listjenis: RecyclerView
-    private lateinit var adapter: CategoryAdapter
     private lateinit var adapterkantin: KantinAdapter
     private lateinit var adapterjenis: AdapterJenis
 
@@ -56,7 +51,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initjenis(view: View) {
-        listjenis = view.findViewById(R.id.listJenis)
+        var listjenis:RecyclerView = view.findViewById(R.id.listJenis)
         Log.d(TAG, "inikepanggil3")
         var imageList: ArrayList<String> = ArrayList()
         var namaJenis: ArrayList<String> = ArrayList()
@@ -90,7 +85,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initkantin(view: View) {
-        listkantin = view.findViewById(R.id.listkantin)
+        var listkantin:RecyclerView = view.findViewById(R.id.listkantin)
         Log.d(TAG, "inikepanggil3")
         var imageList: ArrayList<String> = ArrayList()
         var namakantin: ArrayList<String> = ArrayList()
@@ -122,7 +117,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun init(view: View){
-        listcategory = view.findViewById(R.id.listcategory)
+        var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
 
         var listkategori: ArrayList<CategoryList> = ArrayList()
 
@@ -131,13 +126,19 @@ class HomeFragment : Fragment() {
 
                 var x: String = document.get("CategoryName") as String
                 var y: String = document.get("Link") as String
-                listkategori.add(CategoryList(context, x, y))
+                listkategori.add(CategoryList( x, y))
                 Log.d(y, "dbku")
             }
             Log.d(TAG, "inikepanggil4")
-            adapter = CategoryAdapter(listkategori)
+            var adapter = context?.let { CategoryAdapter(it, listkategori) }
             listcategory.adapter = adapter
             listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
+
+            adapter!!.OnItemClick = {
+                val intent = Intent(context, DetailedList::class.java)
+                intent.putExtra("categorylist", it)
+                startActivity(intent)
+            }
 
 
         }

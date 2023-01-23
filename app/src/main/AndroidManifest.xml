@@ -23,6 +23,10 @@
         android:theme="@style/Theme.Eaterly"
         tools:targetApi="31">
         <activity
+            android:name=".DetailedList"
+            android:exported="false"
+            tools:ignore="MissingClass" />
+        <activity
             android:name=".SignInActivity"
             android:exported="false" />
         <activity
