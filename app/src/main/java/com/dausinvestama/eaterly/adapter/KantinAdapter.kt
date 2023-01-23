@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dausinvestama.eaterly.MainActivity
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.data.KantinList
 import com.dausinvestama.eaterly.fragment.HomeFragment
 
-class KantinAdapter(private var context: HomeFragment, private var ImageList: ArrayList<String>, private var NamaKantin: ArrayList<String>, private var idkantin: ArrayList<Int>) :
+class KantinAdapter(private var context: HomeFragment, var kantinList: ArrayList<KantinList>) :
  RecyclerView.Adapter<KantinAdapter.MyHolder>(){
 
 
@@ -39,11 +40,12 @@ class KantinAdapter(private var context: HomeFragment, private var ImageList: Ar
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        holder.CanteenName.text = NamaKantin[position]
-        Glide.with(context).load(ImageList[position]).into(holder.CanteenLogo)
+        var kl = kantinList[position]
+        holder.CanteenName.text = kl.NamaKantin
+        Glide.with(context).load(kl.ImageList).into(holder.CanteenLogo)
     }
 
     override fun getItemCount(): Int {
-        return ImageList.size
+        return kantinList.size
     }
 }

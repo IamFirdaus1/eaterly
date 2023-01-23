@@ -18,13 +18,14 @@ import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.KantinAdapter
 import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.DetailedList
+import com.dausinvestama.eaterly.data.KantinList
 import com.google.firebase.firestore.FirebaseFirestore
 
 
 class HomeFragment : Fragment() {
 
     val db = FirebaseFirestore.getInstance()
-    private lateinit var adapterkantin: KantinAdapter
+
     private lateinit var adapterjenis: AdapterJenis
 
 
@@ -86,11 +87,8 @@ class HomeFragment : Fragment() {
 
     private fun initkantin(view: View) {
         var listkantin:RecyclerView = view.findViewById(R.id.listkantin)
-        Log.d(TAG, "inikepanggil3")
-        var imageList: ArrayList<String> = ArrayList()
-        var namakantin: ArrayList<String> = ArrayList()
-        var idkantin: ArrayList<Int> = ArrayList()
-        Log.d(imageList.size.toString(), "dbkuss")
+
+        var listcanteen: ArrayList<KantinList> = ArrayList()
 
         db.collection("kantin").get().addOnSuccessListener {result ->
             for (document in result) {
@@ -99,14 +97,12 @@ class HomeFragment : Fragment() {
                 var y: String = document.get("logo_kantin") as String
                 var z: Long = document.get("id_kantin") as Long
 
-                imageList.add(y)
-                namakantin.add(x)
-                idkantin.add(z.toInt())
+                listcanteen.add(KantinList(y, x, z.toInt()))
                 Log.d(y, "dbku")
             }
             Log.d(TAG, "inikepanggil4")
-            adapterkantin = KantinAdapter(this, imageList, namakantin, idkantin)
-            listkantin.adapter = adapterkantin
+            var adapter = KantinAdapter(this, listcanteen)
+            listkantin.adapter = adapter
             listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
 
 
