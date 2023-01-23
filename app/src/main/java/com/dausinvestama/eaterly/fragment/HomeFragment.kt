@@ -18,6 +18,7 @@ import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.KantinAdapter
 import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.DetailedList
+import com.dausinvestama.eaterly.data.JenisList
 import com.dausinvestama.eaterly.data.KantinList
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -25,10 +26,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 class HomeFragment : Fragment() {
 
     val db = FirebaseFirestore.getInstance()
-
-    private lateinit var adapterjenis: AdapterJenis
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,11 +50,8 @@ class HomeFragment : Fragment() {
 
     private fun initjenis(view: View) {
         var listjenis:RecyclerView = view.findViewById(R.id.listJenis)
-        Log.d(TAG, "inikepanggil3")
-        var imageList: ArrayList<String> = ArrayList()
-        var namaJenis: ArrayList<String> = ArrayList()
-        var idJenis: ArrayList<Int> = ArrayList()
-        Log.d(imageList.size.toString(), "dbkuss")
+
+        var jenislist: ArrayList<JenisList> = ArrayList()
 
         db.collection("jenis").get().addOnSuccessListener {result ->
             for (document in result) {
@@ -66,15 +60,13 @@ class HomeFragment : Fragment() {
                 var y: String = document.get("gambar") as String
                 var z: Long = document.get("id_jenis") as Long
 
-                imageList.add(y)
-                namaJenis.add(x)
-                idJenis.add(z.toInt())
-                Log.d(y, "dbku")
+                jenislist.add(JenisList(y, z.toInt(), x))
+
             }
             Log.d(TAG, "inikepanggil4")
-            adapterjenis = AdapterJenis(this, imageList, idJenis, namaJenis)
+            var adapter = AdapterJenis(this, jenislist)
             listjenis.setHasFixedSize(true)
-            listjenis.adapter = adapterjenis
+            listjenis.adapter = adapter
             var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
             listjenis.layoutManager = layoutmanager
 

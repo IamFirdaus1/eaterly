@@ -9,9 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.data.JenisList
 import com.dausinvestama.eaterly.fragment.HomeFragment
 
-class AdapterJenis(private var context: HomeFragment, private var imageList: ArrayList<String>, private var id_jenis: ArrayList<Int>, private var nama_jenis: ArrayList<String>) :
+class AdapterJenis(private var context: HomeFragment, var jenisList: ArrayList<JenisList>) :
 RecyclerView.Adapter<AdapterJenis.MyHolder>(){
 
     class MyHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -30,11 +31,12 @@ RecyclerView.Adapter<AdapterJenis.MyHolder>(){
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        holder.NamaJenis.text = nama_jenis[position]
-        Glide.with(context).load(imageList[position]).into(holder.FotoJenis)
+        var jl = jenisList[position]
+        holder.NamaJenis.text = jl.nama_jenis
+        Glide.with(context).load(jl.imageList).into(holder.FotoJenis)
     }
 
     override fun getItemCount(): Int {
-        return imageList.size
+        return jenisList.size
     }
 }
