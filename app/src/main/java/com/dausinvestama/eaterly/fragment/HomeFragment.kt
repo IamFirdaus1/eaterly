@@ -17,6 +17,7 @@ import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.KantinAdapter
+import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.databinding.ActivityMainBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -38,18 +39,24 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater!!.inflate(R.layout.fragment_home, container, false)
-        listcategory = view.findViewById(R.id.listcategory)
-        listkantin = view.findViewById(R.id.listkantin)
-        listjenis = view.findViewById(R.id.listJenis)
-        init()
-        initkantin()
-        initjenis()
-        Log.d(TAG, "inikepanggil1")
-        // Inflate the layout for this fragment
+
+        //initialisasi recyclerview
+        init(view)
+        initkantin(view)
+        initjenis(view)
+
         return view
     }
 
-    private fun initjenis() {
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "inikepanggil2")
+    }
+
+    private fun initjenis(view: View) {
+        listjenis = view.findViewById(R.id.listJenis)
         Log.d(TAG, "inikepanggil3")
         var imageList: ArrayList<String> = ArrayList()
         var namaJenis: ArrayList<String> = ArrayList()
@@ -70,6 +77,7 @@ class HomeFragment : Fragment() {
             }
             Log.d(TAG, "inikepanggil4")
             adapterjenis = AdapterJenis(this, imageList, idJenis, namaJenis)
+            listjenis.setHasFixedSize(true)
             listjenis.adapter = adapterjenis
             var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
             listjenis.layoutManager = layoutmanager
@@ -81,7 +89,8 @@ class HomeFragment : Fragment() {
             }
     }
 
-    private fun initkantin() {
+    private fun initkantin(view: View) {
+        listkantin = view.findViewById(R.id.listkantin)
         Log.d(TAG, "inikepanggil3")
         var imageList: ArrayList<String> = ArrayList()
         var namakantin: ArrayList<String> = ArrayList()
@@ -112,31 +121,21 @@ class HomeFragment : Fragment() {
             }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "inikepanggil2")
-        init()
-    }
+    private fun init(view: View){
+        listcategory = view.findViewById(R.id.listcategory)
 
-    private fun init(){
-
-        Log.d(TAG, "inikepanggil3")
-        var imageList: ArrayList<String> = ArrayList()
-        var CategoryList: ArrayList<String> = ArrayList()
-        Log.d(imageList.size.toString(), "dbkuss")
+        var listkategori: ArrayList<CategoryList> = ArrayList()
 
         db.collection("categorymakanan").get().addOnSuccessListener {result ->
             for (document in result) {
 
                 var x: String = document.get("CategoryName") as String
                 var y: String = document.get("Link") as String
-
-                CategoryList.add(x)
-                imageList.add(y)
+                listkategori.add(CategoryList(context, x, y))
                 Log.d(y, "dbku")
             }
             Log.d(TAG, "inikepanggil4")
-            adapter = CategoryAdapter(this , CategoryList, imageList)
+            adapter = CategoryAdapter(listkategori)
             listcategory.adapter = adapter
             listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
 
