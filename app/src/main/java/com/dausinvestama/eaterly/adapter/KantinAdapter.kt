@@ -19,6 +19,7 @@ import com.dausinvestama.eaterly.fragment.HomeFragment
 class KantinAdapter(private var context: HomeFragment, var kantinList: ArrayList<KantinList>) :
  RecyclerView.Adapter<KantinAdapter.MyHolder>(){
 
+    var OnItemClick: ((KantinList) -> Unit)? = null
 
 
     class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -49,6 +50,9 @@ class KantinAdapter(private var context: HomeFragment, var kantinList: ArrayList
         var kl = kantinList[position]
         holder.CanteenName.text = kl.NamaKantin
         Glide.with(context).load(kl.ImageList).into(holder.CanteenLogo)
+        holder.CardViews.setOnClickListener {
+            OnItemClick?.invoke(kl)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -13,9 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.DetailMakananAdapter
-import com.dausinvestama.eaterly.data.CategoryDetailData
-import com.dausinvestama.eaterly.data.CategoryList
-import com.dausinvestama.eaterly.data.IntroList
+import com.dausinvestama.eaterly.data.*
+import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
@@ -36,11 +35,26 @@ class DetailedCategory : AppCompatActivity() {
         detailRecycler  = findViewById(R.id.detailrecycler)
         kategoritextview = findViewById(R.id.categories)
         val categoryList = intent.getParcelableExtra<CategoryList>("categorylist")
+        val kantinList = intent.getParcelableExtra<KantinList>("kantinList")
+        val jenisList = intent.getParcelableExtra<JenisList>("jenisList")
 
 
         val id_categories: Int? = categoryList?.id_kategori
+        val id_kantin: Int? = kantinList?.idkantin
+        val id_jenis: Int? = jenisList?.id_jenis
+
+        Log.d(TAG, "cekpoint1: ${id_jenis} ")
+
         if (categoryList != null) {
             kategoritextview.setText(categoryList.Categorylist)
+        }else if (id_kantin != null) {
+            val nama_kantin: String = kantinList?.NamaKantin.toString()
+            val order_id: Int = kantinList?.orderid!!
+            kategoritextview.setText(kantinList.NamaKantin)
+            initkantin(id_kantin,order_id, nama_kantin)
+        }
+        if (id_jenis != null) {
+            initjenis(id_jenis)
         }
         if (id_categories != null) {
             initapi(id_categories)
@@ -48,50 +62,153 @@ class DetailedCategory : AppCompatActivity() {
 
     }
 
+    private fun initjenis(id_jenis: Int) {
+        var pre = SharedPreferences(this)
+        Log.d(TAG, "cekpoint: ${pre.location} ")
+
+        db.collection("makanan")
+            .document(pre.location.toString())
+            .collection("1")
+            .whereEqualTo("id_jenis", id_jenis)
+            .get().addOnSuccessListener { result ->
+                for (document in result) {
+
+                    var id_jeniss: Long = document.get("id_jenis") as Long
+                    var id_makanan: Long = document.get("id_makanan") as Long
+                    var id_kantin: Long = document.get("id_kantin") as Long
+                    var nama_makanan: String = document.get("nama_makanan") as String
+                    var desc_makanan: String = document.get("desc") as String
+                    var harga_makanan: Long = document.get("harga_makanan") as Long
+
+                    Log.d(TAG, "initjenis: $id_jeniss $id_makanan ")
+
+                    db.collection("kantintesting")
+                        .document(pre.location.toString())
+                        .collection("Kantin")
+                        .document(id_kantin.toString())
+                        .get().addOnSuccessListener { hasil ->
+                            var id_kantin: Long = hasil.get("id_kantin") as Long
+                            var nama_kantin: String = hasil.get("nama_kantin") as String
+
+                            db.collection("orderlist")
+                                .document(pre.location.toString())
+                                .collection(id_kantin.toString())
+                                .whereEqualTo("status_pesanan", 0)
+                                .get().addOnSuccessListener { resultan ->
+
+                                    detalList.add(
+                                        CategoryDetailData(
+                                            nama_makanan,
+                                            id_makanan,
+                                            id_jeniss,
+                                            harga_makanan,
+                                            id_kantin,
+                                            desc_makanan,
+                                            nama_kantin,
+                                            resultan.size()
+                                        )
+                                    )
+
+                                    detailMakananAdapter = DetailMakananAdapter(this, detalList)
+                                    detailRecycler.adapter = detailMakananAdapter
+                                    var layoutManager: RecyclerView.LayoutManager =
+                                        GridLayoutManager(this, 1)
+                                    detailRecycler.setHasFixedSize(true)
+                                    detailRecycler.layoutManager = layoutManager
+                                }
+                        }
+                }
+            }
+    }
+
+    fun initkantin(idKantin: Int, order_id: Int, nama_kantin: String) {
+         var pre = SharedPreferences(this)
+         db.collection("makanan")
+             .document(pre.location.toString())
+             .collection("1")
+             .whereEqualTo("id_kantin", idKantin)
+             .get().addOnSuccessListener { result ->
+                 for (document in result) {
+                     var id_jenis: Long = document.get("id_jenis") as Long
+                     var id_makanan: Long = document.get("id_makanan") as Long
+                     var id_kantin: Long = document.get("id_kantin") as Long
+                     var nama_makanan: String = document.get("nama_makanan") as String
+                     var desc_makanan: String = document.get("desc") as String
+                     var harga_makanan: Long = document.get("harga_makanan") as Long
+
+
+                     db.collection("orderlist")
+                         .document(pre.location.toString())
+                         .collection(id_kantin.toString())
+                         .whereEqualTo("status_pesanan", 0)
+                         .get().addOnSuccessListener { resultan ->
+
+                             detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jenis, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
+
+                             detailMakananAdapter = DetailMakananAdapter(this, detalList)
+                             detailRecycler.adapter = detailMakananAdapter
+                             var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
+                             detailRecycler.setHasFixedSize(true)
+                             detailRecycler.layoutManager = layoutManager
+                         }
+
+                 }
+             }
+
+    }
+
     fun initapi(id_categories: Int) {
         val categoryList = intent.getParcelableExtra<CategoryList>("categorylist")
 
-        db.collection("kategoritesting").document(id_categories.toString()).collection("member").get().addOnSuccessListener {result ->
-            for (document in result){
-                Log.d(TAG, "kategori reference : ${document.get("reference")}")
-                db.collection("makanan").document(document.get("reference") as String).get().addOnSuccessListener { results->
-                    Log.d(TAG, "kategori reference : ${results.get("id_kantin")}")
-                    var id_jenis: Long = results.get("id_jenis") as Long
-                    var id_makanan: Long = results.get("id_makanan") as Long
-                    var id_kantin: Long = results.get("id_kantin") as Long
-                    var nama_makanan: String = results.get("nama_makanan") as String
-                    var desc_makanan: String = results.get("desc_makanan") as String
-                    var harga_makanan: Long = results.get("harga_makanan") as Long
-                    Log.d(TAG, "id_kantin from makanan reference : $id_kantin")
-                    db.collection("kantintesting").document(id_kantin.toString()).get().addOnSuccessListener { hasil ->
-                        var order_id: Long = hasil.get("order_id") as Long
-                        var nama_kantin: String = hasil.get("nama_kantin") as String
+        var pre = SharedPreferences(this)
+        db.collection("kategoritesting")
+            .document(pre.location.toString()).collection("kategori")
+            .document(id_categories.toString())
+            .collection("member")
+            .get().addOnSuccessListener {result ->
+                for (document in result) {
+                    db.collection("makanan")
+                        .document(pre.location.toString())
+                        .collection("1")
+                        .document(document.get("reference")
+                            .toString()).get().addOnSuccessListener { results ->
+                            var id_jenis: Long = results.get("id_jenis") as Long
+                            var id_makanan: Long = results.get("id_makanan") as Long
+                            var id_kantin: Long = results.get("id_kantin") as Long
+                            var nama_makanan: String = results.get("nama_makanan") as String
+                            var desc_makanan: String = results.get("desc") as String
+                            var harga_makanan: Long = results.get("harga_makanan") as Long
 
-                        Log.d(TAG, "order_id reference : $order_id")
-                        db.collection("orderlist")
-                            .document("24-01-2023")
-                            .collection(order_id.toString())
-                            .whereEqualTo("status_pesanan", 0)
-                            .get().addOnSuccessListener { resultan ->
-                                Log.d(TAG, "antrian: " + resultan.size() + " " + id_kantin + " " +order_id )
-                                Log.d(TAG, "hasil akhir: nama kantin:${nama_kantin} nama_makanan: ${nama_makanan}  desc makanan: ${desc_makanan} antrian: ${resultan.size()}" )
-                                detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jenis, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
-                                Log.d(TAG, "docsa:" )
+                            db.collection("kantintesting")
+                                .document(pre.location.toString())
+                                .collection("Kantin")
+                                .document(id_kantin.toString())
+                                .get().addOnSuccessListener { hasil ->
+                                    var id_kantin: Long = hasil.get("id_kantin") as Long
+                                    var nama_kantin: String = hasil.get("nama_kantin") as String
 
-                                detailMakananAdapter = DetailMakananAdapter(this, detalList)
-                                detailRecycler.adapter = detailMakananAdapter
-                                var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
-                                detailRecycler.setHasFixedSize(true)
-                                detailRecycler.layoutManager = layoutManager
+                                    db.collection("orderlist")
+                                        .document("24-01-2023")
+                                        .collection(pre.location.toString())
+                                        .document(id_kantin.toString())
+                                        .collection("order")
+                                        .whereEqualTo("status_pesanan", 0)
+                                        .get().addOnSuccessListener { resultan ->
+
+                                            detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jenis, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
+
+                                            detailMakananAdapter = DetailMakananAdapter(this, detalList)
+                                            detailRecycler.adapter = detailMakananAdapter
+                                            var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
+                                            detailRecycler.setHasFixedSize(true)
+                                            detailRecycler.layoutManager = layoutManager
+                                        }
+
+                                }
                         }
-
-                    }
                 }
             }
 
-
-
-        }
 
     }
 
