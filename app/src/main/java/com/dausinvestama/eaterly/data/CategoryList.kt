@@ -5,11 +5,12 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.dausinvestama.eaterly.fragment.HomeFragment
 
-data class CategoryList( var Categorylist: String, var ImageList: String )
+data class CategoryList( var Categorylist: String, var ImageList: String , var id_kategori: Int)
     : Parcelable{
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
-        parcel.readString()!!
+        parcel.readString()!!,
+        parcel.readInt()
     ) {
     }
 
@@ -21,6 +22,7 @@ data class CategoryList( var Categorylist: String, var ImageList: String )
         if (p0 != null) {
             p0.writeString(Categorylist)
             p0.writeString(ImageList)
+            p0.writeInt(id_kategori)
         }
     }
 

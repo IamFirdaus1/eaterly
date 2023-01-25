@@ -7,10 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.SearchEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +18,7 @@ import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.KantinAdapter
 import com.dausinvestama.eaterly.data.CategoryList
-import com.dausinvestama.eaterly.DetailedList
+import com.dausinvestama.eaterly.pages.DetailedCategory
 import com.dausinvestama.eaterly.data.JenisList
 import com.dausinvestama.eaterly.data.KantinList
 import com.google.firebase.firestore.FirebaseFirestore
@@ -51,7 +49,8 @@ class HomeFragment : Fragment() {
         searchView = view.findViewById(R.id.searchall)
 
         //initialisasi recyclerview
-        init(view)
+        //init(view)
+        initkategori2(view)
         initkantin(view)
         initjenis(view)
 
@@ -181,11 +180,11 @@ class HomeFragment : Fragment() {
     private fun initkantin(view: View) {
         var listkantin:RecyclerView = view.findViewById(R.id.listkantin)
 
-        db.collection("kantin").get().addOnSuccessListener {result ->
+        db.collection("kantintesting").get().addOnSuccessListener {result ->
             for (document in result) {
 
                 var x: String = document.get("nama_kantin") as String
-                var y: String = document.get("logo_kantin") as String
+                var y: String = document.get("link") as String
                 var z: Long = document.get("id_kantin") as Long
 
                 listcanteen.add(KantinList(y, x, z.toInt()))
@@ -214,8 +213,8 @@ class HomeFragment : Fragment() {
 
                 var x: String = document.get("CategoryName") as String
                 var y: String = document.get("Link") as String
-                listkategori.add(CategoryList( x, y))
-                Log.d(y, "dbku")
+                var id: Long = document.get("id_kategori") as Long
+                listkategori.add(CategoryList( x, y, id.toInt()))
             }
             Log.d(TAG, "inikepanggil4")
             adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
@@ -224,7 +223,40 @@ class HomeFragment : Fragment() {
 
 
             adapterkategori.OnItemClick = {
-                val intent = Intent(context, DetailedList::class.java)
+                val intent = Intent(context, DetailedCategory::class.java)
+                intent.putExtra("categorylist", it)
+                startActivity(intent)
+            }
+
+
+        }
+            .addOnFailureListener { exception ->
+                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+            }
+
+    }
+
+    private fun initkategori2(view: View){
+        var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
+
+
+
+        db.collection("kategoritesting").get().addOnSuccessListener {result ->
+            for (document in result) {
+
+                var x: String = document.get("nama_kategori") as String
+                var y: String = document.get("Link") as String
+                var z: Long = document.get("id_kategori") as Long
+                listkategori.add(CategoryList( x, y, z.toInt()))
+            }
+            Log.d(TAG, "inikepanggil4")
+            adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
+            listcategory.adapter = adapterkategori
+            listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
+
+
+            adapterkategori.OnItemClick = {
+                val intent = Intent(context, DetailedCategory::class.java)
                 intent.putExtra("categorylist", it)
                 startActivity(intent)
             }

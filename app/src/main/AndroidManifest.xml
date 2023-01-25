@@ -23,7 +23,7 @@
         android:theme="@style/Theme.Eaterly"
         tools:targetApi="31">
         <activity
-            android:name=".DetailedList"
+            android:name=".pages.DetailedCategory"
             android:exported="false"
             tools:ignore="MissingClass" />
         <activity
