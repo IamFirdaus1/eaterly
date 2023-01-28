@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.MainActivity
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.AdapterJenis
@@ -36,6 +37,7 @@ class HomeFragment : Fragment() {
     lateinit var searchView: androidx.appcompat.widget.SearchView
     lateinit var kantinviewer: TextView
     lateinit var ubahkantin: TextView
+    lateinit var usernameview: TextView
 
     lateinit var adapterkategori: CategoryAdapter
     var listkategori: ArrayList<CategoryList> = ArrayList()
@@ -57,6 +59,7 @@ class HomeFragment : Fragment() {
         searchView = view.findViewById(R.id.searchall)
         kantinviewer = view.findViewById(R.id.kantin)
         ubahkantin = view.findViewById(R.id.ubahtempat)
+        usernameview = view.findViewById(R.id.username)
 
         //initialisasi recyclerview
         //init(view)
@@ -65,6 +68,13 @@ class HomeFragment : Fragment() {
         initjenis(view)
 
         pre = SharedPreferences(context)
+
+        if (pre.first_name == "Null" || pre.first_name == null){
+            val ShowPopUp = NamePopUpFragment(context)
+            ShowPopUp.show((activity as AppCompatActivity).supportFragmentManager, "showPopUp")
+        }else {
+            usernameview.setText(pre.first_name)
+        }
 
         Log.d(TAG, "onCreateView: pre ${pre.location}")
         if (pre.location != null){
@@ -287,7 +297,7 @@ class HomeFragment : Fragment() {
                 listkategori.add(CategoryList( x, y, z.toInt()))
             }
             Log.d(TAG, "inikepanggil4")
-            adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
+             adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
             listcategory.adapter = adapterkategori
             listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
 
@@ -305,6 +315,12 @@ class HomeFragment : Fragment() {
                 Log.d(ContentValues.TAG, "Error getting documents.", exception)
             }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        kantinviewer.setText(pre.location)
     }
     
 }

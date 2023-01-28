@@ -45,6 +45,8 @@ class PopUpFragment(context: Context) : DialogFragment() {
 
     }
 
+
+
     private fun init() {
         arraylokasi = ArrayList()
         db.collection("ID_kantin").get().addOnSuccessListener { result ->

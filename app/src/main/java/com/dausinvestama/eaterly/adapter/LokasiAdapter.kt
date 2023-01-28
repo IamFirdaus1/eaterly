@@ -8,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
+import com.dausinvestama.eaterly.AppDatabase
+import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.utils.SharedPreferences
 
 class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>)
@@ -43,6 +46,10 @@ class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>)
             pre = SharedPreferences(context)
             var getlks = lokasi[position]
             pre.location = getlks
+            var localsdb: AppDatabase = AppDatabase.getInstance(context)
+            var localdb: CartDatabase = CartDatabase.getInstance(context)
+            localdb.outerCartDao().delete()
+            localsdb.cartDao().delete()
         }
     }
 

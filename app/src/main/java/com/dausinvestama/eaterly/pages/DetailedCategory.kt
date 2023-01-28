@@ -10,10 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dausinvestama.eaterly.AppDatabase
+import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.adapter.CartAdapter
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.DetailMakananAdapter
 import com.dausinvestama.eaterly.data.*
+import com.dausinvestama.eaterly.database.CartDb
+import com.dausinvestama.eaterly.database.CartItemDb
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -23,6 +28,12 @@ class DetailedCategory : AppCompatActivity() {
     val db = FirebaseFirestore.getInstance()
     lateinit var kategoritextview: TextView
     lateinit var detailRecycler: RecyclerView
+
+    lateinit var cartAdapter: CartAdapter
+    var arraycart: ArrayList<CartDb> = ArrayList()
+
+    lateinit private var localdb: AppDatabase
+    lateinit private var cartlocaldb: CartDatabase
 
 
     lateinit var detailMakananAdapter: DetailMakananAdapter
@@ -202,14 +213,55 @@ class DetailedCategory : AppCompatActivity() {
                                             var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
                                             detailRecycler.setHasFixedSize(true)
                                             detailRecycler.layoutManager = layoutManager
+
+                                            localdb = AppDatabase.getInstance(applicationContext)
+                                            cartlocaldb = CartDatabase.getInstance(applicationContext)
+
+                                            detailMakananAdapter.onItemClick = {it
+                                                if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
+                                                    localdb.cartDao().InsertAll(CartItemDb(
+                                                        null, it.idmakanan.toInt(),
+                                                        it.hargamakanan.toInt(),
+                                                        1,
+                                                        it.namamakanan.toString(),
+                                                        it.idkantin.toInt(),
+                                                        it.idjenis.toInt(),
+                                                        it.namakantin.toString()
+                                                    ))
+                                                    finish()
+
+                                                    if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
+                                                        cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
+                                                    }else{
+                                                        Log.d(TAG, "initdetail: ini kagak" )
+                                                    }
+
+
+                                                }
+
+
+
+//                                                arraycart.add(CartData(it.namakantin.toString(), it.idkantin))
+//                                                arraycartorder.add(CartOrderData("https://firebasestorage.googleapis.com/v0/b/eaterlytestapi.appspot.com/o/Imagesicons8-kawaii-soda-100.png?alt=media&token=ecc15eb6-9012-4919-9ebb-6ff7035ffd5b",
+//                                                    it.idmakanan, it.namamakanan.toString(), 1, it.hargamakanan, it.idkantin))
+                                                Log.d(TAG, "pilihan: " + it.namamakanan )
+                                            }
                                         }
+
 
                                 }
                         }
                 }
+
+
             }
 
+    }
 
+
+
+    override fun onResume() {
+        super.onResume()
     }
 
 

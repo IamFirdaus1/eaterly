@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -28,12 +29,15 @@ import java.lang.Override as Override1
 class DetailMakananAdapter(private val context: Context, private var categoryDetailData: ArrayList<CategoryDetailData>)
     : RecyclerView.Adapter<DetailMakananAdapter.ViewHolder>(){
 
+    var onItemClick: ((CategoryDetailData) -> Unit)? = null
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nama_makanan: TextView = itemView.findViewById(R.id.nama_makanan)
         val deskripsi_makanan: TextView = itemView.findViewById(R.id.deskripsi_makanan)
         val nama_kantin: TextView = itemView.findViewById(R.id.namakantin)
         val antrian: TextView = itemView.findViewById(R.id.antrian)
         val linearbackground: LinearLayout = itemView.findViewById(R.id.linearbackground)
+        val cardviewClicker: CardView = itemView.findViewById(R.id.cardviewclicker)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -58,6 +62,9 @@ class DetailMakananAdapter(private val context: Context, private var categoryDet
             }
 
         })
+        holder.cardviewClicker.setOnClickListener {
+            onItemClick!!.invoke(dma)
+        }
 
 
         holder.nama_makanan.text = dma.namamakanan
