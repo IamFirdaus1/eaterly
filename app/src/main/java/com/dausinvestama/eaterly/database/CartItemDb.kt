@@ -27,6 +27,9 @@ class CartItemDb(
     var id_jenis: Int,
 
     @ColumnInfo(name = "nama_kantin")
-    var nama_kantin: String
+    var nama_kantin: String,
+
+    @ColumnInfo(name = "gambar_makanan")
+    var gambar_makanan: String
 
     )

@@ -82,6 +82,7 @@ class DetailedCategory : AppCompatActivity() {
                     var nama_makanan: String = document.get("nama_makanan") as String
                     var desc_makanan: String = document.get("desc") as String
                     var harga_makanan: Long = document.get("harga_makanan") as Long
+                    var gambar_makanan: String = document.get("gambar_makanan") as String
 
                     Log.d(TAG, "initjenis: $id_jeniss $id_makanan ")
 
@@ -99,7 +100,15 @@ class DetailedCategory : AppCompatActivity() {
                                 .whereEqualTo("status_pesanan", 0)
                                 .get().addOnSuccessListener { resultan ->
 
-                                    detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jeniss, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
+                                    detalList.add(CategoryDetailData(nama_makanan,
+                                        id_makanan,
+                                        id_jeniss,
+                                        harga_makanan,
+                                        id_kantin,
+                                        desc_makanan,
+                                        nama_kantin,
+                                        resultan.size(),
+                                        gambar_makanan))
 
                                     detailMakananAdapter = DetailMakananAdapter(this, detalList)
                                     detailRecycler.adapter = detailMakananAdapter
@@ -119,7 +128,8 @@ class DetailedCategory : AppCompatActivity() {
                                                 it.namamakanan.toString(),
                                                 it.idkantin.toInt(),
                                                 it.idjenis.toInt(),
-                                                it.namakantin.toString()
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
                                             ))
                                             finish()
 
@@ -159,7 +169,7 @@ class DetailedCategory : AppCompatActivity() {
                      var nama_makanan: String = document.get("nama_makanan") as String
                      var desc_makanan: String = document.get("desc") as String
                      var harga_makanan: Long = document.get("harga_makanan") as Long
-
+                     var gambar_makanan: String = document.get("gambar_makanan") as String
 
                      db.collection("orderlist")
                          .document(pre.location.toString())
@@ -175,7 +185,8 @@ class DetailedCategory : AppCompatActivity() {
                                  id_kantin,
                                  desc_makanan,
                                  nama_kantin,
-                                 resultan.size()))
+                                 resultan.size(),
+                                 gambar_makanan))
 
                              detailMakananAdapter = DetailMakananAdapter(this, detalList)
                              detailRecycler.adapter = detailMakananAdapter
@@ -197,7 +208,8 @@ class DetailedCategory : AppCompatActivity() {
                                          it.namamakanan.toString(),
                                          it.idkantin.toInt(),
                                          it.idjenis.toInt(),
-                                         it.namakantin.toString()
+                                         it.namakantin.toString(),
+                                         it.gambar_makanan
                                      ))
                                      finish()
 
@@ -245,6 +257,7 @@ class DetailedCategory : AppCompatActivity() {
                             var nama_makanan: String = results.get("nama_makanan") as String
                             var desc_makanan: String = results.get("desc") as String
                             var harga_makanan: Long = results.get("harga_makanan") as Long
+                            var gambar_makanan: String = results.get("gambar_makanan") as String
 
                             db.collection("kantintesting")
                                 .document(pre.location.toString())
@@ -270,7 +283,8 @@ class DetailedCategory : AppCompatActivity() {
                                                 id_kantin,
                                                 desc_makanan,
                                                 nama_kantin,
-                                                resultan.size()))
+                                                resultan.size(),
+                                                gambar_makanan))
 
                                             detailMakananAdapter = DetailMakananAdapter(this, detalList)
                                             detailRecycler.adapter = detailMakananAdapter
@@ -292,7 +306,8 @@ class DetailedCategory : AppCompatActivity() {
                                                             it.namamakanan.toString(),
                                                             it.idkantin.toInt(),
                                                             it.idjenis.toInt(),
-                                                            it.namakantin.toString()
+                                                            it.namakantin.toString(),
+                                                            it.gambar_makanan
                                                         ))
                                                         finish()
                                                     }else{
@@ -304,7 +319,8 @@ class DetailedCategory : AppCompatActivity() {
                                                             it.namamakanan.toString(),
                                                             it.idkantin.toInt(),
                                                             it.idjenis.toInt(),
-                                                            it.namakantin.toString()
+                                                            it.namakantin.toString(),
+                                                            it.gambar_makanan
                                                         ))
                                                         finish()
                                                     }

@@ -3,7 +3,7 @@ package com.dausinvestama.eaterly.data
 import android.os.Parcel
 import android.os.Parcelable
 
-data class CategoryDetailData(var namamakanan: String?, var idmakanan: Long, var idjenis: Long, var hargamakanan: Long, var idkantin: Long, var deskripsimakanan: String?, var namakantin: String?, var jumlahantrian: Int)
+data class CategoryDetailData(var namamakanan: String?, var idmakanan: Long, var idjenis: Long, var hargamakanan: Long, var idkantin: Long, var deskripsimakanan: String?, var namakantin: String?, var jumlahantrian: Int, var gambar_makanan: String)
     : Parcelable{
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -13,7 +13,8 @@ data class CategoryDetailData(var namamakanan: String?, var idmakanan: Long, var
         parcel.readLong(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readString()!!
     ) {
     }
 
@@ -26,6 +27,7 @@ data class CategoryDetailData(var namamakanan: String?, var idmakanan: Long, var
         parcel.writeString(deskripsimakanan)
         parcel.writeString(namakantin)
         parcel.writeInt(jumlahantrian)
+        parcel.writeString(gambar_makanan)
     }
 
     override fun describeContents(): Int {

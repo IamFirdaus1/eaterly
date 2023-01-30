@@ -5,7 +5,7 @@ import androidx.room.*
 import com.dausinvestama.eaterly.database.CartItemDAO
 import com.dausinvestama.eaterly.database.CartItemDb
 
-@Database(entities = [CartItemDb::class], version = 1)
+@Database(entities = [CartItemDb::class], version = 2)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun cartDao(): CartItemDAO
 

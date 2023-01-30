@@ -53,7 +53,7 @@ class DetailMakananAdapter(private val context: Context, private var categoryDet
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var dma = categoryDetailData[position]
         Log.d(TAG, "ombindadapter: " + dma.namamakanan)
-        Glide.with(context).load("https://i.stack.imgur.com/9caJx.png").into(object: CustomTarget<Drawable>(){
+        Glide.with(context).load(dma.gambar_makanan).into(object: CustomTarget<Drawable>(){
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 holder.linearbackground.background = resource
             }

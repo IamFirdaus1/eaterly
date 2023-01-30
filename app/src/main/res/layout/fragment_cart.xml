@@ -72,6 +72,7 @@
                                 android:layout_height="match_parent"/>
 
                             <TextView
+                                android:id="@+id/nokursi"
                                 android:layout_marginLeft="10dp"
                                 android:text="20"
                                 android:layout_width="match_parent"
@@ -90,6 +91,7 @@
                                 android:layout_height="match_parent"/>
 
                             <TextView
+                                android:id="@+id/subtotal"
                                 android:layout_marginLeft="10dp"
                                 android:text="Rp 200,000"
                                 android:layout_width="match_parent"
@@ -109,6 +111,7 @@
                                 android:layout_height="match_parent"/>
 
                             <TextView
+                                android:id="@+id/biayajasa"
                                 android:layout_marginLeft="10dp"
                                 android:text="Rp 10,000"
                                 android:layout_width="match_parent"
@@ -127,6 +130,7 @@
                                 android:layout_height="match_parent"/>
 
                             <TextView
+                                android:id="@+id/biayatotal"
                                 android:layout_marginLeft="10dp"
                                 android:text="Rp 210,000"
                                 android:layout_width="match_parent"

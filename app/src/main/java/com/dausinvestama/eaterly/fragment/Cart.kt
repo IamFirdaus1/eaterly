@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.AppDatabase
@@ -21,6 +22,9 @@ class Cart : Fragment() {
     var arraycart: ArrayList<CartDb> = ArrayList()
     var arraycartorder = mutableListOf<CartItemDb>()
     lateinit private var localdb: CartDatabase
+    lateinit private var Cartlocaldb: AppDatabase
+
+    var subtotals: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +38,14 @@ class Cart : Fragment() {
     ): View? {
         // Inflate the layout for this fragmenthok
         val view = inflater.inflate(R.layout.fragment_cart, container, false)
+        val subtotal: TextView = view.findViewById(R.id.subtotal)
+        val jasa: TextView = view.findViewById(R.id.biayajasa)
+        val total: TextView = view.findViewById(R.id.biayatotal)
+        getData()
+        subtotal.text = subtotals.toString()
+        val tax: Int = (subtotals*0.05).toInt()
+        jasa.text = tax.toString()
+        total.text = (subtotals + tax).toString()
 
         initcart(view)
 
@@ -42,8 +54,6 @@ class Cart : Fragment() {
 
     private fun initcart(view: View) {
         var listcart:RecyclerView = view.findViewById(R.id.cartlist)
-
-        getData()
 
         listcart.setHasFixedSize(true)
 
@@ -57,6 +67,14 @@ class Cart : Fragment() {
         arraycart.clear()
         arraycart.addAll(localdb.outerCartDao().getAll())
 
+        Cartlocaldb = AppDatabase.getInstance(requireContext())
+        arraycartorder.clear()
+        arraycartorder.addAll(Cartlocaldb.cartDao().getAll())
+
+        for (i in 0 until arraycartorder.size) {
+            var penambahan: Int = arraycartorder[i].jumlah * arraycartorder[i].harga
+            subtotals = subtotals + penambahan
+        }
 
         cartAdapter = CartAdapter(context, arraycart)
         cartAdapter.notifyDataSetChanged()
