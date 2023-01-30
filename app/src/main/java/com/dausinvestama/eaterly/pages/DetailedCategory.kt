@@ -29,9 +29,6 @@ class DetailedCategory : AppCompatActivity() {
     lateinit var kategoritextview: TextView
     lateinit var detailRecycler: RecyclerView
 
-    lateinit var cartAdapter: CartAdapter
-    var arraycart: ArrayList<CartDb> = ArrayList()
-
     lateinit private var localdb: AppDatabase
     lateinit private var cartlocaldb: CartDatabase
 
@@ -107,25 +104,46 @@ class DetailedCategory : AppCompatActivity() {
                                 .whereEqualTo("status_pesanan", 0)
                                 .get().addOnSuccessListener { resultan ->
 
-                                    detalList.add(
-                                        CategoryDetailData(
-                                            nama_makanan,
-                                            id_makanan,
-                                            id_jeniss,
-                                            harga_makanan,
-                                            id_kantin,
-                                            desc_makanan,
-                                            nama_kantin,
-                                            resultan.size()
-                                        )
-                                    )
+                                    detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jeniss, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
 
                                     detailMakananAdapter = DetailMakananAdapter(this, detalList)
                                     detailRecycler.adapter = detailMakananAdapter
-                                    var layoutManager: RecyclerView.LayoutManager =
-                                        GridLayoutManager(this, 1)
+                                    var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
                                     detailRecycler.setHasFixedSize(true)
                                     detailRecycler.layoutManager = layoutManager
+
+                                    localdb = AppDatabase.getInstance(applicationContext)
+                                    cartlocaldb = CartDatabase.getInstance(applicationContext)
+
+                                    detailMakananAdapter.onItemClick = {it
+                                        if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
+                                            localdb.cartDao().InsertAll(CartItemDb(
+                                                null, it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString()
+                                            ))
+                                            finish()
+
+                                            if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
+                                                cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
+                                            }else{
+                                                Log.d(TAG, "initdetail: ini kagak" )
+                                            }
+
+
+                                        }
+
+
+
+//                                                arraycart.add(CartData(it.namakantin.toString(), it.idkantin))
+//                                                arraycartorder.add(CartOrderData("https://firebasestorage.googleapis.com/v0/b/eaterlytestapi.appspot.com/o/Imagesicons8-kawaii-soda-100.png?alt=media&token=ecc15eb6-9012-4919-9ebb-6ff7035ffd5b",
+//                                                    it.idmakanan, it.namamakanan.toString(), 1, it.hargamakanan, it.idkantin))
+                                        Log.d(TAG, "pilihan: " + it.namamakanan )
+                                    }
                                 }
                         }
                 }
@@ -154,13 +172,56 @@ class DetailedCategory : AppCompatActivity() {
                          .whereEqualTo("status_pesanan", 0)
                          .get().addOnSuccessListener { resultan ->
 
-                             detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jenis, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
+                             detalList.add(CategoryDetailData(
+                                 nama_makanan,
+                                 id_makanan,
+                                 id_jenis,
+                                 harga_makanan,
+                                 id_kantin,
+                                 desc_makanan,
+                                 nama_kantin,
+                                 resultan.size()))
 
                              detailMakananAdapter = DetailMakananAdapter(this, detalList)
                              detailRecycler.adapter = detailMakananAdapter
-                             var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
+                             var layoutManager: RecyclerView.LayoutManager = GridLayoutManager(
+                                 this,
+                                 1)
                              detailRecycler.setHasFixedSize(true)
                              detailRecycler.layoutManager = layoutManager
+
+                             localdb = AppDatabase.getInstance(applicationContext)
+                             cartlocaldb = CartDatabase.getInstance(applicationContext)
+
+                             detailMakananAdapter.onItemClick = {it
+                                 if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
+                                     localdb.cartDao().InsertAll(CartItemDb(
+                                         null, it.idmakanan.toInt(),
+                                         it.hargamakanan.toInt(),
+                                         1,
+                                         it.namamakanan.toString(),
+                                         it.idkantin.toInt(),
+                                         it.idjenis.toInt(),
+                                         it.namakantin.toString()
+                                     ))
+                                     finish()
+
+                                     if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
+                                         cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
+                                     }else{
+                                         Log.d(TAG, "initdetail: ini kagak" )
+                                     }
+
+
+                                 }
+
+
+
+//                                                arraycart.add(CartData(it.namakantin.toString(), it.idkantin))
+//                                                arraycartorder.add(CartOrderData("https://firebasestorage.googleapis.com/v0/b/eaterlytestapi.appspot.com/o/Imagesicons8-kawaii-soda-100.png?alt=media&token=ecc15eb6-9012-4919-9ebb-6ff7035ffd5b",
+//                                                    it.idmakanan, it.namamakanan.toString(), 1, it.hargamakanan, it.idkantin))
+                                 Log.d(TAG, "pilihan: " + it.namamakanan )
+                             }
                          }
 
                  }

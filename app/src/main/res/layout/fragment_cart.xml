@@ -7,46 +7,186 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
-
                 <LinearLayout
-
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_margin="20dp"
+
+
+                    <LinearLayout
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/interextrabolds"
-                        android:text="Keranjang "
-                        android:textColor="@color/dark_green"
-                        android:textSize="20dp" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_margin="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/interextrabolds"
+                            android:text="Keranjang "
+                            android:textColor="@color/dark_green"
+                            android:textSize="20dp" />
+
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cartlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:orientation="vertical"
+                        android:padding="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:text="No Kursi:"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                            <TextView
+                                android:layout_marginLeft="10dp"
+                                android:text="20"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:text="Subtotal:"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                            <TextView
+                                android:layout_marginLeft="10dp"
+                                android:text="Rp 200,000"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:text="Biaya Jasa:"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                            <TextView
+                                android:layout_marginLeft="10dp"
+                                android:text="Rp 10,000"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:text="Total:"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                            <TextView
+                                android:layout_marginLeft="10dp"
+                                android:text="Rp 210,000"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                        </LinearLayout>
+
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:weightSum="100"
+                    android:layout_margin="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:gravity="center"
+                        android:layout_weight="50"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:fontFamily="@font/inter"
+                            android:padding="15dp"
+                            android:text="Bayar QRIS"
+                            android:backgroundTint="@color/green"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:gravity="center"
+                        android:layout_weight="50"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:fontFamily="@font/inter"
+                            android:padding="15dp"
+                            android:text="Bayar Cash"
+                            android:backgroundTint="@color/green"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/cartlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+        </ScrollView>
 
 
-        </LinearLayout>
 
 </FrameLayout>
