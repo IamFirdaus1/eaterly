@@ -55,8 +55,8 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: List<CartItemDb
 
         holder.nama_makanan.text = ct.nama_makanan
         Glide.with(context!!).load("tes").into(holder.gambarcartOrder)
-        holder.harga.text = ct.jumlah.toString()
         holder.harga.text = (ct.harga * ct.jumlah).toString()
+        holder.jumlahmenu.text  = ct.jumlah.toString()
 
 
     }

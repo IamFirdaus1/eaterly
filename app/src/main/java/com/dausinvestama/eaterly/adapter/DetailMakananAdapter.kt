@@ -38,6 +38,7 @@ class DetailMakananAdapter(private val context: Context, private var categoryDet
         val antrian: TextView = itemView.findViewById(R.id.antrian)
         val linearbackground: LinearLayout = itemView.findViewById(R.id.linearbackground)
         val cardviewClicker: CardView = itemView.findViewById(R.id.cardviewclicker)
+        val hargatampilan : TextView = itemView.findViewById(R.id.harga)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -71,6 +72,7 @@ class DetailMakananAdapter(private val context: Context, private var categoryDet
         holder.deskripsi_makanan.text = dma.deskripsimakanan
         holder.nama_kantin.text = dma.namakantin
         holder.antrian.text = dma.jumlahantrian.toString()
+        holder.hargatampilan.text = dma.hargamakanan.toString()
 
     }
 

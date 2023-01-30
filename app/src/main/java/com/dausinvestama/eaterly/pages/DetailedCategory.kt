@@ -1,27 +1,21 @@
 package com.dausinvestama.eaterly.pages
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.AppDatabase
 import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
-import com.dausinvestama.eaterly.adapter.CartAdapter
-import com.dausinvestama.eaterly.adapter.CategoryAdapter
 import com.dausinvestama.eaterly.adapter.DetailMakananAdapter
 import com.dausinvestama.eaterly.data.*
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 
 class DetailedCategory : AppCompatActivity() {
 
@@ -32,6 +26,7 @@ class DetailedCategory : AppCompatActivity() {
     lateinit private var localdb: AppDatabase
     lateinit private var cartlocaldb: CartDatabase
 
+    var arraycart: ArrayList<CartItemDb> = ArrayList()
 
     lateinit var detailMakananAdapter: DetailMakananAdapter
     var detalList: ArrayList<CategoryDetailData> = ArrayList()
@@ -118,7 +113,7 @@ class DetailedCategory : AppCompatActivity() {
                                     detailMakananAdapter.onItemClick = {it
                                         if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
                                             localdb.cartDao().InsertAll(CartItemDb(
-                                                null, it.idmakanan.toInt(),
+                                                it.idmakanan.toInt(),
                                                 it.hargamakanan.toInt(),
                                                 1,
                                                 it.namamakanan.toString(),
@@ -196,7 +191,7 @@ class DetailedCategory : AppCompatActivity() {
                              detailMakananAdapter.onItemClick = {it
                                  if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
                                      localdb.cartDao().InsertAll(CartItemDb(
-                                         null, it.idmakanan.toInt(),
+                                         it.idmakanan.toInt(),
                                          it.hargamakanan.toInt(),
                                          1,
                                          it.namamakanan.toString(),
@@ -267,7 +262,15 @@ class DetailedCategory : AppCompatActivity() {
                                         .whereEqualTo("status_pesanan", 0)
                                         .get().addOnSuccessListener { resultan ->
 
-                                            detalList.add(CategoryDetailData(nama_makanan, id_makanan,id_jenis, harga_makanan, id_kantin, desc_makanan, nama_kantin, resultan.size()))
+                                            detalList.add(CategoryDetailData(
+                                                nama_makanan,
+                                                id_makanan,
+                                                id_jenis,
+                                                harga_makanan,
+                                                id_kantin,
+                                                desc_makanan,
+                                                nama_kantin,
+                                                resultan.size()))
 
                                             detailMakananAdapter = DetailMakananAdapter(this, detalList)
                                             detailRecycler.adapter = detailMakananAdapter
@@ -279,17 +282,35 @@ class DetailedCategory : AppCompatActivity() {
                                             cartlocaldb = CartDatabase.getInstance(applicationContext)
 
                                             detailMakananAdapter.onItemClick = {it
+
                                                 if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
-                                                    localdb.cartDao().InsertAll(CartItemDb(
-                                                        null, it.idmakanan.toInt(),
-                                                        it.hargamakanan.toInt(),
-                                                        1,
-                                                        it.namamakanan.toString(),
-                                                        it.idkantin.toInt(),
-                                                        it.idjenis.toInt(),
-                                                        it.namakantin.toString()
-                                                    ))
-                                                    finish()
+                                                    if (localdb.cartDao().getBymakanan(it.idmakanan.toInt()).isEmpty()){
+                                                        localdb.cartDao().InsertAll(CartItemDb(
+                                                            it.idmakanan.toInt(),
+                                                            it.hargamakanan.toInt(),
+                                                            1,
+                                                            it.namamakanan.toString(),
+                                                            it.idkantin.toInt(),
+                                                            it.idjenis.toInt(),
+                                                            it.namakantin.toString()
+                                                        ))
+                                                        finish()
+                                                    }else{
+                                                        var jumlahtemp: CartItemDb = localdb.cartDao().getBymakanan(it.idmakanan.toInt())[0]
+                                                        localdb.cartDao().UpdateOrder(CartItemDb(
+                                                            it.idmakanan.toInt(),
+                                                            it.hargamakanan.toInt(),
+                                                            jumlahtemp.jumlah+1,
+                                                            it.namamakanan.toString(),
+                                                            it.idkantin.toInt(),
+                                                            it.idjenis.toInt(),
+                                                            it.namakantin.toString()
+                                                        ))
+                                                        finish()
+                                                    }
+
+
+
 
                                                     if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
                                                         cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
@@ -318,7 +339,6 @@ class DetailedCategory : AppCompatActivity() {
             }
 
     }
-
 
 
     override fun onResume() {

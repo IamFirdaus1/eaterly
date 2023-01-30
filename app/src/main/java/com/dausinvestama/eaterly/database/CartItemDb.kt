@@ -8,8 +8,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 class CartItemDb(
-    @PrimaryKey(autoGenerate = true) var uid: Int? = null,
-    @ColumnInfo(name = "id_makanan")
+    @PrimaryKey(autoGenerate = false)
     var id_makanan: Int,
 
     @ColumnInfo(name = "harga")
