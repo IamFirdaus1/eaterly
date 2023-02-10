@@ -27,7 +27,6 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
     var arraycart = mutableListOf<CartDb>()
     lateinit private var Cartlocaldb: CartDatabase
 
-
     class myHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val nama_kantin: TextView = itemView.findViewById(R.id.namakantincart)
         val recylercart: RecyclerView = itemView.findViewById(R.id.recylercart)
@@ -56,18 +55,21 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
 
             getData(ct.id_kantins!!)
             var cartOrder = CartOrderAdapter(contex, arraycartorder)
+
             holder.recylercart.setHasFixedSize(true)
             holder.recylercart.adapter = cartOrder
             holder.recylercart.layoutManager = LinearLayoutManager(contex, LinearLayoutManager.VERTICAL, false)
 
-
         }
+
+
     }
 
     fun getData(id_kantins: Int){
         localdb = AppDatabase.getInstance(contex!!)
         arraycartorder.clear()
         arraycartorder.addAll(localdb.cartDao().getById(id_kantins))
+
     }
 
 

@@ -297,7 +297,7 @@ class HomeFragment : Fragment() {
                 listkategori.add(CategoryList( x, y, z.toInt()))
             }
             Log.d(TAG, "inikepanggil4")
-             adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
+            adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
             listcategory.adapter = adapterkategori
             listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
 

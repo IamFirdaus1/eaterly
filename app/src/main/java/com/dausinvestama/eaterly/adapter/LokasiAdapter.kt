@@ -1,8 +1,6 @@
 package com.dausinvestama.eaterly.adapter
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.AppDatabase
 import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
-import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.utils.SharedPreferences
 
 class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>)

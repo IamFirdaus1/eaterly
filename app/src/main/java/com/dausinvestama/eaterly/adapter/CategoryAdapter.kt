@@ -22,6 +22,8 @@ class CategoryAdapter(private val context: Context, private var categoryList:Arr
 
     var OnItemClick: ((CategoryList) -> Unit)? = null
 
+
+
     class ViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
         val CategoryName: TextView = itemView.findViewById(R.id.categoryname)
         val CategoryPhoto: ImageView = itemView.findViewById(R.id.categoryphoto)
@@ -51,6 +53,7 @@ class CategoryAdapter(private val context: Context, private var categoryList:Arr
         }
         holder.CategoryName.text = cl.Categorylist
         Glide.with(context).load(cl.ImageList).into(holder.CategoryPhoto)
+
     }
 
     override fun getItemCount(): Int {

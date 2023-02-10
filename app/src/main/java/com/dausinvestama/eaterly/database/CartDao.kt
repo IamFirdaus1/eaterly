@@ -18,4 +18,7 @@ interface CartDao {
 
     @Query("DELETE FROM CARTDB")
     fun delete()
+
+    @Query("DELETE FROM cartdb WHERE id_kantins = :id_kantin")
+    fun deleteid(id_kantin: Int)
 }

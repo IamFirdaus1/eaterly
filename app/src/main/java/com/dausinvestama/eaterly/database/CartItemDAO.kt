@@ -25,4 +25,7 @@ interface CartItemDAO {
 
     @Query("DELETE FROM cartitemdb")
     fun delete()
+
+    @Delete
+    fun deleteid(cartItemDb: CartItemDb)
 }

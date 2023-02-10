@@ -120,18 +120,38 @@ class DetailedCategory : AppCompatActivity() {
                                     cartlocaldb = CartDatabase.getInstance(applicationContext)
 
                                     detailMakananAdapter.onItemClick = {it
+
+
                                         if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
-                                            localdb.cartDao().InsertAll(CartItemDb(
-                                                it.idmakanan.toInt(),
-                                                it.hargamakanan.toInt(),
-                                                1,
-                                                it.namamakanan.toString(),
-                                                it.idkantin.toInt(),
-                                                it.idjenis.toInt(),
-                                                it.namakantin.toString(),
-                                                it.gambar_makanan
-                                            ))
-                                            finish()
+                                            if (localdb.cartDao().getBymakanan(it.idmakanan.toInt()).isEmpty()){
+                                                localdb.cartDao().InsertAll(CartItemDb(
+                                                    it.idmakanan.toInt(),
+                                                    it.hargamakanan.toInt(),
+                                                    1,
+                                                    it.namamakanan.toString(),
+                                                    it.idkantin.toInt(),
+                                                    it.idjenis.toInt(),
+                                                    it.namakantin.toString(),
+                                                    it.gambar_makanan
+                                                ))
+                                                finish()
+                                            }else{
+                                                var jumlahtemp: CartItemDb = localdb.cartDao().getBymakanan(it.idmakanan.toInt())[0]
+                                                localdb.cartDao().UpdateOrder(CartItemDb(
+                                                    it.idmakanan.toInt(),
+                                                    it.hargamakanan.toInt(),
+                                                    jumlahtemp.jumlah+1,
+                                                    it.namamakanan.toString(),
+                                                    it.idkantin.toInt(),
+                                                    it.idjenis.toInt(),
+                                                    it.namakantin.toString(),
+                                                    it.gambar_makanan
+                                                ))
+                                                finish()
+                                            }
+
+
+
 
                                             if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
                                                 cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
@@ -200,18 +220,38 @@ class DetailedCategory : AppCompatActivity() {
                              cartlocaldb = CartDatabase.getInstance(applicationContext)
 
                              detailMakananAdapter.onItemClick = {it
+
+
                                  if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
-                                     localdb.cartDao().InsertAll(CartItemDb(
-                                         it.idmakanan.toInt(),
-                                         it.hargamakanan.toInt(),
-                                         1,
-                                         it.namamakanan.toString(),
-                                         it.idkantin.toInt(),
-                                         it.idjenis.toInt(),
-                                         it.namakantin.toString(),
-                                         it.gambar_makanan
-                                     ))
-                                     finish()
+                                     if (localdb.cartDao().getBymakanan(it.idmakanan.toInt()).isEmpty()){
+                                         localdb.cartDao().InsertAll(CartItemDb(
+                                             it.idmakanan.toInt(),
+                                             it.hargamakanan.toInt(),
+                                             1,
+                                             it.namamakanan.toString(),
+                                             it.idkantin.toInt(),
+                                             it.idjenis.toInt(),
+                                             it.namakantin.toString(),
+                                             it.gambar_makanan
+                                         ))
+                                         finish()
+                                     }else{
+                                         var jumlahtemp: CartItemDb = localdb.cartDao().getBymakanan(it.idmakanan.toInt())[0]
+                                         localdb.cartDao().UpdateOrder(CartItemDb(
+                                             it.idmakanan.toInt(),
+                                             it.hargamakanan.toInt(),
+                                             jumlahtemp.jumlah+1,
+                                             it.namamakanan.toString(),
+                                             it.idkantin.toInt(),
+                                             it.idjenis.toInt(),
+                                             it.namakantin.toString(),
+                                             it.gambar_makanan
+                                         ))
+                                         finish()
+                                     }
+
+
+
 
                                      if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
                                          cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))

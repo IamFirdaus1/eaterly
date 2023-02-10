@@ -12,7 +12,6 @@ import com.dausinvestama.eaterly.AppDatabase
 import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.CartAdapter
-import com.dausinvestama.eaterly.data.CartOrderData
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
 
