@@ -14,6 +14,9 @@ import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.CartAdapter
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
+import com.dausinvestama.eaterly.databinding.FragmentCartBinding
+import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
+import com.dausinvestama.eaterly.utils.SharedPreferences
 
 class Cart : Fragment() {
 
@@ -23,8 +26,11 @@ class Cart : Fragment() {
     lateinit private var localdb: CartDatabase
     lateinit private var Cartlocaldb: AppDatabase
 
+    private lateinit var binding: FragmentCartBinding
+
     var subtotals: Int = 0
 
+    lateinit var pre: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +42,24 @@ class Cart : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragmenthok
-        val view = inflater.inflate(R.layout.fragment_cart, container, false)
-        val subtotal: TextView = view.findViewById(R.id.subtotal)
-        val jasa: TextView = view.findViewById(R.id.biayajasa)
-        val total: TextView = view.findViewById(R.id.biayatotal)
+        binding = FragmentCartBinding.inflate(layoutInflater)
+        val subtotal: TextView = binding.subtotal
+        val jasa: TextView = binding.biayajasa
+        val total: TextView = binding.biayatotal
+        val nokursi: TextView = binding.nokursi
+
+        pre = SharedPreferences(context)
+        nokursi.text = pre.nomor_meja.toString()
+
         getData()
         subtotal.text = subtotals.toString()
         val tax: Int = (subtotals*0.05).toInt()
         jasa.text = tax.toString()
         total.text = (subtotals + tax).toString()
 
-        initcart(view)
+        initcart(binding.root)
 
-        return view
+        return binding.root
     }
 
     private fun initcart(view: View) {
