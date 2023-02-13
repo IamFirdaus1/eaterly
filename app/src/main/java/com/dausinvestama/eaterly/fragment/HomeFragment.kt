@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,8 @@ import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.pages.DetailedCategory
 import com.dausinvestama.eaterly.data.JenisList
 import com.dausinvestama.eaterly.data.KantinList
+import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
+import com.dausinvestama.eaterly.pages.QrScannerActivity
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
@@ -33,11 +36,15 @@ import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
 
+    private lateinit var binding: FragmentHomeBinding
+
     val db = FirebaseFirestore.getInstance()
     lateinit var searchView: androidx.appcompat.widget.SearchView
     lateinit var kantinviewer: TextView
     lateinit var ubahkantin: TextView
     lateinit var usernameview: TextView
+    lateinit var btnscan: Button
+    lateinit var tvmeja: TextView
 
     lateinit var adapterkategori: CategoryAdapter
     var listkategori: ArrayList<CategoryList> = ArrayList()
@@ -54,12 +61,15 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(layoutInflater)
+        val view = binding.root
 
-        searchView = view.findViewById(R.id.searchall)
-        kantinviewer = view.findViewById(R.id.kantin)
-        ubahkantin = view.findViewById(R.id.ubahtempat)
-        usernameview = view.findViewById(R.id.username)
+        searchView = binding.searchall
+        kantinviewer = binding.kantin
+        ubahkantin = binding.ubahtempat
+        usernameview = binding.username
+        btnscan = binding.btnscan
+        tvmeja = binding.tvmeja
 
         //initialisasi recyclerview
         //init(view)
@@ -81,9 +91,16 @@ class HomeFragment : Fragment() {
             kantinviewer.setText(pre.location)
         }
 
+        tvmeja.text = pre.nomor_meja.toString()
+
         ubahkantin.setOnClickListener{
             val showPopUp = PopUpFragment(requireContext())
             showPopUp.show((activity as AppCompatActivity).supportFragmentManager, "showPopUp")
+        }
+
+        btnscan.setOnClickListener {
+            val intent = Intent(context, QrScannerActivity::class.java)
+            startActivity(intent)
         }
 
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {

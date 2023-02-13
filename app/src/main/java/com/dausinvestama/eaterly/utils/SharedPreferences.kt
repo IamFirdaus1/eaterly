@@ -8,18 +8,27 @@ class SharedPreferences(val context: android.content.Context?) {
         private const val  FIRST_INSTALL= "FIRST_INSTALL"
         private var  LOCATION = "LOCATION"
         private var FIRST_NAME = "FIRST_NAME"
-        var ARRAYCART: ArrayList<CartOrderData> = ArrayList()
+        private var EMAIL = "EMAIL"
+        private var NOMOR_MEJA = "NOMOR_MEJA"
     }
 
     private val p = PreferenceManager.getDefaultSharedPreferences(context)
 
     var firstinstall = p.getBoolean(FIRST_INSTALL, false)
-    set(value) = p.edit().putBoolean(FIRST_INSTALL, value).apply()
+        set(value) = p.edit().putBoolean(FIRST_INSTALL, value).apply()
 
     var location = p.getString(LOCATION, "SBH")
-    set(value) = p.edit().putString(LOCATION, value).apply()
+        set(value) = p.edit().putString(LOCATION, value).apply()
 
     var first_name = p.getString(FIRST_NAME, "Null")
         set(value) = p.edit().putString(FIRST_NAME, value).apply()
+
+    var email = p.getString(EMAIL, "Null")
+        set(value) = p.edit().putString(EMAIL, value).apply()
+
+    var nomor_meja = p.getInt(NOMOR_MEJA, 0)
+        set(value) = p.edit().putInt(NOMOR_MEJA, value).apply()
+
+
 
 }

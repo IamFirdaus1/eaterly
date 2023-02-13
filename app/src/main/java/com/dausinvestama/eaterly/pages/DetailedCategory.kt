@@ -14,12 +14,14 @@ import com.dausinvestama.eaterly.adapter.DetailMakananAdapter
 import com.dausinvestama.eaterly.data.*
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
+import com.dausinvestama.eaterly.databinding.ActivityDetailedListBinding
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DetailedCategory : AppCompatActivity() {
 
     val db = FirebaseFirestore.getInstance()
+    private lateinit var binding: ActivityDetailedListBinding
     lateinit var kategoritextview: TextView
     lateinit var detailRecycler: RecyclerView
 
@@ -33,10 +35,11 @@ class DetailedCategory : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detailed_list)
+        binding = ActivityDetailedListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        detailRecycler  = findViewById(R.id.detailrecycler)
-        kategoritextview = findViewById(R.id.categories)
+        detailRecycler  = binding.detailrecycler
+        kategoritextview = binding.categories
         val categoryList = intent.getParcelableExtra<CategoryList>("categorylist")
         val kantinList = intent.getParcelableExtra<KantinList>("kantinList")
         val jenisList = intent.getParcelableExtra<JenisList>("jenisList")
@@ -149,10 +152,6 @@ class DetailedCategory : AppCompatActivity() {
                                                 ))
                                                 finish()
                                             }
-
-
-
-
                                             if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
                                                 cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
                                             }else{
@@ -161,12 +160,6 @@ class DetailedCategory : AppCompatActivity() {
 
 
                                         }
-
-
-
-//                                                arraycart.add(CartData(it.namakantin.toString(), it.idkantin))
-//                                                arraycartorder.add(CartOrderData("https://firebasestorage.googleapis.com/v0/b/eaterlytestapi.appspot.com/o/Imagesicons8-kawaii-soda-100.png?alt=media&token=ecc15eb6-9012-4919-9ebb-6ff7035ffd5b",
-//                                                    it.idmakanan, it.namamakanan.toString(), 1, it.hargamakanan, it.idkantin))
                                         Log.d(TAG, "pilihan: " + it.namamakanan )
                                     }
                                 }

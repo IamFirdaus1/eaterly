@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import com.dausinvestama.eaterly.databinding.ActivitySignInBinding
+import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,6 +26,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivitySignInBinding
     private lateinit var googleSigninClient: GoogleSignInClient
+    lateinit var pre: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,9 +90,9 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun successintent(account: GoogleSignInAccount){
+        pre = SharedPreferences(this)
         val intent= Intent(this, MainActivity::class.java)
-        intent.putExtra("email", account.email)
-        intent.putExtra("name", account.displayName)
+        pre.email = account.email
         startActivity(intent)
         finish()
     }
