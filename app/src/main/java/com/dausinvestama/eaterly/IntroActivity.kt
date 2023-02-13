@@ -13,6 +13,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.dausinvestama.eaterly.adapter.IntroAdapter
 import com.dausinvestama.eaterly.data.CategoryList
 import com.dausinvestama.eaterly.data.IntroList
+import com.dausinvestama.eaterly.databinding.ActivityMainBinding
+import com.dausinvestama.eaterly.databinding.IntroHolderBinding
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -24,11 +26,14 @@ class IntroActivity : AppCompatActivity() {
     val db = FirebaseFirestore.getInstance()
     lateinit var pre: SharedPreferences
 
-    private lateinit var btnstart: Button
+    private lateinit var binding: IntroHolderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.intro_holder)
+        binding = IntroHolderBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        viewPager2 = binding.viewPager2
 
         pre = SharedPreferences(this)
 
@@ -37,27 +42,18 @@ class IntroActivity : AppCompatActivity() {
 
 
         if (pre.firstinstall) {
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
-            finish()
+            initintent()
+        }else{
+            init()
         }
 
-        btnstart = findViewById(R.id.btnstart)
-        init()
 
-        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                handler.removeCallbacks(runnable)
-                handler.postDelayed(runnable, 2000)
-            }
-        })
     }
 
     override fun onStart() {
         super.onStart()
 
-        btnstart.setOnClickListener {
+        binding.btnstart.setOnClickListener {
             pre.firstinstall = true
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
@@ -81,8 +77,14 @@ class IntroActivity : AppCompatActivity() {
         viewPager2.currentItem = viewPager2.currentItem + 1
     }
 
+    private fun initintent(){
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+
     private fun init(){
-        viewPager2 = findViewById(R.id.viewPager2)
         var listintro: ArrayList<IntroList> = ArrayList()
         handler = Handler(Looper.myLooper()!!)
 
@@ -109,6 +111,14 @@ class IntroActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents.", exception)
             }
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                handler.removeCallbacks(runnable)
+                handler.postDelayed(runnable, 2000)
+            }
+        })
     }
 
 

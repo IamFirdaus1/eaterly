@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
-
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -63,6 +63,9 @@ dependencies {
 
     //roomcompiler
     annotationProcessor 'androidx.room:room-compiler:2.5.0'
+
+    //qr
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

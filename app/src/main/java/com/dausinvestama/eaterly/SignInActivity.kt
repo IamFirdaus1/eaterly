@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import com.dausinvestama.eaterly.databinding.ActivitySignInBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,11 +23,13 @@ import com.google.firebase.ktx.Firebase
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var binding: ActivitySignInBinding
     private lateinit var googleSigninClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        binding = ActivitySignInBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
 
@@ -37,7 +40,7 @@ class SignInActivity : AppCompatActivity() {
 
         googleSigninClient = GoogleSignIn.getClient(this, gso)
 
-        findViewById<Button>(R.id.btnlogin).setOnClickListener {
+        binding.btnlogin.setOnClickListener {
             signInGoogle()
         }
 
@@ -71,11 +74,7 @@ class SignInActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful){
-                val intent= Intent(this, MainActivity::class.java)
-                intent.putExtra("email", account.email)
-                intent.putExtra("name", account.displayName)
-                startActivity(intent)
-                finish()
+                successintent(account)
             }else{
                 Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
             }
@@ -86,5 +85,13 @@ class SignInActivity : AppCompatActivity() {
         super.onStart()
 
         var currentUser = auth.currentUser
+    }
+
+    private fun successintent(account: GoogleSignInAccount){
+        val intent= Intent(this, MainActivity::class.java)
+        intent.putExtra("email", account.email)
+        intent.putExtra("name", account.displayName)
+        startActivity(intent)
+        finish()
     }
 }
