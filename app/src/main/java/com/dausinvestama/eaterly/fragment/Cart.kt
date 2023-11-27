@@ -17,6 +17,8 @@ import com.dausinvestama.eaterly.database.CartItemDb
 import com.dausinvestama.eaterly.databinding.FragmentCartBinding
 import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
 import com.dausinvestama.eaterly.utils.SharedPreferences
+import com.midtrans.sdk.uikit.api.model.CustomColorTheme
+import com.midtrans.sdk.uikit.external.UiKitApi
 
 class Cart : Fragment() {
 
@@ -32,10 +34,7 @@ class Cart : Fragment() {
 
     lateinit var pre: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,6 +59,16 @@ class Cart : Fragment() {
         initcart(binding.root)
 
         return binding.root
+    }
+
+    private fun initmidtrans() {
+        UiKitApi.Builder()
+            .withMerchantClientKey("Mid-client-JhBFk4qvSkRkQyNi") // client_key is mandatory
+            .withContext(requireContext()) // context is mandatory
+            .withMerchantUrl("https://merchant-url-sandbox.com/") // set transaction finish callback (sdk callback)
+            .enableLog(true) // enable sdk log (optional)
+            .withColorTheme(CustomColorTheme("#FFE51255", "#B61548", "#FFE51255")) // set theme. it will replace theme on snap theme on MAP ( optional)
+            .build()
     }
 
     private fun initcart(view: View) {

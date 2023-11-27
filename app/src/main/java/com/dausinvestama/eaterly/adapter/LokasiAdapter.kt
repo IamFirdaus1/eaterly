@@ -43,6 +43,7 @@ class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>)
             pre = SharedPreferences(context)
             var getlks = lokasi[position]
             pre.location = getlks
+            pre.nomor_meja = 0
             var localsdb: AppDatabase = AppDatabase.getInstance(context)
             var localdb: CartDatabase = CartDatabase.getInstance(context)
             localdb.outerCartDao().delete()

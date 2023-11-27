@@ -14,7 +14,6 @@ import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
-import com.dausinvestama.eaterly.fragment.Cart
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<CartItemDb>?)
@@ -64,12 +63,41 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
             val cartItemDao = localdb.cartDao()
             cartItemDao.deleteid(ct)
             cartOrderData!!.clear()
+            updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
             getData(ct.id_kantin)
             notifyItemChanged(position)
         }
 
+        holder.butontambah.setOnClickListener {
+            localdb = AppDatabase.getInstance(context!!)
+            val cartItemDao = localdb.cartDao()
+            cartItemDao.incrementJumlah(ct.id_makanan)
+            updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
+
+        }
+
+        holder.butonkurang.setOnClickListener {
+            localdb = AppDatabase.getInstance(context!!)
+            val cartItemDao = localdb.cartDao()
+            cartItemDao.decrementJumlah(ct.id_makanan)
+            updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
+        }
+
+        /* cartItemViewModel = ViewModelProvider(this).get(cartItemViewModel::class.java)
+
+        cartItemViewModel.allCartItems.observe(this, Observer { cartItems ->
+            // Update the cached copy of the cart items in the adapter.
+            cartOrderAdapter.setCartItems(cartItems)
+        }) */
+
 
     }
+
+    fun updateData(newData: MutableList<CartItemDb>?) {
+        cartOrderData = newData
+        notifyDataSetChanged()
+    }
+
 
     fun getData(position: Int){
         Cartlocaldb = CartDatabase.getInstance(context!!)

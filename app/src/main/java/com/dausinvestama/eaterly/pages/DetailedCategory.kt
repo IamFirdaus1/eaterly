@@ -122,7 +122,7 @@ class DetailedCategory : AppCompatActivity() {
                                     localdb = AppDatabase.getInstance(applicationContext)
                                     cartlocaldb = CartDatabase.getInstance(applicationContext)
 
-                                    detailMakananAdapter.onItemClick = {it
+                                    detailMakananAdapter.onItemClick = { it
 
 
                                         if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){

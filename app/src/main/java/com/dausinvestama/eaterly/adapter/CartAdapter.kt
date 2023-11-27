@@ -18,6 +18,7 @@ import com.dausinvestama.eaterly.data.CartOrderData
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
 
+
 class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
     :RecyclerView.Adapter<CartAdapter.myHolder>(){
 
@@ -31,6 +32,8 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
         val nama_kantin: TextView = itemView.findViewById(R.id.namakantincart)
         val recylercart: RecyclerView = itemView.findViewById(R.id.recylercart)
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): myHolder {
         val view = LayoutInflater
@@ -54,6 +57,8 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
             Log.d(TAG, "onBindViewHolder: elsejalan" + ct.id_kantins)
 
             getData(ct.id_kantins!!)
+
+
             var cartOrder = CartOrderAdapter(contex, arraycartorder)
 
             holder.recylercart.setHasFixedSize(true)
