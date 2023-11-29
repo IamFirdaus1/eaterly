@@ -18,12 +18,10 @@ data class CategoryList( var Categorylist: String, var ImageList: String , var i
         return 0
     }
 
-    override fun writeToParcel(p0: Parcel?, p1: Int) {
-        if (p0 != null) {
-            p0.writeString(Categorylist)
-            p0.writeString(ImageList)
-            p0.writeInt(id_kategori)
-        }
+    override fun writeToParcel(dest: Parcel, p1: Int) {
+        dest.writeString(Categorylist)
+        dest.writeString(ImageList)
+        dest.writeInt(id_kategori)
     }
 
     companion object CREATOR : Parcelable.Creator<CategoryList> {

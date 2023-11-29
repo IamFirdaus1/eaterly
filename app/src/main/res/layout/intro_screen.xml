@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/viewpageslider"
-        android:layout_marginTop="300px"
+        android:layout_marginTop="100dp"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_gravity="center">
@@ -24,11 +24,11 @@
 
         <TextView
             android:id="@+id/titleslider"
-            android:layout_marginTop="50px"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="75px"
+            android:textSize="40sp"
             android:textStyle="bold"
             android:text="Eaterly"
             android:layout_width="wrap_content"

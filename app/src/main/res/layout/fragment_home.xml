@@ -39,7 +39,7 @@
                         android:fontFamily="@font/interextrabolds"
                         android:text="Hello "
                         android:textColor="@color/dark_green"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/username"
@@ -48,7 +48,7 @@
                         android:fontFamily="@font/interextrabolds"
                         android:text="Daus"
                         android:textColor="@color/dark_green"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
                         android:fontFamily="@font/interextrabolds"
                         android:text=","
                         android:textColor="@color/dark_green"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <ImageView
                         android:layout_width="30dp"
@@ -90,7 +90,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:paddingBottom="10px"
+                        android:paddingBottom="10dp"
                         android:src="@drawable/ic_baseline_location_on_24" />
                 </LinearLayout>
 
@@ -102,7 +102,7 @@
                     android:fontFamily="@font/interbold"
                     android:text="@string/underline_location"
                     android:textColor="@color/red"
-                    android:textSize="10dp" />
+                    android:textSize="10sp" />
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10dp"
@@ -149,7 +149,7 @@
 
                     <TextView
                         android:id="@+id/tvmeja"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/interextrabolds"
                         android:text="20"
                         android:layout_width="match_parent"
@@ -187,7 +187,7 @@
                         android:fontFamily="@font/interbold"
                         android:text="Kategori Menu"
                         android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/listcategory"
@@ -223,7 +223,7 @@
                         android:fontFamily="@font/interbold"
                         android:text="Kategori Kantin"
                         android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/listkantin"
@@ -251,7 +251,7 @@
                     android:fontFamily="@font/interbold"
                     android:text="Jenis Makanan-Minuman"
                     android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textSize="20sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listJenis"
@@ -262,12 +262,8 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
 
     </ScrollView>
-
-
-
 
 </RelativeLayout>

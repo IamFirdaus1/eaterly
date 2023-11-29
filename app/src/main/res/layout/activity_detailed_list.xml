@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="30dp"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
@@ -32,7 +32,7 @@
                 android:fontFamily="@font/interbold"
                 android:text="Kategori Menu"
                 android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detailrecycler"

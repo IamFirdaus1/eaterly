@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="150dp"
-    android:layout_height="100dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-
-
+    android:layout_height="100dp">
 
     <RelativeLayout
         android:layout_width="250dp"
@@ -31,20 +28,17 @@
                 android:padding="20dp"
                 android:text="Underrated"
                 android:textColor="@color/black"
-                android:textSize="15dp" />
-
+                android:textSize="15sp" />
 
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 
     <ImageView
-
-        android:layout_alignParentRight="true"
         android:id="@+id/categoryphoto"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/categories_restaurant_icon" />
-
 
 </RelativeLayout>
