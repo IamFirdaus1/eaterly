@@ -318,6 +318,7 @@ class HomeFragment : Fragment() {
             adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
             listcategory.adapter = adapterkategori
             listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
+            val intasd = 0
 
 
             adapterkategori.OnItemClick = {
