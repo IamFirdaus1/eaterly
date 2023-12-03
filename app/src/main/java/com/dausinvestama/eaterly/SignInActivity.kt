@@ -51,6 +51,12 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuthWithEmailAndPassword(edtEmail.text.toString(), edtPass.text.toString())
             }
 
+            tvSignUp.setOnClickListener {
+                Intent(this@SignInActivity, RegisterActivity::class.java).also {
+                    startActivity(it)
+                }
+            }
+
         }
     }
 

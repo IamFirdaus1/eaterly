@@ -6,6 +6,9 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="login">Login</string>
+    <string name="username">Username</string>
     <string name="no_acc">Don\'t have an account yet?</string>
+    <string name="yes_acc">Already have an account?</string>
     <string name="sign_up">Sign up here!</string>
+    <string name="log_in">Login here!</string>
 </resources>

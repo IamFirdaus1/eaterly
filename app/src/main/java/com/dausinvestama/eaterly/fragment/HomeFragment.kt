@@ -29,12 +29,13 @@ import com.dausinvestama.eaterly.data.KantinList
 import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
 import com.dausinvestama.eaterly.pages.QrScannerActivity
 import com.dausinvestama.eaterly.utils.SharedPreferences
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class HomeFragment : Fragment() {
+class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
 
@@ -79,12 +80,7 @@ class HomeFragment : Fragment() {
 
         pre = SharedPreferences(context)
 
-        if (pre.first_name == "Null" || pre.first_name == null){
-            val ShowPopUp = NamePopUpFragment(context)
-            ShowPopUp.show((activity as AppCompatActivity).supportFragmentManager, "showPopUp")
-        }else {
-            usernameview.setText(pre.first_name)
-        }
+        usernameview.text = firebaseAuth.currentUser?.displayName
 
         Log.d(TAG, "onCreateView: pre ${pre.location}")
         if (pre.location != null){

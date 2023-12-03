@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(HomeFragment())
+        replaceFragment(HomeFragment(FirebaseAuth.getInstance()))
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
             when(it.itemId){
-                R.id.homes -> replaceFragment(HomeFragment())
+                R.id.homes -> replaceFragment(HomeFragment(FirebaseAuth.getInstance()))
                 R.id.orderlist -> replaceFragment(Orderlist())
                 R.id.cart -> replaceFragment(Cart())
                 R.id.profile -> replaceFragment(Profile())
@@ -78,8 +78,4 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, SignInActivity::class.java))
         finish()
     }
-
-
-
-
 }
