@@ -30,10 +30,17 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         binding.apply {
-            binding.tvLogIn.setOnClickListener {
+            tvLogIn.setOnClickListener {
                 Intent(this@RegisterActivity, SignInActivity::class.java).also {
                     startActivity(it)
                 }
+            }
+
+            btnRegister.setOnClickListener {
+                registerWithEmailAndPassword(
+                    email = edtEmail.text.toString(),
+                    password = edtPass.text.toString()
+                )
             }
         }
     }

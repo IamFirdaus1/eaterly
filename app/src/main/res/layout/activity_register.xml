@@ -79,14 +79,4 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnGoogleLogin"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/icon_ripple"
-        android:padding="8dp"
-        android:scaleType="centerInside"
-        android:layout_gravity="center"
-        android:src="@drawable/google_icon"/>
-
 </LinearLayout>
