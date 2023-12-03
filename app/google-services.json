@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "927116745672-7fk16579diue7errobtfghvec9df3arn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dausinvestama.eaterly",
+            "certificate_hash": "7a8c2d616307e82117d9488385ce525deed782c2"
+          }
+        },
+        {
+          "client_id": "927116745672-8jkf3humibbenb60q62sgc36muqa4u6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dausinvestama.eaterly",
+            "certificate_hash": "13d2462a5cc284602f0e8c47f4d288c86d9055e9"
+          }
+        },
+        {
           "client_id": "927116745672-doo6nqoqa28hgbup48him51gql4opi6b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -23,7 +39,15 @@
           }
         },
         {
-          "client_id": "927116745672-git1ttkn4dr32bco7ttvge85un1dq9lg.apps.googleusercontent.com",
+          "client_id": "927116745672-tf9hkdaca1f5gjkavl1bhuo9mh08v52q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dausinvestama.eaterly",
+            "certificate_hash": "6464e1d50d597ddb428e9bf6afda13c3c5a51e95"
+          }
+        },
+        {
+          "client_id": "927116745672-b807p2inte2ac29n9pq9ins3o7q5j1f8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -36,7 +60,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "927116745672-git1ttkn4dr32bco7ttvge85un1dq9lg.apps.googleusercontent.com",
+              "client_id": "927116745672-b807p2inte2ac29n9pq9ins3o7q5j1f8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
