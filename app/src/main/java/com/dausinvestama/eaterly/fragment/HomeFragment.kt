@@ -83,13 +83,13 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
         usernameview.text = firebaseAuth.currentUser?.displayName
 
         Log.d(TAG, "onCreateView: pre ${pre.location}")
-        if (pre.location != null){
+        if (pre.location != null) {
             kantinviewer.setText(pre.location)
         }
 
         tvmeja.text = pre.nomor_meja.toString()
 
-        ubahkantin.setOnClickListener{
+        ubahkantin.setOnClickListener {
             val showPopUp = PopUpFragment(requireContext())
             showPopUp.show((activity as AppCompatActivity).supportFragmentManager, "showPopUp")
         }
@@ -99,25 +99,26 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
             startActivity(intent)
         }
 
-        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object :
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val searchListKantin = ArrayList<KantinList>()
                 val searchListCategory = ArrayList<CategoryList>()
                 val searchListJenis = ArrayList<JenisList>()
-                if (query != null){
-                    for (i in listkategori){
-                        if (i.Categorylist.lowercase(Locale.ROOT).contains(query)){
+                if (query != null) {
+                    for (i in listkategori) {
+                        if (i.Categorylist.lowercase(Locale.ROOT).contains(query)) {
                             searchListCategory.add(i)
                         }
 
                     }
                     for (i in listcanteen) {
-                        if (i.NamaKantin.lowercase(Locale.ROOT).contains(query)){
+                        if (i.NamaKantin.lowercase(Locale.ROOT).contains(query)) {
                             searchListKantin.add(i)
                         }
                     }
                     for (i in jenislist) {
-                        if (i.nama_jenis.lowercase(Locale.ROOT).contains(query)){
+                        if (i.nama_jenis.lowercase(Locale.ROOT).contains(query)) {
                             searchListJenis.add(i)
                         }
                     }
@@ -128,8 +129,8 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
                     adapterjenis.OnApplySearch(searchListJenis)
 
-                }else{
-                    Toast.makeText(context , "Null", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Null", Toast.LENGTH_SHORT).show()
                 }
 
                 return true
@@ -139,24 +140,30 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
                 val searchListKantin = ArrayList<KantinList>()
                 val searchListCategory = ArrayList<CategoryList>()
                 val searchListJenis = ArrayList<JenisList>()
-                if (newText != null){
-                    for (i in listkategori){
-                        if (i.Categorylist.lowercase(Locale.ROOT).contains(newText)){
+                if (newText != null) {
+                    for (i in listkategori) {
+                        if (i.Categorylist.lowercase(Locale.ROOT).contains(newText)) {
                             searchListCategory.add(i)
-                            Toast.makeText(context , "Terdapat di jenis Kategori", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Terdapat di jenis Kategori",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
 
                     }
                     for (i in listcanteen) {
-                        if (i.NamaKantin.lowercase(Locale.ROOT).contains(newText)){
+                        if (i.NamaKantin.lowercase(Locale.ROOT).contains(newText)) {
                             searchListKantin.add(i)
-                            Toast.makeText(context , "Terdapat di nama Kantin", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Terdapat di nama Kantin", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                     for (i in jenislist) {
-                        if (i.nama_jenis.lowercase(Locale.ROOT).contains(newText)){
+                        if (i.nama_jenis.lowercase(Locale.ROOT).contains(newText)) {
                             searchListJenis.add(i)
-                            Toast.makeText(context , "Terdapat di jenis makanan", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Terdapat di jenis makanan", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
 
@@ -164,18 +171,18 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
                         adapterkategori.onApplySearch(searchListCategory)
 
                     }
-                    if (searchListKantin.isNotEmpty()){
+                    if (searchListKantin.isNotEmpty()) {
                         adapterkantin.onApplySearch(searchListKantin)
 
 
                     }
-                    if (searchListJenis.isNotEmpty()){
+                    if (searchListJenis.isNotEmpty()) {
                         adapterjenis.OnApplySearch(searchListJenis)
 
 
                     }
-                }else{
-                    Toast.makeText(context , "Null", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Null", Toast.LENGTH_SHORT).show()
                 }
 
                 return true
@@ -188,99 +195,102 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "inikepanggil2")
     }
 
     private fun initjenis(view: View) {
-        var listjenis:RecyclerView = view.findViewById(R.id.listJenis)
+        var listjenis: RecyclerView = view.findViewById(R.id.listJenis)
 
         pre = SharedPreferences(context)
 
-        db.collection("jenis").document(pre.location.toString()).collection("jenis").get().addOnSuccessListener {result ->
-            for (document in result) {
+        db.collection("jenis").document(pre.location.toString()).collection("jenis").get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
 
-                var x: String = document.get("nama_jenis") as String
-                var y: String = document.get("link") as String
-                var z: Long = document.get("id_jenis") as Long
+                    var x: String = document.get("nama_jenis") as String
+                    var y: String = document.get("link") as String
+                    var z: Long = document.get("id_jenis") as Long
 
-                jenislist.add(JenisList(y, z.toInt(), x))
+                    jenislist.add(JenisList(y, z.toInt(), x))
+
+                }
+                Log.d(TAG, "inikepanggil4")
+                adapterjenis = AdapterJenis(this, jenislist)
+                listjenis.setHasFixedSize(true)
+                listjenis.adapter = adapterjenis
+                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
+                listjenis.layoutManager = layoutmanager
+
+                adapterjenis.OnItemClick = {
+                    val intent = Intent(context, DetailedCategory::class.java)
+                    intent.putExtra("jenisList", it)
+                    startActivity(intent)
+                }
+
 
             }
-            Log.d(TAG, "inikepanggil4")
-            adapterjenis = AdapterJenis(this, jenislist)
-            listjenis.setHasFixedSize(true)
-            listjenis.adapter = adapterjenis
-            var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
-            listjenis.layoutManager = layoutmanager
-
-            adapterjenis.OnItemClick = {
-                val intent = Intent(context, DetailedCategory::class.java)
-                intent.putExtra("jenisList", it)
-                startActivity(intent)
-            }
-
-
-        }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents.", exception)
             }
     }
 
     private fun initkantin(view: View) {
-        var listkantin:RecyclerView = view.findViewById(R.id.listkantin)
+        var listkantin: RecyclerView = view.findViewById(R.id.listkantin)
 
         pre = SharedPreferences(context)
-        db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").get().addOnSuccessListener { result ->
-            for (document in result) {
+        db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
 
-                var x: String = document.get("nama_kantin") as String
-                var y: String = document.get("link") as String
-                var z: Long = document.get("id_kantin") as Long
-                //var u: Long = document.get("order_id") as Long
+                    var x: String = document.get("nama_kantin") as String
+                    var y: String = document.get("link") as String
+                    var z: Long = document.get("id_kantin") as Long
+                    //var u: Long = document.get("order_id") as Long
 
-                listcanteen.add(KantinList(y, x, z.toInt(), 1))
-                Log.d(y, "dbku")
+                    listcanteen.add(KantinList(y, x, z.toInt(), 1))
+                    Log.d(y, "dbku")
+                }
+                Log.d(TAG, "inikepanggil4")
+                adapterkantin = KantinAdapter(this, listcanteen)
+                listkantin.adapter = adapterkantin
+                listkantin.layoutManager =
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+                adapterkantin.OnItemClick = {
+                    val intent = Intent(context, DetailedCategory::class.java)
+                    intent.putExtra("kantinList", it)
+                    intent.removeExtra("categorylist")
+                    startActivity(intent)
+                }
+
             }
-            Log.d(TAG, "inikepanggil4")
-            adapterkantin = KantinAdapter(this, listcanteen)
-            listkantin.adapter = adapterkantin
-            listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
-
-            adapterkantin.OnItemClick = {
-                val intent = Intent(context, DetailedCategory::class.java)
-                intent.putExtra("kantinList", it)
-                intent.removeExtra("categorylist")
-                startActivity(intent)
-            }
-
-        }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents.", exception)
             }
     }
 
-    private fun init(view: View){
+    private fun init(view: View) {
         var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
 
 
 
 
 
-        db.collection("categorymakanan").get().addOnSuccessListener {result ->
+        db.collection("categorymakanan").get().addOnSuccessListener { result ->
             for (document in result) {
 
                 var x: String = document.get("CategoryName") as String
                 var y: String = document.get("Link") as String
                 var id: Long = document.get("id_kategori") as Long
-                listkategori.add(CategoryList( x, y, id.toInt()))
+                listkategori.add(CategoryList(x, y, id.toInt()))
             }
             Log.d(TAG, "inikepanggil4")
             adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
             listcategory.adapter = adapterkategori
-            listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
+            listcategory.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
 
             adapterkategori.OnItemClick = {
@@ -297,35 +307,38 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
     }
 
-    private fun initkategori2(view: View){
+    private fun initkategori2(view: View) {
         var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
 
 
         pre = SharedPreferences(context)
-        db.collection("kategoritesting").document(pre.location.toString()).collection("kategori").get().addOnSuccessListener { result ->
-            for (document in result) {
+        db.collection("kategoritesting").document(pre.location.toString()).collection("kategori")
+            .get().addOnSuccessListener { result ->
+                for (document in result) {
 
-                var x: String = document.get("nama_kategori") as String
-                var y: String = document.get("link") as String
-                var z: Long = document.get("id_kategori") as Long
-                listkategori.add(CategoryList( x, y, z.toInt()))
+                    var x: String = document.get("nama_kategori") as String
+                    var y: String = document.get("link") as String
+                    var z: Long = document.get("id_kategori") as Long
+                    listkategori.add(CategoryList(x, y, z.toInt()))
+                }
+                Log.d(TAG, "inikepanggil4")
+                adapterkategori = CategoryAdapter(context = requireContext(), listkategori)
+
+                listcategory.adapter = adapterkategori
+                listcategory.layoutManager =
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                val intasd = 0
+
+
+                adapterkategori.OnItemClick = {
+                    val intent = Intent(context, DetailedCategory::class.java)
+                    intent.putExtra("categorylist", it)
+                    intent.removeExtra("kantinList")
+                    startActivity(intent)
+                }
+
+
             }
-            Log.d(TAG, "inikepanggil4")
-            adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
-            listcategory.adapter = adapterkategori
-            listcategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
-            val intasd = 0
-
-
-            adapterkategori.OnItemClick = {
-                val intent = Intent(context, DetailedCategory::class.java)
-                intent.putExtra("categorylist", it)
-                intent.removeExtra("kantinList")
-                startActivity(intent)
-            }
-
-
-        }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents.", exception)
             }
@@ -337,5 +350,5 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
         kantinviewer.setText(pre.location)
     }
-    
+
 }

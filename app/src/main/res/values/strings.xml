@@ -12,4 +12,53 @@
     <string name="yes_acc">Already have an account?</string>
     <string name="sign_up">Sign up here!</string>
     <string name="log_in">Login here!</string>
+    <string name="account">Account</string>
+    <string name="other_info">Other Info</string>
+    <string name="orders">Orders</string>
+    <string name="orders_desc">Check history &amp; active orders</string>
+
+    <string-array name="account_settings">
+        <item>Orders</item>
+        <item>Promotions</item>
+        <item>Payment Methods</item>
+        <item>Help &amp; My Reports</item>
+        <item>Language</item>
+        <item>Invite Friends</item>
+        <item>Manage Account</item>
+    </string-array>
+
+    <string-array name="acc_settings_desc">
+        <item>Check history &amp; active orders</item>
+        <item> </item>
+        <item> </item>
+        <item> </item>
+        <item> </item>
+        <item> </item>
+        <item> </item>
+    </string-array>
+
+    <string-array name="acc_img_settings">
+        <item>@drawable/history</item>
+        <item>@drawable/promo</item>
+        <item>@drawable/payment</item>
+        <item>@drawable/help</item>
+        <item>@drawable/language</item>
+        <item>@drawable/invite_friends</item>
+        <item>@drawable/manage_acc</item>
+    </string-array>
+
+    <string-array name="other_settings">
+        <item>Terms &amp; Conditions</item>
+        <item>Rate Us</item>
+    </string-array>
+
+    <string-array name="oth_img_settings">
+        <item>@drawable/tnc</item>
+        <item>@drawable/rate</item>
+    </string-array>
+
+    <string-array name="oth_settings_desc">
+        <item> </item>
+        <item> </item>
+    </string-array>
 </resources>

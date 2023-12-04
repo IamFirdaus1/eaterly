@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(HomeFragment(FirebaseAuth.getInstance()))
+        auth = FirebaseAuth.getInstance()
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
@@ -43,10 +44,10 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
             when(it.itemId){
-                R.id.homes -> replaceFragment(HomeFragment(FirebaseAuth.getInstance()))
+                R.id.homes -> replaceFragment(HomeFragment(auth))
                 R.id.orderlist -> replaceFragment(Orderlist())
                 R.id.cart -> replaceFragment(Cart())
-                R.id.profile -> replaceFragment(Profile())
+                R.id.profile -> replaceFragment(Profile(auth))
 
                 else -> {
 
@@ -68,13 +69,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun signOut(){
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        val googlesigninclient = GoogleSignIn.getClient(this,gso)
         auth.signOut()
-        googlesigninclient.signOut()
         startActivity(Intent(this, SignInActivity::class.java))
         finish()
     }

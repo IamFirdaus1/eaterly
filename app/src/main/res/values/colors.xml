@@ -11,4 +11,5 @@
     <color name="dark_green">#235312</color>
     <color name="red">#FF1414</color>
     <color name="black_trs">#80000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

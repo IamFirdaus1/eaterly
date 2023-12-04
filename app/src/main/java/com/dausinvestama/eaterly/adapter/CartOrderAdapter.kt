@@ -19,11 +19,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<CartItemDb>?)
     :RecyclerView.Adapter<CartOrderAdapter.myHolder>(){
 
-    lateinit private var localdb: AppDatabase
+    private lateinit var localdb: AppDatabase
     var arraycartorder = mutableListOf<CartItemDb>()
 
     var arraycart = mutableListOf<CartDb>()
-    lateinit private var Cartlocaldb: CartDatabase
+    private lateinit var Cartlocaldb: CartDatabase
 
     val db = FirebaseFirestore.getInstance()
 

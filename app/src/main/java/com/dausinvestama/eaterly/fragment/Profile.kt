@@ -1,60 +1,82 @@
 package com.dausinvestama.eaterly.fragment
 
+import android.content.res.TypedArray
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.dausinvestama.eaterly.R
+import com.dausinvestama.eaterly.adapter.SettingsAdapter
+import com.dausinvestama.eaterly.data.Settings
+import com.dausinvestama.eaterly.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseAuth
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class Profile(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [Profile.newInstance] factory method to
- * create an instance of this fragment.
- */
-class Profile : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var binding: FragmentProfileBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+    ): View {
+        binding = FragmentProfileBinding.inflate(layoutInflater)
+
+        val user = firebaseAuth.currentUser
+
+        binding.apply {
+
+            if (user != null) {
+                tvUsername.text = user.displayName
+                tvEmail.text = user.email
+                Glide.with(this@Profile)
+                    .load(user.photoUrl)
+                    .circleCrop()
+                    .into(imgPp)
+            }
+
+            rvAccSettings.setHasFixedSize(true)
+            rvAccSettings.adapter = SettingsAdapter(
+                setSettingList(
+                    resources.getStringArray(R.array.account_settings),
+                    resources.obtainTypedArray(R.array.acc_img_settings),
+                    resources.getStringArray(R.array.acc_settings_desc)
+                )
+            )
+            rvAccSettings.layoutManager = LinearLayoutManager(activity)
+            rvAccSettings.overScrollMode = View.OVER_SCROLL_NEVER
+
+            rvOtherSettings.setHasFixedSize(true)
+            rvOtherSettings.adapter = SettingsAdapter(
+                setSettingList(
+                    resources.getStringArray(R.array.other_settings),
+                    resources.obtainTypedArray(R.array.oth_img_settings),
+                    resources.getStringArray(R.array.oth_settings_desc)
+                )
+            )
+            rvOtherSettings.layoutManager = LinearLayoutManager(activity)
+            rvOtherSettings.overScrollMode = View.OVER_SCROLL_NEVER
+
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Profile.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Profile().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun setSettingList(
+        name: Array<String>,
+        photo: TypedArray,
+        desc: Array<String>
+    ): ArrayList<Settings> {
+        val listSettings = ArrayList<Settings>()
+
+        for (i in name.indices) {
+            val setting = Settings(name[i], photo.getResourceId(i, -1), desc[i])
+            listSettings.add(setting)
+        }
+
+        return listSettings
     }
+
+
 }
