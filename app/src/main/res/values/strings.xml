@@ -15,7 +15,16 @@
     <string name="account">Account</string>
     <string name="other_info">Other Info</string>
     <string name="orders">Orders</string>
-    <string name="orders_desc">Check history &amp; active orders</string>
+    <string name="orders_desc">See ongoing &amp; history</string>
+    <string name="acc_settings">Account Settings</string>
+    <string name="history">History</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="profile_picture_desc">Use a cool photo for everyone to see!</string>
+    <string name="edit_prof_pic">Change photo</string>
+    <string name="phone_number">Phone Number</string>
 
     <string-array name="account_settings">
         <item>Orders</item>
@@ -58,6 +67,21 @@
     </string-array>
 
     <string-array name="oth_settings_desc">
+        <item> </item>
+        <item> </item>
+    </string-array>
+
+    <string-array name="mng_acc_settings">
+        <item>Log Out</item>
+        <item>Delete Account</item>
+    </string-array>
+
+    <string-array name="mng_acc_img">
+        <item>@drawable/logout_icon</item>
+        <item>@drawable/trash_can</item>
+    </string-array>
+
+    <string-array name="mng_acc_desc">
         <item> </item>
         <item> </item>
     </string-array>

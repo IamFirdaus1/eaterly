@@ -27,6 +27,15 @@
         android:theme="@style/Theme.Eaterly"
         tools:targetApi="31">
         <activity
+            android:name=".pages.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pages.AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pages.HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".pages.QrScannerActivity"
             android:exported="false" />
         <activity

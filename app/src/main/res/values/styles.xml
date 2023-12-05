@@ -14,6 +14,79 @@
         <item name="android:backgroundTint">@color/green</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <style name="NavButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:backgroundTint">@color/green</item>
+    </style>
+
+    <style name="NavButton.RoundedButton">
+        <item name="android:background">@drawable/bg_rounded_btn</item>
+        <item name="android:fontFamily">@font/interextrabold</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TopBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="InfoTextView.ProfileFieldTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">@font/interbold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="InfoTextView.ProfileFieldTitle.Required">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">@font/interbold</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:text">*</item>
+    </style>
+
+    <style name="InfoTextView.NormalText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:textColor">@color/black_trs</item>
+    </style>
+
+    <style name="BackButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:src">@drawable/ic_arrow_left</item>
+    </style>
+
+    <style name="SettingTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fontFamily">@font/interbold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+
+    <style name="ProfileField">
+        <item name="fontFamily">@font/interbold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:backgroundTint">@color/green</item>
+        <item name="android:textCursorDrawable">@drawable/cursor_color</item>
+    </style>
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="itemIconTint">@color/green</item>
+    </style>
 </resources>
 
 

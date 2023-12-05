@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cv_setting_item"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -60,9 +63,10 @@
 
     <View
         android:id="@+id/divider"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="50dp"
         android:background="?android:attr/listDivider" />
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>
