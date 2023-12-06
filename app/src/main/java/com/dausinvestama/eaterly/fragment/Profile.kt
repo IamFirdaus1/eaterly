@@ -1,7 +1,10 @@
 package com.dausinvestama.eaterly.fragment
 
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +19,7 @@ import com.dausinvestama.eaterly.pages.EditProfileActivity
 import com.dausinvestama.eaterly.pages.HistoryActivity
 import com.dausinvestama.eaterly.utils.Utils.setSettingList
 import com.google.firebase.auth.FirebaseAuth
+
 class Profile(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
@@ -29,14 +33,17 @@ class Profile(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
         binding.apply {
 
-            if (user != null) {
-                tvUsername.text = user.displayName
-                tvEmail.text = user.email
-                Glide.with(this@Profile)
+            tvUsername.text = user?.displayName
+            tvEmail.text = user?.email
+            if (user?.photoUrl != null){
+                Glide.with(requireActivity())
                     .load(user.photoUrl)
                     .circleCrop()
                     .into(imgPp)
+            } else {
+                imgPp.setImageResource(R.drawable.user_icon)
             }
+
 
             rvAccSettings.setHasFixedSize(true)
             val accAdapter = SettingsAdapter(
@@ -49,7 +56,7 @@ class Profile(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
             accAdapter.setOnItemClickCallback(object : SettingsAdapter.OnItemClickCallback {
                 override fun onItemClicked(position: Int) {
-                    when(position){
+                    when (position) {
                         0 -> startActivity(Intent(context, HistoryActivity::class.java))
                         1 -> {}
                         2 -> {}

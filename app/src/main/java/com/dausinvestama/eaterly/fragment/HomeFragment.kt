@@ -84,7 +84,7 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
         Log.d(TAG, "onCreateView: pre ${pre.location}")
         if (pre.location != null) {
-            kantinviewer.setText(pre.location)
+            kantinviewer.text = pre.location
         }
 
         tvmeja.text = pre.nomor_meja.toString()
@@ -232,7 +232,7 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
             }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+                Log.d(TAG, "Error getting documents.", exception)
             }
     }
 
@@ -240,42 +240,39 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
         var listkantin: RecyclerView = view.findViewById(R.id.listkantin)
 
         pre = SharedPreferences(context)
-        db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
 
-                    var x: String = document.get("nama_kantin") as String
-                    var y: String = document.get("link") as String
-                    var z: Long = document.get("id_kantin") as Long
-                    //var u: Long = document.get("order_id") as Long
+        Log.d(TAG, "initkantindebug: " + db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").id)
+        db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").get().addOnSuccessListener { result ->
+            for (document in result) {
+                Log.d(TAG, "dbku1")
+                val x: String = document.get("nama_kantin") as String
+                val y: String = document.get("link") as String
+                val z: Long = document.get("id_kantin") as Long
+                //var u: Long = document.get("order_id") as Long
 
-                    listcanteen.add(KantinList(y, x, z.toInt(), 1))
-                    Log.d(y, "dbku")
-                }
-                Log.d(TAG, "inikepanggil4")
-                adapterkantin = KantinAdapter(this, listcanteen)
-                listkantin.adapter = adapterkantin
-                listkantin.layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-                adapterkantin.OnItemClick = {
-                    val intent = Intent(context, DetailedCategory::class.java)
-                    intent.putExtra("kantinList", it)
-                    intent.removeExtra("categorylist")
-                    startActivity(intent)
-                }
-
+                listcanteen.add(KantinList(y, x, z.toInt(), 1))
+                Log.d(TAG, "dbku$x$y")
             }
+            Log.d(TAG, "inikepanggil4")
+            adapterkantin = KantinAdapter(this, listcanteen)
+            listkantin.adapter = adapterkantin
+            listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
+
+            adapterkantin.OnItemClick = {
+                val intent = Intent(context, DetailedCategory::class.java)
+                intent.putExtra("kantinList", it)
+                intent.removeExtra("categorylist")
+                startActivity(intent)
+            }
+
+        }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+                Log.d(TAG, "Error getting documents.", exception)
             }
     }
 
     private fun init(view: View) {
         var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
-
-
-
 
 
         db.collection("categorymakanan").get().addOnSuccessListener { result ->
@@ -302,14 +299,13 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
         }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+                Log.d(TAG, "Error getting documents.", exception)
             }
 
     }
 
     private fun initkategori2(view: View) {
         var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
-
 
         pre = SharedPreferences(context)
         db.collection("kategoritesting").document(pre.location.toString()).collection("kategori")
@@ -340,7 +336,7 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
             }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error getting documents.", exception)
+                Log.d(TAG, "Error getting documents.", exception)
             }
 
     }
