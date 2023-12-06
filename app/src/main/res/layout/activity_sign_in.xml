@@ -30,7 +30,8 @@
         android:inputType="textPassword"
         android:hint="@string/password"
         android:textColor="@color/black_trs"
-        android:backgroundTint="@color/green"/>
+        android:backgroundTint="@color/green"
+        android:layout_marginBottom="10dp"/>
 
 
     <androidx.appcompat.widget.AppCompatButton
