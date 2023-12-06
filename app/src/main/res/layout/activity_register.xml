@@ -42,6 +42,16 @@
         android:backgroundTint="@color/green"/>
 
 
+    <CheckBox
+        android:id="@+id/checkBoxSeller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register as Seller"
+        android:layout_marginBottom="10dp"
+        android:textSize="18dp"
+        android:textColor="@color/black_trs"
+        android:buttonTint="@color/green"/>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
