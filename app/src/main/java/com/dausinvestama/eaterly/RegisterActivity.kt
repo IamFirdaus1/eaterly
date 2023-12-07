@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +53,12 @@ class RegisterActivity : AppCompatActivity() {
                     Log.d(ContentValues.TAG, "createUserWithEmail: success")
                     val user = auth.currentUser
 
-                    updateUI(user)
+                    if (binding.checkBoxSeller.isChecked) {
+                        storeSeller(user?.uid, binding.edtUsername.text.toString(), binding.edtEmail.text.toString())
+                        updateUI(user)
+                    } else {
+                        updateUI(user)
+                    }
                 } else {
                     Log.w(ContentValues.TAG, "createUserWithEmail: failure", task.exception)
                     Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
@@ -86,8 +92,28 @@ class RegisterActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
             updateProfile()
-            startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+            if (binding.checkBoxSeller.isChecked) {
+                startActivity(Intent(this@RegisterActivity, SellerActivity::class.java))
+            } else {
+                startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+            }
             finish()
         }
     }
+
+    private fun storeSeller(uid: String?, username: String?, email: String?) {
+        uid?.let {
+            Firebase.firestore.collection("seller").document(uid)
+                .set(mapOf("username" to username, "email" to email))
+                .addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "Seller UID stored successfully.")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(ContentValues.TAG, "Error storing seller UID", e)
+                }
+        } ?: run {
+            Log.e(ContentValues.TAG, "UID is null. Cannot store seller information.")
+        }
+    }
+
 }

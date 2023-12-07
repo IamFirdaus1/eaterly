@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class SignInActivity : AppCompatActivity() {
 
@@ -128,8 +130,27 @@ class SignInActivity : AppCompatActivity() {
         if (currentUser != null) {
             pre = SharedPreferences(this)
             pre.email = currentUser.email
-            startActivity(Intent(this@SignInActivity, MainActivity::class.java))
-            finish()
+
+            // Check if the user's UID is in the "sellers" collection
+            Firebase.firestore.collection("seller").document(currentUser.uid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        // The user is a seller, start SellerActivity
+                        startActivity(Intent(this@SignInActivity, SellerActivity::class.java))
+                    } else {
+                        // The user is not a seller, proceed with the default flow
+                        startActivity(Intent(this@SignInActivity, MainActivity::class.java))
+                    }
+                    finish() // Optional: finish the current activity if needed
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error checking if user is a seller", e)
+                    // Proceed with the default flow in case of an error
+                    startActivity(Intent(this@SignInActivity, MainActivity::class.java))
+                    finish()
+                }
         }
     }
+
 }
