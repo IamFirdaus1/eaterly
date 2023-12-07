@@ -20,13 +20,15 @@ import com.dausinvestama.eaterly.pages.HistoryActivity
 import com.dausinvestama.eaterly.utils.Utils.setSettingList
 import com.google.firebase.auth.FirebaseAuth
 
-class Profile(private val firebaseAuth: FirebaseAuth) : Fragment() {
+class Profile : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        firebaseAuth = FirebaseAuth.getInstance()
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
         val user = firebaseAuth.currentUser
@@ -35,11 +37,13 @@ class Profile(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
             tvUsername.text = user?.displayName
             tvEmail.text = user?.email
-            if (user?.photoUrl != null){
-                Glide.with(requireActivity())
-                    .load(user.photoUrl)
-                    .circleCrop()
-                    .into(imgPp)
+            if (user?.photoUrl != null) {
+                if (isAdded) {
+                    Glide.with(requireActivity())
+                        .load(user.photoUrl)
+                        .circleCrop()
+                        .into(imgPp)
+                }
             } else {
                 imgPp.setImageResource(R.drawable.user_icon)
             }

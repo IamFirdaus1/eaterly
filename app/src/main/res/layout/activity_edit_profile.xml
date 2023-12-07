@@ -24,6 +24,7 @@
             android:text="@string/edit_profile" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSave"
             style="@style/NavButton.RoundedButton"
             android:text="@string/save" />
     </LinearLayout>
@@ -59,6 +60,7 @@
                     android:id="@+id/img_pp"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:scaleType="centerInside"
                     android:background="@color/transparent" />
 
                 <TextView

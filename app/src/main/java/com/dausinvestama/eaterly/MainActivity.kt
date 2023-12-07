@@ -24,21 +24,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(HomeFragment(FirebaseAuth.getInstance()))
+        replaceFragment(HomeFragment())
         auth = FirebaseAuth.getInstance()
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
-
 
         binding.bottomnav.setOnItemSelectedListener {
 
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
             when(it.itemId){
-                R.id.homes -> replaceFragment(HomeFragment(FirebaseAuth.getInstance()))
+                R.id.homes -> replaceFragment(HomeFragment())
                 R.id.orderlist -> replaceFragment(Orderlist())
                 R.id.cart -> replaceFragment(Cart())
-                R.id.profile -> replaceFragment(Profile(FirebaseAuth.getInstance()))
+                R.id.profile -> replaceFragment(Profile())
 
                 else -> {
 

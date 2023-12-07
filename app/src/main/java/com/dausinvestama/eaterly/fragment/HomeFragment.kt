@@ -1,7 +1,7 @@
 package com.dausinvestama.eaterly.fragment
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dausinvestama.eaterly.CartDatabase
-import com.dausinvestama.eaterly.MainActivity
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
@@ -35,9 +33,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
+class HomeFragment() : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var firebaseAuth: FirebaseAuth
 
     val db = FirebaseFirestore.getInstance()
     lateinit var searchView: androidx.appcompat.widget.SearchView
@@ -62,6 +61,7 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        firebaseAuth = FirebaseAuth.getInstance()
         binding = FragmentHomeBinding.inflate(layoutInflater)
         val view = binding.root
 
@@ -305,7 +305,7 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
     }
 
     private fun initkategori2(view: View) {
-        var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
+        val listCategory = binding.listcategory
 
         pre = SharedPreferences(context)
         db.collection("kategoritesting").document(pre.location.toString()).collection("kategori")
@@ -318,12 +318,13 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
                     listkategori.add(CategoryList(x, y, z.toInt()))
                 }
                 Log.d(TAG, "inikepanggil4")
-                adapterkategori = CategoryAdapter(context = requireContext(), listkategori)
+                if (isAdded) {
+                    adapterkategori = CategoryAdapter(context = requireContext(), listkategori)
+                }
 
-                listcategory.adapter = adapterkategori
-                listcategory.layoutManager =
+                listCategory.adapter = adapterkategori
+                listCategory.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                val intasd = 0
 
 
                 adapterkategori.OnItemClick = {
@@ -346,5 +347,4 @@ class HomeFragment(private val firebaseAuth: FirebaseAuth) : Fragment() {
 
         kantinviewer.setText(pre.location)
     }
-
 }
