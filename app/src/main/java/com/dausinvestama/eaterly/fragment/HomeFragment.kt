@@ -72,9 +72,6 @@ class HomeFragment() : Fragment() {
         btnscan = binding.btnscan
         tvmeja = binding.tvmeja
 
-        //initialisasi recyclerview
-        //init(view)
-        //initkategori2(view)
         initkategori1()
         initkantin1()
         initjenis1()
@@ -195,6 +192,12 @@ class HomeFragment() : Fragment() {
         return view
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "inikepanggil2")
+    }
+
     private fun initkategori1() {
         val listCategory:RecyclerView = binding.listcategory
 
@@ -224,12 +227,6 @@ class HomeFragment() : Fragment() {
             }.addOnFailureListener {
 
             }
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "inikepanggil2")
     }
 
     private fun initjenis1() {
@@ -269,42 +266,6 @@ class HomeFragment() : Fragment() {
             }
     }
 
-    private fun initjenis(view: View) {
-        var listjenis: RecyclerView = view.findViewById(R.id.listJenis)
-
-        pre = SharedPreferences(context)
-
-        db.collection("jenis").document(pre.location.toString()).collection("jenis").get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-
-                    var x: String = document.get("nama_jenis") as String
-                    var y: String = document.get("link") as String
-                    var z: Long = document.get("id_jenis") as Long
-
-                    jenislist.add(JenisList(y, z.toInt(), x))
-
-                }
-                Log.d(TAG, "inikepanggil4")
-                adapterjenis = AdapterJenis(this, jenislist)
-                listjenis.setHasFixedSize(true)
-                listjenis.adapter = adapterjenis
-                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
-                listjenis.layoutManager = layoutmanager
-
-                adapterjenis.OnItemClick = {
-                    val intent = Intent(context, DetailedCategory::class.java)
-                    intent.putExtra("jenisList", it)
-                    startActivity(intent)
-                }
-
-
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents.", exception)
-            }
-    }
-
     private fun initkantin1(){
         var listkantin: RecyclerView = binding.listkantin
 
@@ -334,112 +295,6 @@ class HomeFragment() : Fragment() {
             }.addOnFailureListener {
 
             }
-    }
-
-    private fun initkantin(view: View) {
-        var listkantin: RecyclerView = view.findViewById(R.id.listkantin)
-
-        pre = SharedPreferences(context)
-
-        Log.d(TAG, "initkantindebug: " + db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").id)
-        db.collection("kantintesting").document(pre.location.toString()).collection("Kantin").get().addOnSuccessListener { result ->
-            for (document in result) {
-                Log.d(TAG, "dbku1")
-                val x: String = document.get("nama_kantin") as String
-                val y: String = document.get("link") as String
-                val z: Long = document.get("id_kantin") as Long
-                //var u: Long = document.get("order_id") as Long
-
-                listcanteen.add(KantinList(y, x, z.toInt(), 1))
-                Log.d(TAG, "dbku$x$y")
-            }
-            Log.d(TAG, "inikepanggil4")
-            adapterkantin = KantinAdapter(this, listcanteen)
-            listkantin.adapter = adapterkantin
-            listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL ,false)
-
-            adapterkantin.OnItemClick = {
-                val intent = Intent(context, DetailedCategory::class.java)
-                intent.putExtra("kantinList", it)
-                intent.removeExtra("categorylist")
-                startActivity(intent)
-            }
-
-        }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents.", exception)
-            }
-    }
-
-    private fun init(view: View) {
-        var listcategory: RecyclerView = view.findViewById(R.id.listcategory)
-
-
-        db.collection("categorymakanan").get().addOnSuccessListener { result ->
-            for (document in result) {
-
-                var x: String = document.get("CategoryName") as String
-                var y: String = document.get("Link") as String
-                var id: Long = document.get("id_kategori") as Long
-                listkategori.add(CategoryList(x, y, id.toInt()))
-            }
-            Log.d(TAG, "inikepanggil4")
-            adapterkategori = context?.let { CategoryAdapter(it, listkategori) }!!
-            listcategory.adapter = adapterkategori
-            listcategory.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-
-            adapterkategori.OnItemClick = {
-                val intent = Intent(context, DetailedCategory::class.java)
-                intent.putExtra("categorylist", it)
-                startActivity(intent)
-            }
-
-
-        }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents.", exception)
-            }
-
-    }
-
-    private fun initkategori2(view: View) {
-        val listCategory = binding.listcategory
-
-        pre = SharedPreferences(context)
-        db.collection("kategoritesting").document(pre.location.toString()).collection("kategori")
-            .get().addOnSuccessListener { result ->
-                for (document in result) {
-
-                    var x: String = document.get("nama_kategori") as String
-                    var y: String = document.get("link") as String
-                    var z: Long = document.get("id_kategori") as Long
-                    listkategori.add(CategoryList(x, y, z.toInt()))
-                }
-                Log.d(TAG, "inikepanggil4")
-                if (isAdded) {
-                    adapterkategori = CategoryAdapter(context = requireContext(), listkategori)
-                }
-
-                listCategory.adapter = adapterkategori
-                listCategory.layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-
-                adapterkategori.OnItemClick = {
-                    val intent = Intent(context, DetailedCategory::class.java)
-                    intent.putExtra("categorylist", it)
-                    intent.removeExtra("kantinList")
-                    startActivity(intent)
-                }
-
-
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents.", exception)
-            }
-
     }
 
     override fun onResume() {
