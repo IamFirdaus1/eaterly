@@ -15,6 +15,7 @@ import com.dausinvestama.eaterly.data.*
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
 import com.dausinvestama.eaterly.databinding.ActivityDetailedListBinding
+import com.dausinvestama.eaterly.fragment.Cart
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -54,18 +55,111 @@ class DetailedCategory : AppCompatActivity() {
         if (categoryList != null) {
             kategoritextview.setText(categoryList.Categorylist)
         }else if (id_kantin != null) {
-            val nama_kantin: String = kantinList?.NamaKantin.toString()
-            val order_id: Int = kantinList?.orderid!!
             kategoritextview.setText(kantinList.NamaKantin)
-            initkantin(id_kantin,order_id, nama_kantin)
+            initkantin1(id_kantin)
         }
         if (id_jenis != null) {
-            initjenis(id_jenis)
+            initjenis1(id_jenis)
         }
         if (id_categories != null) {
-            initapi(id_categories)
+            initkategori(id_categories)
         }
 
+    }
+
+    private fun initjenis1(id_jenis: Int) {
+        var pre = SharedPreferences(this)
+
+        db.collection("menus")
+            .whereEqualTo("location_id", pre.location_id)
+            .whereEqualTo("type_id", id_jenis)
+            .get()
+            .addOnSuccessListener {
+                for (document in it) {
+                    var id_makanan: Long = document.id.toLong()
+                    var id_kantin: Long = document.get("canteen_id") as Long
+                    var nama_makanan: String = document.get("name") as String
+                    var desc_makanan: String = document.get("description") as String
+                    var harga_makanan: Long = document.get("price") as Long
+                    var gambar_makanan: String = document.get("url") as String
+                    var id_jenis2: Long = document.id.toLong()
+
+
+                    db.collection("canteens")
+                        .document(id_kantin.toString())
+                        .get()
+                        .addOnSuccessListener {canteenDocument ->
+                            if (canteenDocument.exists()) {
+                                var nama_kantin = canteenDocument.getString("name") as String
+                                var orderqueue = (canteenDocument.get("order_queue") as Long).toInt()
+                                detalList.add(CategoryDetailData(
+                                    nama_makanan,
+                                    id_makanan,
+                                    id_jenis2,
+                                    harga_makanan,
+                                    id_kantin,
+                                    desc_makanan,
+                                    nama_kantin,
+                                    orderqueue,
+                                    gambar_makanan
+
+                                ))
+                                detailMakananAdapter = DetailMakananAdapter(this, detalList)
+                                detailRecycler.adapter = detailMakananAdapter
+                                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
+                                detailRecycler.setHasFixedSize(true)
+                                detailRecycler.layoutManager = layoutmanager
+
+                                localdb = AppDatabase.getInstance(applicationContext)
+                                cartlocaldb = CartDatabase.getInstance(applicationContext)
+
+                                detailMakananAdapter.onItemClick = {
+
+                                    if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
+                                        if (localdb.cartDao().getBymakanan(it.idmakanan.toInt()).isEmpty()){
+                                            localdb.cartDao().InsertAll(CartItemDb(
+                                                it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
+                                            ))
+                                            finish()
+                                        }else{
+                                            var jumlahtemp: CartItemDb = localdb.cartDao().getBymakanan(it.idmakanan.toInt())[0]
+                                            localdb.cartDao().UpdateOrder(CartItemDb(
+                                                it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                jumlahtemp.jumlah+1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
+                                            ))
+                                            finish()
+                                        }
+                                        if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
+                                            cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
+                                        }else{
+                                            Log.d(TAG, "initdetail: ini kagak" )
+                                        }
+
+
+                                    }
+
+                                }
+                            }
+                        }.addOnFailureListener {
+
+                        }
+                }
+            }.addOnFailureListener {
+
+            }
     }
 
     private fun initjenis(id_jenis: Int) {
@@ -168,9 +262,102 @@ class DetailedCategory : AppCompatActivity() {
             }
     }
 
+    fun initkantin1(idKantin: Int){
+        db.collection("menus")
+            .whereEqualTo("canteen_id", idKantin)
+            .get()
+            .addOnSuccessListener {
+                for (document in it) {
+                    var id_makanan: Long = document.id.toLong()
+                    var id_kantin: Long = document.get("canteen_id") as Long
+                    var nama_makanan: String = document.get("name") as String
+                    var desc_makanan: String = document.get("description") as String
+                    var harga_makanan: Long = document.get("price") as Long
+                    var gambar_makanan: String = document.get("url") as String
+                    var id_jenis2: Long = document.id.toLong()
+
+
+                    db.collection("canteens")
+                        .document(id_kantin.toString())
+                        .get()
+                        .addOnSuccessListener {canteenDocument ->
+                            if (canteenDocument.exists()) {
+                                var nama_kantin = canteenDocument.getString("name") as String
+                                var orderqueue = (canteenDocument.get("order_queue") as Long).toInt()
+                                detalList.add(CategoryDetailData(
+                                    nama_makanan,
+                                    id_makanan,
+                                    id_jenis2,
+                                    harga_makanan,
+                                    id_kantin,
+                                    desc_makanan,
+                                    nama_kantin,
+                                    orderqueue,
+                                    gambar_makanan
+
+                                ))
+                                detailMakananAdapter = DetailMakananAdapter(this, detalList)
+                                detailRecycler.adapter = detailMakananAdapter
+                                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
+                                detailRecycler.setHasFixedSize(true)
+                                detailRecycler.layoutManager = layoutmanager
+
+                                localdb = AppDatabase.getInstance(applicationContext)
+                                cartlocaldb = CartDatabase.getInstance(applicationContext)
+
+                                detailMakananAdapter.onItemClick = {
+
+                                    if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
+                                        if (localdb.cartDao().getBymakanan(it.idmakanan.toInt()).isEmpty()){
+                                            localdb.cartDao().InsertAll(CartItemDb(
+                                                it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
+                                            ))
+                                            finish()
+                                        }else{
+                                            var jumlahtemp: CartItemDb = localdb.cartDao().getBymakanan(it.idmakanan.toInt())[0]
+                                            localdb.cartDao().UpdateOrder(CartItemDb(
+                                                it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                jumlahtemp.jumlah+1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
+                                            ))
+                                            finish()
+                                        }
+                                        if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
+                                            cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
+                                        }else{
+                                            Log.d(TAG, "initdetail: ini kagak" )
+                                        }
+
+
+                                    }
+
+                                }
+                            }
+                        }.addOnFailureListener {
+
+                        }
+                }
+            }.addOnFailureListener {
+
+            }
+
+    }
+
     fun initkantin(idKantin: Int, order_id: Int, nama_kantin: String) {
          var pre = SharedPreferences(this)
-         db.collection("makanan")
+         db.collection("menus")
              .document(pre.location.toString())
              .collection("1")
              .whereEqualTo("id_kantin", idKantin)
@@ -266,6 +453,103 @@ class DetailedCategory : AppCompatActivity() {
 
                  }
              }
+
+    }
+
+    fun initkategori(id_categories: Int) {
+
+        var pre = SharedPreferences(this)
+
+        db.collection("menus")
+            .whereEqualTo("location_id", pre.location_id)
+            .whereEqualTo("category_id", id_categories)
+            .get()
+            .addOnSuccessListener {
+                for (document in it) {
+                    var id_makanan: Long = document.id.toLong()
+                    var id_kantin: Long = document.get("canteen_id") as Long
+                    var nama_makanan: String = document.get("name") as String
+                    var desc_makanan: String = document.get("description") as String
+                    var harga_makanan: Long = document.get("price") as Long
+                    var gambar_makanan: String = document.get("url") as String
+                    var id_jenis2: Long = document.id.toLong()
+
+
+                    db.collection("canteens")
+                        .document(id_kantin.toString())
+                        .get()
+                        .addOnSuccessListener {canteenDocument ->
+                            if (canteenDocument.exists()) {
+                                var nama_kantin = canteenDocument.getString("name") as String
+                                var orderqueue = (canteenDocument.get("order_queue") as Long).toInt()
+                                detalList.add(CategoryDetailData(
+                                    nama_makanan,
+                                    id_makanan,
+                                    id_jenis2,
+                                    harga_makanan,
+                                    id_kantin,
+                                    desc_makanan,
+                                    nama_kantin,
+                                    orderqueue,
+                                    gambar_makanan
+
+                                ))
+                                detailMakananAdapter = DetailMakananAdapter(this, detalList)
+                                detailRecycler.adapter = detailMakananAdapter
+                                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
+                                detailRecycler.setHasFixedSize(true)
+                                detailRecycler.layoutManager = layoutmanager
+
+                                localdb = AppDatabase.getInstance(applicationContext)
+                                cartlocaldb = CartDatabase.getInstance(applicationContext)
+
+                                detailMakananAdapter.onItemClick = {
+
+                                    if (it.namakantin.toString().isNotEmpty() && it.idkantin.toString().isNotEmpty()){
+                                        if (localdb.cartDao().getBymakanan(it.idmakanan.toInt()).isEmpty()){
+                                            localdb.cartDao().InsertAll(CartItemDb(
+                                                it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
+                                            ))
+                                            finish()
+                                        }else{
+                                            var jumlahtemp: CartItemDb = localdb.cartDao().getBymakanan(it.idmakanan.toInt())[0]
+                                            localdb.cartDao().UpdateOrder(CartItemDb(
+                                                it.idmakanan.toInt(),
+                                                it.hargamakanan.toInt(),
+                                                jumlahtemp.jumlah+1,
+                                                it.namamakanan.toString(),
+                                                it.idkantin.toInt(),
+                                                it.idjenis.toInt(),
+                                                it.namakantin.toString(),
+                                                it.gambar_makanan
+                                            ))
+                                            finish()
+                                        }
+                                        if (cartlocaldb.outerCartDao().getbyId(it.idkantin.toInt()).isEmpty()){
+                                            cartlocaldb.outerCartDao().InsertAll(CartDb(it.idkantin.toInt(), it.namakantin.toString()))
+                                        }else{
+                                            Log.d(TAG, "initdetail: ini kagak" )
+                                        }
+
+
+                                    }
+
+                                }
+                            }
+                        }.addOnFailureListener {
+
+                        }
+                }
+            }.addOnFailureListener {
+
+            }
 
     }
 

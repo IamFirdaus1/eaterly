@@ -23,6 +23,7 @@ class PopUpFragment(context: Context) : DialogFragment() {
     val db = FirebaseFirestore.getInstance()
 
     lateinit var arraylokasi: ArrayList<String>
+    lateinit var arraylokasiid: ArrayList<Int>
 
     lateinit var lokasiAdapter: LokasiAdapter
 
@@ -49,13 +50,16 @@ class PopUpFragment(context: Context) : DialogFragment() {
 
     private fun init() {
         arraylokasi = ArrayList()
-        db.collection("ID_kantin").get().addOnSuccessListener { result ->
+        arraylokasiid = ArrayList()
+        db.collection("locations").get().addOnSuccessListener { result ->
             for (document in result) {
-                arraylokasi.add(document.get("nama_tempat").toString())
-                Log.d(TAG, "initial ${document.get("nama_tempat")} ")
+                arraylokasi.add(document.getString("name").toString())
+                var araylokasi = document.id
+                arraylokasiid.add(araylokasi.toInt())
+                Log.d(TAG, "popupfragment for location ${document.get("name")} ")
             }
-            lokasiAdapter = context?.let { LokasiAdapter(it, arraylokasi) }!!
-            Log.d(TAG, "initaaas: ${arraylokasi[0]} ${arraylokasi[1]}" )
+            lokasiAdapter = context?.let { LokasiAdapter(it, arraylokasi, arraylokasiid) }!!
+            Log.d(TAG, "popupfragmet for location outside loop: ${arraylokasi[0]} ${arraylokasi[1]} ${arraylokasiid[0]} ${arraylokasiid[1]}" )
             recyclerpopup.adapter = lokasiAdapter
             recyclerpopup.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 

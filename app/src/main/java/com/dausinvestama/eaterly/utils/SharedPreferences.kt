@@ -7,6 +7,7 @@ class SharedPreferences(val context: android.content.Context?) {
     companion object {
         private const val  FIRST_INSTALL= "FIRST_INSTALL"
         private var  LOCATION = "LOCATION"
+        private var  LOCATION_ID = null
         private var FIRST_NAME = "FIRST_NAME"
         private var EMAIL = "EMAIL"
         private var NOMOR_MEJA = "NOMOR_MEJA"
@@ -19,6 +20,9 @@ class SharedPreferences(val context: android.content.Context?) {
 
     var location = p.getString(LOCATION, "SBH")
         set(value) = p.edit().putString(LOCATION, value).apply()
+
+    var location_id = p.getInt(LOCATION_ID, 0)
+        set(value) = p.edit().putInt(LOCATION_ID, value).apply()
 
     var first_name = p.getString(FIRST_NAME, "Null")
         set(value) = p.edit().putString(FIRST_NAME, value).apply()

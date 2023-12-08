@@ -74,9 +74,10 @@ class HomeFragment() : Fragment() {
 
         //initialisasi recyclerview
         //init(view)
-        initkategori2(view)
-        initkantin(view)
-        initjenis(view)
+        //initkategori2(view)
+        initkategori1()
+        initkantin1()
+        initjenis1()
 
         pre = SharedPreferences(context)
 
@@ -194,10 +195,78 @@ class HomeFragment() : Fragment() {
         return view
     }
 
+    private fun initkategori1() {
+        val listCategory:RecyclerView = binding.listcategory
+
+        pre = SharedPreferences(context)
+        db.collection("categories").whereArrayContains("location_id", pre.location_id)
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result){
+                    var x = document.getString("name") as String
+                    var y = document.getString("link") as String
+                    var z = document.id.toInt()
+
+                    listkategori.add(CategoryList(x, y, z))
+                }
+
+                adapterkategori = CategoryAdapter(requireContext(), listkategori)
+                listCategory.adapter = adapterkategori
+                listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+                adapterkategori.OnItemClick = {
+                    val intent = Intent(context, DetailedCategory::class.java)
+                    intent.putExtra("categorylist", it)
+                    intent.removeExtra("kantinList")
+                    startActivity(intent)
+                }
+
+            }.addOnFailureListener {
+
+            }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "inikepanggil2")
+    }
+
+    private fun initjenis1() {
+        var listjenis: RecyclerView = binding.listJenis
+
+        pre = SharedPreferences(context)
+
+        db.collection("types").whereArrayContains("location_id", pre.location_id)
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result){
+                    var x = document.getString("name") as String
+                    var y = document.getString("url") as String
+                    var z = document.id.toInt()
+
+                    Log.d(TAG, "initjenis in fragmenthome: $x $y $z")
+
+                    jenislist.add(JenisList(y, z, x))
+                }
+                Log.d(TAG, "initjenis in fragmenthome outerloop: ${result.size()}")
+                adapterjenis = AdapterJenis(this, jenislist)
+                listjenis.setHasFixedSize(true)
+                listjenis.adapter = adapterjenis
+                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
+                listjenis.layoutManager = layoutmanager
+
+                adapterjenis.OnItemClick = {
+                    val intent = Intent(context, DetailedCategory::class.java)
+                    intent.putExtra("jenisList", it)
+                    startActivity(intent)
+
+                }
+
+
+            }.addOnFailureListener {
+                Log.d(TAG, "Error getting documents in homefragment.", it)
+            }
     }
 
     private fun initjenis(view: View) {
@@ -233,6 +302,37 @@ class HomeFragment() : Fragment() {
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error getting documents.", exception)
+            }
+    }
+
+    private fun initkantin1(){
+        var listkantin: RecyclerView = binding.listkantin
+
+        pre = SharedPreferences(context)
+
+        db.collection("canteens").whereEqualTo("location_id", pre.location_id)
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result){
+                    val x = document.get("name") as String
+                    val y = document.get("url") as String
+                    val z = document.id.toInt()
+
+                    listcanteen.add(KantinList(y, x, z, 1))
+                }
+                adapterkantin = KantinAdapter(this, listcanteen)
+                listkantin.adapter = adapterkantin
+                listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+                adapterkantin.OnItemClick = {
+                    val intent = Intent(context, DetailedCategory::class.java)
+                    intent.putExtra("kantinList", it)
+                    intent.removeExtra("categorylist")
+                    startActivity(intent)
+                }
+
+            }.addOnFailureListener {
+
             }
     }
 
