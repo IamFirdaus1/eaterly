@@ -50,7 +50,6 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
         var ct = cartData[position]
         holder.nama_kantin.text = ct.nama_kantin
 
-        var sk: Long = 1
         if (cartData==null){
             Log.d(TAG, "onBindViewHolder: it was null" )
         }else {

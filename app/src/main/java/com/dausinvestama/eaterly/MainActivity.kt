@@ -55,11 +55,4 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.frameLayout, fragment)
         fragmentTransaction.commit()
     }
-
-
-    fun signOut(){
-        auth.signOut()
-        startActivity(Intent(this, SignInActivity::class.java))
-        finish()
-    }
 }
