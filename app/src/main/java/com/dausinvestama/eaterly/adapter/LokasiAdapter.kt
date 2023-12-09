@@ -11,32 +11,36 @@ import com.dausinvestama.eaterly.CartDatabase
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.utils.SharedPreferences
 
-class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>, var lokasi_id: ArrayList<Int>)
-    :RecyclerView.Adapter<LokasiAdapter.viewHolder>(){
+class LokasiAdapter(
+    var context: Context,
+    var lokasi: ArrayList<String>,
+    var lokasi_id: ArrayList<Int>
+) : RecyclerView.Adapter<LokasiAdapter.ViewHolder>() {
 
     lateinit var pre: SharedPreferences
 
-    var OnItemClick: (() -> Unit)? = null
-
-    class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+    var OnItemClick: ((String) -> Unit)? = null // Callback function to handle location selection
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val btnlokasi: Button = itemView.findViewById(R.id.butonlokasi)
 
+        init {
+            btnlokasi.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val selectedLocation = lokasi[position]
+                    OnItemClick?.invoke(selectedLocation) // Trigger location selection callback
+                }
+            }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
-        val view =
-            LayoutInflater
-                .from(parent.context)
-                .inflate(
-                    R.layout.lokasiitem,
-                    parent,
-                    false)
-
-        return viewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.lokasiitem, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: viewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var lks = lokasi[position]
         holder.btnlokasi.text = lks
         holder.btnlokasi.setOnClickListener {

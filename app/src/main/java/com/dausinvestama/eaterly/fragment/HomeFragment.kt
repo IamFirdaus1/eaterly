@@ -1,8 +1,11 @@
 package com.dausinvestama.eaterly.fragment
 
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,10 +15,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dausinvestama.eaterly.CartDatabase
+import com.dausinvestama.eaterly.MainActivity
+
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
@@ -27,6 +37,13 @@ import com.dausinvestama.eaterly.data.KantinList
 import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
 import com.dausinvestama.eaterly.pages.QrScannerActivity
 import com.dausinvestama.eaterly.utils.SharedPreferences
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
@@ -56,6 +73,9 @@ class HomeFragment() : Fragment() {
     var jenislist: ArrayList<JenisList> = ArrayList()
 
     lateinit var pre: SharedPreferences
+
+    private var selectedLocation: LatLng? = null // Declare selectedLocation as a class-level variable
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -193,10 +213,217 @@ class HomeFragment() : Fragment() {
     }
 
 
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "inikepanggil2")
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        val mapFragment = SupportMapFragment.newInstance()
+        childFragmentManager.beginTransaction().apply {
+            replace(binding.mapContainer.id, mapFragment)
+            commit()
+        }
+
+        mapFragment.getMapAsync { googleMap ->
+            // Enable Google Maps zoom controls
+            val uiSettings = googleMap.uiSettings
+            uiSettings.isZoomControlsEnabled = true
+
+            // Permanent markers for your locations
+            val sbh = LatLng(-6.282660058854142, 107.17077015160136)
+            googleMap.addMarker(MarkerOptions().position(sbh).title("SBH"))
+
+            val nbh = LatLng(-6.29862809919001, 107.16615125585714)
+            googleMap.addMarker(MarkerOptions().position(nbh).title("NBH"))
+
+            val presidentUniversityCanteen = LatLng(-6.285365515156995, 107.17007529334688)
+            googleMap.addMarker(MarkerOptions().position(presidentUniversityCanteen).title("President University Canteen"))
+
+            // Check if a location is selected from PopupFragment and prioritize it
+            if (selectedLocation != null) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation!!, 15f))
+                selectedLocation = null // Reset the selected location after updates
+                return@getMapAsync // Exit the map initialization since a selected location is available
+            } else {
+                // Continue with the current logic if no location is selected
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    googleMap.isMyLocationEnabled = true
+                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        location?.let { userLocation ->
+                            // Get the closest known location name
+                            val closestLocationName = getClosestLocationName(userLocation)
+                            // Update the "You are at" TextView
+                            val kantinTextView = view.findViewById<TextView>(R.id.kantin)
+                            kantinTextView.text = "$closestLocationName"
+
+                            // Move camera to the user's current location
+                            val currentLatLng = LatLng(userLocation.latitude, userLocation.longitude)
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                        } ?: run {
+                            // Center map on one of the static locations if user's location is not found
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sbh, 15f))
+                            Toast.makeText(context, "Defaulting to SBH location", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    // Request permissions from the user
+                    checkLocationPermission()
+                }
+            }
+        }
+
+
     }
+
+
+    // Function to handle location selection from PopupFragment
+    fun handleLocationSelection(selectedLocation: LatLng) {
+        this.selectedLocation = selectedLocation
+    }
+
+    fun getClosestLocationName(userLocation: Location): String {
+        // Define your locations with corresponding names
+        val locationsMap = mapOf(
+            "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
+            "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
+            "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
+        )
+
+        // Define the maximum distance (in meters) considered to be in bounds
+        val maxDistance = 1000 // Example value, defining a 1km scope
+
+        // Find closest location to the user's current location
+        var closestLocationName = "Out of bounds"
+        var smallestDistance = Float.MAX_VALUE // Change to Float
+        for ((name, location) in locationsMap) {
+            val result = FloatArray(1)
+            Location.distanceBetween(
+                userLocation.latitude,
+                userLocation.longitude,
+                location.latitude,
+                location.longitude,
+                result
+            )
+            val distance = result[0]
+            if (distance < smallestDistance) {
+                smallestDistance = distance
+                closestLocationName = name
+            }
+        }
+
+        // Check if the smallest distance is within the defined geographic scope
+        return if (smallestDistance > maxDistance) "too far away from Canteen" else closestLocationName
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission is granted, proceed with the location-related task
+                enableMyLocation()
+            } else {
+                // Permission is denied, show a message to the user
+                Toast.makeText(context, "Location permission is required for maps", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    private fun checkLocationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+                enableMyLocation()
+            }
+            shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected. In this UI,
+                // include a "cancel" or "no thanks" button that allows the user to
+                // continue using your app without granting the permission.
+                showInContextUI()
+            }
+            else -> {
+                // Directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                requestPermissionLauncher.launch(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+        }
+    }
+
+    private fun enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            val mapFragment = childFragmentManager.findFragmentById(binding.mapContainer.id) as SupportMapFragment?
+
+            mapFragment?.getMapAsync { googleMap ->
+                googleMap.isMyLocationEnabled = true
+
+                fusedLocationProviderClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful && task.result != null) {
+                        // Last known location is available
+                        val lastKnownLocation = task.result
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude), 15f))
+                    } else {
+                        // Consider requesting a new location update or handle the scenario where the location is not available
+                        Toast.makeText(requireContext(), "Location not available", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        } else {
+            // Request permissions from the user
+            checkLocationPermission()
+        }
+    }
+
+    /* the focusOnUserLocation function will not be needed if you only want to show a default location on the map and do not need to move the camera to the user's current location automatically.
+    private fun focusOnUserLocation(googleMap: GoogleMap) {
+        // Assuming you have already obtained the location elsewhere and have it stored:
+        val userLatLong = LatLng(pre.lastKnownLocationLatitude, pre.lastKnownLocationLongitude)
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 15f))
+        // Add marker or additional functionality as needed
+    }
+    */
+
+
+    private fun showInContextUI() {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Location Permission")
+            .setMessage("This app needs location permission to show you on the map.")
+            .setPositiveButton("Ok") { _, _ ->
+                requestPermissionLauncher.launch(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+            .setNegativeButton("No Thanks") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+    }
+
+
+
+
 
     private fun initkategori1() {
         val listCategory:RecyclerView = binding.listcategory
@@ -231,6 +458,9 @@ class HomeFragment() : Fragment() {
 
     private fun initjenis1() {
         var listjenis: RecyclerView = binding.listJenis
+
+
+
 
         pre = SharedPreferences(context)
 
@@ -302,4 +532,6 @@ class HomeFragment() : Fragment() {
 
         kantinviewer.setText(pre.location)
     }
+
+
 }
