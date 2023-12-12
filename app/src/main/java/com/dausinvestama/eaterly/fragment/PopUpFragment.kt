@@ -27,7 +27,6 @@ class PopUpFragment(context: Context) : DialogFragment() {
 
     lateinit var lokasiAdapter: LokasiAdapter
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
