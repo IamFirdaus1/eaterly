@@ -24,13 +24,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(HomeFragment())
         auth = FirebaseAuth.getInstance()
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
         binding.bottomnav.setOnItemSelectedListener {
-
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
 
             when(it.itemId){
@@ -38,23 +36,24 @@ class MainActivity : AppCompatActivity() {
                 R.id.orderlist -> replaceFragment(Orderlist())
                 R.id.cart -> replaceFragment(Cart())
                 R.id.profile -> replaceFragment(Profile())
-
                 else -> {
-
                 }
             }
             true
         }
 
-
+        // Call replaceFragment() with HomeFragment when the activity starts
+        replaceFragment(HomeFragment())
     }
 
-    private fun replaceFragment(fragment: Fragment){
+
+    private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.replace(R.id.frameLayout, fragment, "HomeFragmentTag") // Add the fragment with tag
         fragmentTransaction.commit()
     }
+
 
 
     fun signOut(){

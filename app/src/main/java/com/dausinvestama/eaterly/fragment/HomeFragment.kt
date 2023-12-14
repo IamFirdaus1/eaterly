@@ -74,7 +74,7 @@ class HomeFragment() : Fragment() {
 
     lateinit var pre: SharedPreferences
 
-    private var selectedLocation: LatLng? = null // Declare selectedLocation as a class-level variable
+    var selectedLocation: String? = null // Declare selectedLocation as a class-level variable
 
 
     override fun onCreateView(
@@ -214,6 +214,37 @@ class HomeFragment() : Fragment() {
 
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var googleMap: GoogleMap? = null // Declaring googleMap at the class level
+
+    fun handleLocationSelection(location: String?): Boolean {
+        if (location != null) {
+            val latLng: LatLng? = when (location) {
+                "NBH" -> LatLng(-6.29862809919001, 107.16615125585714)
+                "SBH" -> LatLng(-6.282660058854142, 107.17077015160136)
+                // Handle other location names and their respective LatLng coordinates
+                else -> null // Handle the case where the location name is not recognized
+            }
+
+            if (latLng != null) {
+                // Update the map's camera to the selected location
+                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                return true // Successfully handled the selection without overriding
+            }
+        }
+        return false // No location selected or handled
+    }
+
+
+
+    // Mapping between location names and LatLng coordinates
+    val locationCoordinates = mapOf(
+        "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
+        "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
+        "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
+        // Add other location cases here
+    )
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "inikepanggil2")
@@ -227,69 +258,53 @@ class HomeFragment() : Fragment() {
         }
 
         mapFragment.getMapAsync { googleMap ->
-            // Enable Google Maps zoom controls
             val uiSettings = googleMap.uiSettings
             uiSettings.isZoomControlsEnabled = true
 
             // Permanent markers for your locations
-            val sbh = LatLng(-6.282660058854142, 107.17077015160136)
-            googleMap.addMarker(MarkerOptions().position(sbh).title("SBH"))
-
-            val nbh = LatLng(-6.29862809919001, 107.16615125585714)
-            googleMap.addMarker(MarkerOptions().position(nbh).title("NBH"))
-
-            val presidentUniversityCanteen = LatLng(-6.285365515156995, 107.17007529334688)
-            googleMap.addMarker(MarkerOptions().position(presidentUniversityCanteen).title("President University Canteen"))
-
-            // Check if a location is selected from PopupFragment and prioritize it
-            if (selectedLocation != null) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation!!, 15f))
-                selectedLocation = null // Reset the selected location after updates
-                return@getMapAsync // Exit the map initialization since a selected location is available
-            } else {
-                // Continue with the current logic if no location is selected
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    googleMap.isMyLocationEnabled = true
-                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
-                        location?.let { userLocation ->
-                            // Get the closest known location name
-                            val closestLocationName = getClosestLocationName(userLocation)
-                            // Update the "You are at" TextView
-                            val kantinTextView = view.findViewById<TextView>(R.id.kantin)
-                            kantinTextView.text = "$closestLocationName"
-
-                            // Move camera to the user's current location
-                            val currentLatLng = LatLng(userLocation.latitude, userLocation.longitude)
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
-                        } ?: run {
-                            // Center map on one of the static locations if user's location is not found
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sbh, 15f))
-                            Toast.makeText(context, "Defaulting to SBH location", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } else {
-                    // Request permissions from the user
-                    checkLocationPermission()
-                }
+            locationCoordinates.forEach { (locationName, locationLatLng) ->
+                googleMap.addMarker(MarkerOptions().position(locationLatLng).title(locationName))
             }
+
+            // Inside onViewCreated
+            if (selectedLocation != null) {
+                Log.d(TAG, "Selected location is not null: $selectedLocation")
+                val locationLatLng = convertLocationToLatLng(selectedLocation)
+                if (locationLatLng != null) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15f))
+                    Log.d(TAG, "Map camera moved to selected location")
+                } else {
+                    Log.e(TAG, "Failed to convert selected location to LatLng")
+                }
+            } else {
+                // Fetch the selected location here before calling handleLocationSelection
+                // For example, assuming "NBH" is the default selected location
+                selectedLocation = "NBH"
+
+                Log.d(TAG, "No selected location available")
+                checkLocationPermission()
+                handleLocationSelection(selectedLocation)
+            }
+
         }
-
-
     }
+
+    fun convertLocationToLatLng(locationName: String?): LatLng? {
+        return locationCoordinates[locationName]
+    }
+
 
 
     // Function to handle location selection from PopupFragment
+    /*
     fun handleLocationSelection(selectedLocation: LatLng) {
         this.selectedLocation = selectedLocation
+        // Move the map's camera to the selected location
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15f))
     }
+    */
 
+    /*
     fun getClosestLocationName(userLocation: Location): String {
         // Define your locations with corresponding names
         val locationsMap = mapOf(
@@ -322,7 +337,7 @@ class HomeFragment() : Fragment() {
 
         // Check if the smallest distance is within the defined geographic scope
         return if (smallestDistance > maxDistance) "too far away from Canteen" else closestLocationName
-    }
+    }*/
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -377,14 +392,19 @@ class HomeFragment() : Fragment() {
             mapFragment?.getMapAsync { googleMap ->
                 googleMap.isMyLocationEnabled = true
 
-                fusedLocationProviderClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful && task.result != null) {
-                        // Last known location is available
-                        val lastKnownLocation = task.result
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude), 15f))
-                    } else {
-                        // Consider requesting a new location update or handle the scenario where the location is not available
-                        Toast.makeText(requireContext(), "Location not available", Toast.LENGTH_SHORT).show()
+                if (selectedLocation != null) {
+                    // Move the camera to the selected location if available
+                    val locationLatLng = convertLocationToLatLng(selectedLocation)
+                    locationLatLng?.let {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 15f))
+                    }
+                } else {
+                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        location?.let { userLocation ->
+                            // Move camera to the user's current location if no selected location
+                            val userLatLng = LatLng(userLocation.latitude, userLocation.longitude)
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
+                        }
                     }
                 }
             }
@@ -393,6 +413,12 @@ class HomeFragment() : Fragment() {
             checkLocationPermission()
         }
     }
+
+
+
+
+
+
 
     /* the focusOnUserLocation function will not be needed if you only want to show a default location on the map and do not need to move the camera to the user's current location automatically.
     private fun focusOnUserLocation(googleMap: GoogleMap) {
