@@ -42,6 +42,7 @@
             btnBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startActivity(new Intent(SellerInsertMenu.this, SellerActivity.class));
                     finish();
                 }
             });
