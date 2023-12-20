@@ -14,6 +14,7 @@ import com.dausinvestama.eaterly.adapter.CanteenOrderAdapter
 import com.dausinvestama.eaterly.data.Menu
 import com.dausinvestama.eaterly.data.OrderListData
 import com.dausinvestama.eaterly.databinding.FragmentOrderlistBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,8 +56,11 @@ class Orderlist : Fragment() {
 
     private fun getData() = CoroutineScope(Dispatchers.IO).launch {
         withContext(Dispatchers.Main) { progressBar.visibility = View.VISIBLE }
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        Log.d(TAG, "getDataUid: $userId")
         try {
             var orders = db.collection("orders")
+                .whereEqualTo("user_id", userId)
                 .get()
                 .await()
             val canteensWithMenusList = mutableListOf<OrderListData>()
@@ -90,7 +94,7 @@ class Orderlist : Fragment() {
                                     val price = orderDocument.get("total_price")
                                     val status = orderDocument.get("status")
                                     val meja = orderDocument.get("meja")
-                                    val orderid = orderDocument.id.toString()
+                                    val orderid = orderDocument.id
                                     Log.d(TAG, "Orderlist testing4: $canteenName menu $menuName quantity $quantity price $price")
                                     menusList.add(Menu(orderid, menuId, menuName, quantity, status, price, meja))
 

@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.R
@@ -27,6 +29,8 @@ class CanteenOrderAdapter(val canteens: MutableList<OrderListData>): RecyclerVie
         private val menuRecycler: RecyclerView = itemView.findViewById(R.id.recyclerhistory)
         private val menuMejaTxVw: TextView = itemView.findViewById(R.id.nomejaTxtview)
         private val idorderTxt: TextView = itemView.findViewById(R.id.idorderTxtview)
+        private val statusCoordinator: CoordinatorLayout = itemView.findViewById(R.id.statusCoordinator)
+        private val statusTxtVw: TextView = itemView.findViewById(R.id.statusorder)
 
         fun bind(canteen: OrderListData) {
             canteenNameTxVw.text = canteen.canteenName.toString()
@@ -34,6 +38,18 @@ class CanteenOrderAdapter(val canteens: MutableList<OrderListData>): RecyclerVie
             menuRecycler.adapter = MenuAdapter(canteen.menus)
             idorderTxt.text = canteen.menus.first().orderid.toString()
             menuMejaTxVw.text = canteen.menus.first().menuMeja.toString()
+            when (canteen.menus.first().menuStatus.toString()) {
+                "0" -> {
+                    statusCoordinator.setBackgroundResource(R.drawable.background_preparing)
+                    statusTxtVw.text = "Preparing"
+                }
+                "1" -> {
+                    statusCoordinator.setBackgroundResource(R.drawable.background_onway)
+                    statusTxtVw.text = "On Way"
+                    statusTxtVw.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_green))
+                }
+                else -> {}
+            }
         }
     }
 }
