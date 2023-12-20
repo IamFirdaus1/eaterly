@@ -9,17 +9,9 @@
     tools:context=".pages.QrScannerActivity">
 
     <com.budiyev.android.codescanner.CodeScannerView
-        android:layout_weight="3"
         android:id="@+id/qrscan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:autoFocusButtonVisible="true"/>
-
-    <TextView
-        android:id="@+id/tesresult"
-        android:layout_weight="20"
-        android:text="tess"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

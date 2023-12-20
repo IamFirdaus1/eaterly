@@ -27,6 +27,16 @@ class PopUpFragment(context: Context) : DialogFragment() {
 
     lateinit var lokasiAdapter: LokasiAdapter
 
+    interface OnPlaceChangedCallback{
+        fun onPlaceChanged(location: String, loc_id: Int)
+    }
+
+    private lateinit var onPlaceChanged: OnPlaceChangedCallback
+
+    fun setOnLocationChangedCallback(onPlacedChanged: OnPlaceChangedCallback) {
+        this.onPlaceChanged = onPlacedChanged
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,11 +63,20 @@ class PopUpFragment(context: Context) : DialogFragment() {
         db.collection("locations").get().addOnSuccessListener { result ->
             for (document in result) {
                 arraylokasi.add(document.getString("name").toString())
-                var araylokasi = document.id
-                arraylokasiid.add(araylokasi.toInt())
+                val arraylokasi = document.id
+                arraylokasiid.add(arraylokasi.toInt())
                 Log.d(TAG, "popupfragment for location ${document.get("name")} ")
             }
-            lokasiAdapter = context?.let { LokasiAdapter(it, arraylokasi, arraylokasiid) }!!
+            if (isAdded) {
+                lokasiAdapter = LokasiAdapter(requireContext(), arraylokasi, arraylokasiid)
+                lokasiAdapter.setOnItemClickCallback(object: LokasiAdapter.OnItemClickCallback {
+                    override fun onItemClick(location: String, locationId: Int) {
+                        onPlaceChanged.onPlaceChanged(location, locationId)
+                        dismiss()
+                    }
+
+                })
+            }
             Log.d(TAG, "popupfragmet for location outside loop: ${arraylokasi[0]} ${arraylokasi[1]} ${arraylokasiid[0]} ${arraylokasiid[1]}" )
             recyclerpopup.adapter = lokasiAdapter
             recyclerpopup.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

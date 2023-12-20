@@ -95,7 +95,7 @@
                 }
             });
 
-            btnSubmit = findViewById(R.id.btn_submit);
+            btnSubmit = findViewById(R.id.btnSave);
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

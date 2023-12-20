@@ -16,7 +16,16 @@ class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>, var lok
 
     lateinit var pre: SharedPreferences
 
-    var OnItemClick: (() -> Unit)? = null
+    interface OnItemClickCallback {
+        fun onItemClick(location: String, locationId: Int)
+    }
+
+    private lateinit var onItemClicked: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClick: OnItemClickCallback){
+        this.onItemClicked = onItemClick
+    }
+
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -37,19 +46,18 @@ class LokasiAdapter(var context: Context, var lokasi: ArrayList<String>, var lok
     }
 
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
-        var lks = lokasi[position]
+        val lks = lokasi[position]
         holder.btnlokasi.text = lks
         holder.btnlokasi.setOnClickListener {
             pre = SharedPreferences(context)
-            var getlks = lokasi[position]
-            var getid = lokasi_id[position]
-            pre.location = getlks
-            pre.location_id = getid
+            pre.location = lokasi[position]
+            pre.location_id = lokasi_id[position]
             pre.nomor_meja = 0
-            var localsdb: AppDatabase = AppDatabase.getInstance(context)
-            var localdb: CartDatabase = CartDatabase.getInstance(context)
+            val localsdb: AppDatabase = AppDatabase.getInstance(context)
+            val localdb: CartDatabase = CartDatabase.getInstance(context)
             localdb.outerCartDao().delete()
             localsdb.cartDao().delete()
+            onItemClicked.onItemClick(lokasi[position], lokasi_id[position])
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.budiyev.android.codescanner.AutoFocusMode
@@ -102,7 +103,7 @@ class QrScannerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        codeScan.startPreview()
     }
 
     override fun onPause() {

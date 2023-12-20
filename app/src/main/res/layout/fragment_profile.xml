@@ -94,16 +94,6 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false" />
 
-
-        <!--    <ImageButton-->
-        <!--        android:id="@+id/btnLogOut"-->
-        <!--        android:layout_width="48dp"-->
-        <!--        android:layout_height="48dp"-->
-        <!--        android:layout_gravity="end"-->
-        <!--        android:background="@drawable/icon_ripple"-->
-        <!--        android:padding="8dp"-->
-        <!--        android:scaleType="centerInside"-->
-        <!--        android:src="@drawable/logout_icon" />-->
     </LinearLayout>
 
 
