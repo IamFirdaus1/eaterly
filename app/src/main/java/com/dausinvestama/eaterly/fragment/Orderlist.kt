@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.adapter.CanteenOrderAdapter
@@ -28,6 +29,7 @@ class Orderlist : Fragment() {
     val db = FirebaseFirestore.getInstance()
 
     private lateinit var recycler: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
 
     override fun onCreateView(
@@ -38,12 +40,12 @@ class Orderlist : Fragment() {
         val view = binding.root
 
         recycler = binding.recyclerhistoryfragment
+        progressBar = binding.progressBar
 
         recycler = binding.recyclerhistoryfragment
         recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         canteenAdapter = CanteenOrderAdapter(mutableListOf())
         recycler.adapter = canteenAdapter
-
 
         getData()
 
@@ -52,6 +54,7 @@ class Orderlist : Fragment() {
 
 
     private fun getData() = CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.Main) { progressBar.visibility = View.VISIBLE }
         try {
             var orders = db.collection("orders")
                 .get()
@@ -109,9 +112,9 @@ class Orderlist : Fragment() {
                 if (canteensWithMenusList.isNotEmpty()) {
                     canteenAdapter = CanteenOrderAdapter(canteensWithMenusList)
                     recycler.adapter = canteenAdapter
-                    // Any other UI updates
+
+                    progressBar.visibility = View.GONE
                 } else {
-                    // Handle empty list scenario
                 }
             }
         } catch (e: Exception){

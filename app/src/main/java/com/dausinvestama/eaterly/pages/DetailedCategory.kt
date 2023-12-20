@@ -4,6 +4,8 @@ import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +27,7 @@ class DetailedCategory : AppCompatActivity() {
     private lateinit var binding: ActivityDetailedListBinding
     lateinit var kategoritextview: TextView
     lateinit var detailRecycler: RecyclerView
+    lateinit var progressBar: ProgressBar
 
     lateinit private var localdb: AppDatabase
     lateinit private var cartlocaldb: CartDatabase
@@ -39,6 +42,7 @@ class DetailedCategory : AppCompatActivity() {
         binding = ActivityDetailedListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        progressBar = binding.progressBar
         detailRecycler  = binding.detailrecycler
         kategoritextview = binding.categories
         val categoryList = intent.getParcelableExtra<CategoryList>("categorylist")
@@ -49,22 +53,31 @@ class DetailedCategory : AppCompatActivity() {
         val id_categories: Int? = categoryList?.id_kategori
         val id_kantin: Int? = kantinList?.idkantin
         val id_jenis: Int? = jenisList?.id_jenis
+        progressBar.visibility = View.VISIBLE
 
         Log.d(TAG, "cekpoint1: ${id_jenis} ")
 
         if (categoryList != null) {
             kategoritextview.setText(categoryList.Categorylist)
+
         }else if (id_kantin != null) {
             kategoritextview.setText(kantinList.NamaKantin)
             initkantin1(id_kantin)
+
         }
         if (id_jenis != null) {
             initjenis1(id_jenis)
+
         }
         if (id_categories != null) {
             initkategori(id_categories)
+
         }
 
+    }
+
+    private fun destroyProgress() {
+        progressBar.visibility = View.GONE
     }
 
     private fun initjenis1(id_jenis: Int) {
@@ -109,6 +122,8 @@ class DetailedCategory : AppCompatActivity() {
                                 var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
                                 detailRecycler.setHasFixedSize(true)
                                 detailRecycler.layoutManager = layoutmanager
+
+                                destroyProgress()
 
                                 localdb = AppDatabase.getInstance(applicationContext)
                                 cartlocaldb = CartDatabase.getInstance(applicationContext)
@@ -201,6 +216,8 @@ class DetailedCategory : AppCompatActivity() {
                                 var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
                                 detailRecycler.setHasFixedSize(true)
                                 detailRecycler.layoutManager = layoutmanager
+
+                                destroyProgress()
 
                                 localdb = AppDatabase.getInstance(applicationContext)
                                 cartlocaldb = CartDatabase.getInstance(applicationContext)
@@ -298,6 +315,8 @@ class DetailedCategory : AppCompatActivity() {
                                 var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(this, 1)
                                 detailRecycler.setHasFixedSize(true)
                                 detailRecycler.layoutManager = layoutmanager
+
+                                destroyProgress()
 
                                 localdb = AppDatabase.getInstance(applicationContext)
                                 cartlocaldb = CartDatabase.getInstance(applicationContext)
