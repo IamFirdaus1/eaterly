@@ -25,20 +25,13 @@ class LokasiAdapter(
     var OnItemClick: ((String) -> Unit)? = null // Callback function to handle location selection
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val btnlokasi: Button = itemView.findViewById(R.id.butonlokasi)
-        val btnJaya: Button = itemView.findViewById(R.id.butonjaya)
 
         init {
             Log.d(TAG, "Resource ID in ViewHolder: ${btnlokasi.id}")
-            Log.d(TAG, "KPUANG: ${btnJaya}")
             Log.d(TAG, "View Hierarchy: $itemView")
             Log.d(TAG, "Button ID: ${itemView.findViewById<Button>(R.id.butonlokasi)}")
             Log.d(TAG, "View Holder: $adapterPosition")
             Log.d(TAG, "No position: ${RecyclerView.NO_POSITION}")
-
-            // SET CLICK LISTENER FOR KPUANG
-            btnJaya.setOnClickListener {
-                Log.d(TAG, "JAYA JAYA JAYA")
-            }
 
 
             val position = adapterPosition

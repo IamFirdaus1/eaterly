@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.LokasiAdapter
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
@@ -89,14 +90,20 @@ class PopUpFragment(context: Context) : DialogFragment() {
 
                 latLng?.let { location ->
                     val homeFragment = requireActivity().supportFragmentManager.findFragmentByTag("HomeFragmentTag") as? HomeFragment
-                    homeFragment?.handleLocationSelection(selectedLocation)
+                    //homeFragment?.handleLocationSelection(selectedLocation)
 
+                    homeFragment?.kantinviewer?.text = selectedLocation
                     // Reload the map by finding the SupportMapFragment and calling getMapAsync again
                     val mapFragment = homeFragment?.childFragmentManager?.findFragmentById(R.id.mapContainer) as? SupportMapFragment
                     mapFragment?.getMapAsync { googleMap ->
                         // Refresh the map or update it with new data
                         // This callback will initialize the map again with new data if needed
+                        // Move the camera to the selected location
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+
+                        Log.d(TAG, "Map refreshed with the selected location")
                     }
+                    Log.d(TAG, "I AM EXECUTING")
                 }
 
                 dismiss()

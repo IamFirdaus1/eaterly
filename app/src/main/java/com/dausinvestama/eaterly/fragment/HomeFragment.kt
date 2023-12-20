@@ -257,6 +257,9 @@ class HomeFragment() : Fragment() {
             commit()
         }
 
+        Log.d(tag, "SELECTED LOCATION IN HOME FRAGMENT ${selectedLocation}")
+        Log.d(tag, "PRE LOCATION ${pre.location}")
+
         mapFragment.getMapAsync { googleMap ->
             val uiSettings = googleMap.uiSettings
             uiSettings.isZoomControlsEnabled = true
@@ -266,25 +269,38 @@ class HomeFragment() : Fragment() {
                 googleMap.addMarker(MarkerOptions().position(locationLatLng).title(locationName))
             }
 
-            // Inside onViewCreated
-            if (selectedLocation != null) {
-                Log.d(TAG, "Selected location is not null: $selectedLocation")
-                val locationLatLng = convertLocationToLatLng(selectedLocation)
-                if (locationLatLng != null) {
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15f))
-                    Log.d(TAG, "Map camera moved to selected location")
-                } else {
-                    Log.e(TAG, "Failed to convert selected location to LatLng")
-                }
+            val locationLatLng = convertLocationToLatLng(pre.location)
+            if (locationLatLng != null) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15f))
+                Log.d(TAG, "Map camera moved to selected location")
             } else {
-                // Fetch the selected location here before calling handleLocationSelection
-                // For example, assuming "NBH" is the default selected location
                 selectedLocation = "NBH"
 
                 Log.d(TAG, "No selected location available")
                 checkLocationPermission()
                 handleLocationSelection(selectedLocation)
             }
+
+            // Inside onViewCreated
+            /**if (selectedLocation != null) {
+            Log.d(TAG, "Selected location is not null: $selectedLocation")
+            val locationLatLng = convertLocationToLatLng(selectedLocation)
+            if (locationLatLng != null) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15f))
+            Log.d(TAG, "Map camera moved to selected location")
+            } else {
+            Log.e(TAG, "Failed to convert selected location to LatLng")
+            }
+            } else {
+
+            // Fetch the selected location here before calling handleLocationSelection
+            // For example, assuming "NBH" is the default selected location
+            selectedLocation = "NBH"
+
+            Log.d(TAG, "No selected location available")
+            checkLocationPermission()
+            handleLocationSelection(selectedLocation)
+            }*/
 
         }
     }
@@ -391,6 +407,7 @@ class HomeFragment() : Fragment() {
 
             mapFragment?.getMapAsync { googleMap ->
                 googleMap.isMyLocationEnabled = true
+
 
                 if (selectedLocation != null) {
                     // Move the camera to the selected location if available
