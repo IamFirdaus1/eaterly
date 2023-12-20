@@ -135,7 +135,8 @@
                     android:fontFamily="@font/interbold"
                     android:text="Scan Meja"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/green"/>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_margin="10dp"
