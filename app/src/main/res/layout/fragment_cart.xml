@@ -50,7 +50,7 @@
 
                         <TextView
                             style="@style/InfoTextView"
-                            android:text="No Kursi:" />
+                            android:text="No. Meja:" />
 
                         <TextView
                             style="@style/InfoTextView"
