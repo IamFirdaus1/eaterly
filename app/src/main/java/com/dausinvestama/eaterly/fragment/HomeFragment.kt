@@ -60,7 +60,7 @@ class HomeFragment() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         firebaseAuth = FirebaseAuth.getInstance()
         binding = FragmentHomeBinding.inflate(layoutInflater)
         val view = binding.root
