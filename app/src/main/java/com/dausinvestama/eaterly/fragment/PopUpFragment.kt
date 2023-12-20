@@ -27,6 +27,16 @@ class PopUpFragment(context: Context) : DialogFragment() {
 
     lateinit var lokasiAdapter: LokasiAdapter
 
+    interface OnPlaceChangedCallback{
+        fun onPlaceChanged(location: String, loc_id: Int)
+    }
+
+    private lateinit var onPlaceChanged: OnPlaceChangedCallback
+
+    fun setOnLocationChangedCallback(onPlacedChanged: OnPlaceChangedCallback) {
+        this.onPlaceChanged = onPlacedChanged
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,12 +64,18 @@ class PopUpFragment(context: Context) : DialogFragment() {
             for (document in result) {
                 arraylokasi.add(document.getString("name").toString())
                 val arraylokasi = document.id
-                Log.d(TAG, "ID lokasi ${arraylokasi}")
                 arraylokasiid.add(arraylokasi.toInt())
                 Log.d(TAG, "popupfragment for location ${document.get("name")} ")
             }
             if (isAdded) {
                 lokasiAdapter = LokasiAdapter(requireContext(), arraylokasi, arraylokasiid)
+                lokasiAdapter.setOnItemClickCallback(object: LokasiAdapter.OnItemClickCallback {
+                    override fun onItemClick(location: String, locationId: Int) {
+                        onPlaceChanged.onPlaceChanged(location, locationId)
+                        dismiss()
+                    }
+
+                })
             }
             Log.d(TAG, "popupfragmet for location outside loop: ${arraylokasi[0]} ${arraylokasi[1]} ${arraylokasiid[0]} ${arraylokasiid[1]}" )
             recyclerpopup.adapter = lokasiAdapter
