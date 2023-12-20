@@ -86,8 +86,10 @@ class Orderlist : Fragment() {
                                     val menuName = menuDocument.getString("name")
                                     val price = orderDocument.get("total_price")
                                     val status = orderDocument.get("status")
+                                    val meja = orderDocument.get("meja")
+                                    val orderid = orderDocument.id.toString()
                                     Log.d(TAG, "Orderlist testing4: $canteenName menu $menuName quantity $quantity price $price")
-                                    menusList.add(Menu(menuId, menuName, quantity, status, price))
+                                    menusList.add(Menu(orderid, menuId, menuName, quantity, status, price, meja))
 
                                 }
                             }
@@ -117,8 +119,5 @@ class Orderlist : Fragment() {
         }
     }
 
-    private fun updateRecyclerView(canteensWithMenusList: List<OrderListData>) {
-        canteenAdapter.updateData(canteensWithMenusList)
-    }
 
 }

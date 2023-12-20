@@ -7,9 +7,11 @@ data class OrderListData(
 )
 
 data class Menu(
+    val orderid: Any?,
     val menuId: Any?,
     val menuName: Any?,
     val menuQuantity: Any?,
     val menuStatus: Any?,
-    val menuTotalprice: Any?
+    val menuTotalprice: Any?,
+    val menuMeja: Any?
 )
