@@ -53,11 +53,14 @@ class PopUpFragment(context: Context) : DialogFragment() {
         db.collection("locations").get().addOnSuccessListener { result ->
             for (document in result) {
                 arraylokasi.add(document.getString("name").toString())
-                var araylokasi = document.id
-                arraylokasiid.add(araylokasi.toInt())
+                val arraylokasi = document.id
+                Log.d(TAG, "ID lokasi ${arraylokasi}")
+                arraylokasiid.add(arraylokasi.toInt())
                 Log.d(TAG, "popupfragment for location ${document.get("name")} ")
             }
-            lokasiAdapter = context?.let { LokasiAdapter(it, arraylokasi, arraylokasiid) }!!
+            if (isAdded) {
+                lokasiAdapter = LokasiAdapter(requireContext(), arraylokasi, arraylokasiid)
+            }
             Log.d(TAG, "popupfragmet for location outside loop: ${arraylokasi[0]} ${arraylokasi[1]} ${arraylokasiid[0]} ${arraylokasiid[1]}" )
             recyclerpopup.adapter = lokasiAdapter
             recyclerpopup.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
