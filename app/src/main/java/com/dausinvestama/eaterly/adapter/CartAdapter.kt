@@ -19,7 +19,7 @@ import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
 
 
-class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
+class CartAdapter(private var contex: Context?, var cartData: ArrayList<CartDb>)
     :RecyclerView.Adapter<CartAdapter.myHolder>(){
 
     var arraycartorder = mutableListOf<CartItemDb>()

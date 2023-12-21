@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dausinvestama.eaterly.AppDatabase
@@ -37,6 +38,8 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
         val harga: TextView = itemView.findViewById(R.id.harga)
         val clearmenu: Button = itemView.findViewById(R.id.clearmenu)
         val jumlahmenu: TextView = itemView.findViewById(R.id.jumlah)
+        val cvMin : CardView = itemView.findViewById(R.id.cv_min)
+        val cvAdd : CardView = itemView.findViewById(R.id.cv_add)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): myHolder {
@@ -52,7 +55,7 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
 
     override fun onBindViewHolder(holder: myHolder, position: Int) {
 
-        var ct = cartOrderData!![position]
+        val ct = cartOrderData!![position]
 
         holder.nama_makanan.text = ct.nama_makanan
         Glide.with(context!!).load(ct.gambar_makanan).into(holder.gambarcartOrder)
@@ -64,6 +67,7 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
             cartItemDao.deleteid(ct)
             cartOrderData!!.clear()
             updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
+            cartItemDao.deleteid(ct)
             getData(ct.id_kantin)
             notifyItemChanged(position)
         }
@@ -81,6 +85,16 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
             val cartItemDao = localdb.cartDao()
             cartItemDao.decrementJumlah(ct.id_makanan)
             updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
+
+        }
+        if (ct.jumlah == 1){
+            holder.butonkurang.isEnabled = false
+            holder.butonkurang.isActivated = false
+            holder.cvMin.alpha = 0.5f
+        } else if (ct.jumlah == 2) {
+            holder.butonkurang.isEnabled = true
+            holder.butonkurang.isActivated = true
+            holder.cvMin.alpha = 1f
         }
 
         /* cartItemViewModel = ViewModelProvider(this).get(cartItemViewModel::class.java)

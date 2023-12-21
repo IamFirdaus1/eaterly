@@ -63,6 +63,9 @@ class HomeFragment() : Fragment() {
     lateinit var btnscan: Button
     lateinit var tvmeja: TextView
 
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var googleMap: GoogleMap? = null // Declaring googleMap at the class level
+
     lateinit var adapterkategori: CategoryAdapter
     var listkategori: ArrayList<CategoryList> = ArrayList()
 
@@ -217,10 +220,6 @@ class HomeFragment() : Fragment() {
 
         return view
     }
-
-
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var googleMap: GoogleMap? = null // Declaring googleMap at the class level
 
     private fun handleLocationSelection(location: String?): Boolean {
         if (location != null) {
@@ -389,7 +388,10 @@ class HomeFragment() : Fragment() {
                     val y = document.getString("link") as String
                     val z = document.id.toInt()
 
-                    listkategori.add(CategoryList(x, y, z))
+                    val localListCateg = ArrayList<CategoryList>()
+
+                    localListCateg.add(CategoryList(x, y, z))
+                    listkategori = localListCateg
                 }
 
                 adapterkategori = CategoryAdapter(requireContext(), listkategori)
@@ -423,7 +425,10 @@ class HomeFragment() : Fragment() {
 
                     Log.d(TAG, "initjenis in fragmenthome: $x $y $z")
 
-                    jenislist.add(JenisList(y, z, x))
+                    val localListJenis = ArrayList<JenisList>()
+                    localListJenis.add(JenisList(y, z, x))
+
+                    jenislist = localListJenis
                 }
                 Log.d(TAG, "initjenis in fragmenthome outerloop: ${result.size()}")
                 adapterjenis = AdapterJenis(this, jenislist)
@@ -456,7 +461,10 @@ class HomeFragment() : Fragment() {
                     val y = document.get("url") as String
                     val z = document.id.toInt()
 
-                    listcanteen.add(KantinList(y, x, z, 1))
+                    val localListCanteen = ArrayList<KantinList>()
+
+                    localListCanteen.add(KantinList(y, x, z, 1))
+                    listcanteen = localListCanteen
                 }
                 adapterkantin = KantinAdapter(this, listcanteen)
                 binding.apply {
