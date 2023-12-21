@@ -45,7 +45,7 @@
         <activity
             android:name=".pages.AccountActivity"
             android:exported="false" />
-        <activity-->
+        <activity
             android:name=".SellerRegisCounter"
             android:exported="false" />
         <activity
