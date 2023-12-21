@@ -36,7 +36,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAUipevyx02gWV6VTlAMnzjz9TFUQSJXa0"/> <!-- PUT YOUR OWN API -->
 
-
         <activity
             android:name=".SellerInsertMenu"
             android:exported="false"/>

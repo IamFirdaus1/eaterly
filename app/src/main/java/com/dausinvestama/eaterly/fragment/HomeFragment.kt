@@ -238,7 +238,7 @@ class HomeFragment() : Fragment() {
         return false // No location selected or handled
     }
 
-    val locationCoordinates = mapOf(
+    private val locationCoordinates = mapOf(
         "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
         "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
         "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
@@ -261,6 +261,7 @@ class HomeFragment() : Fragment() {
         Log.d(tag, "PRE LOCATION ${pre.location}")
 
         mapFragment.getMapAsync { googleMap ->
+            this.googleMap = googleMap
             val uiSettings = googleMap.uiSettings
             uiSettings.isZoomControlsEnabled = true
 
