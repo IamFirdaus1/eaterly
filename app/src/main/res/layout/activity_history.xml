@@ -39,10 +39,6 @@
             style="@style/NavButton"
             android:text="@string/history"/>
 
-        <Button
-            android:id="@+id/btn_ongoing"
-            style="@style/NavButton"
-            android:text="@string/ongoing"/>
 
     </LinearLayout>
 
