@@ -20,8 +20,8 @@ class SellerBlankFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
 
     val db = FirebaseFirestore.getInstance()
-    lateinit var btnGo : Button
-    lateinit var usernameview: TextView
+    private lateinit var btnGo : Button
+    private lateinit var usernameview: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

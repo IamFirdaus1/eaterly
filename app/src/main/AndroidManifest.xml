@@ -46,6 +46,9 @@
             android:name=".pages.AccountActivity"
             android:exported="false" />
         <activity
+            android:name=".SellerRegisCounter"
+            android:exported="false" />
+        <activity
             android:name=".pages.HistoryActivity"
             android:exported="false" />
         <activity

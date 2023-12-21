@@ -1,6 +1,8 @@
 package com.dausinvestama.eaterly.utils
 
+import android.content.Context
 import android.content.res.TypedArray
+import androidx.appcompat.app.AlertDialog
 import com.dausinvestama.eaterly.data.Settings
 
 object Utils {
