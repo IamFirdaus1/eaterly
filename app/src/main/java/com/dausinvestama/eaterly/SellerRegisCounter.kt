@@ -76,8 +76,6 @@ class SellerRegisCounter : AppCompatActivity() {
 
         dropDownLoc.adapter = getLocationAdapter()
 
-//        setupRadioGroup()
-
         buttonImage.setOnClickListener {
             checkCameraPermission()
         }
