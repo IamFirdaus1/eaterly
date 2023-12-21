@@ -104,7 +104,7 @@ class DetailedCategory : AppCompatActivity() {
                         .addOnSuccessListener {canteenDocument ->
                             if (canteenDocument.exists()) {
                                 var nama_kantin = canteenDocument.getString("name") as String
-                                var orderqueue = (canteenDocument.get("order_queue") as Long).toInt()
+                                var orderqueue = canteenDocument.get("order_queue")
                                 detalList.add(CategoryDetailData(
                                     nama_makanan,
                                     id_makanan,
@@ -198,7 +198,7 @@ class DetailedCategory : AppCompatActivity() {
                         .addOnSuccessListener {canteenDocument ->
                             if (canteenDocument.exists()) {
                                 var nama_kantin = canteenDocument.getString("name") as String
-                                var orderqueue = (canteenDocument.get("order_queue") as Long).toInt()
+                                var orderqueue = canteenDocument.get("order_queue")
                                 detalList.add(CategoryDetailData(
                                     nama_makanan,
                                     id_makanan,
@@ -297,7 +297,7 @@ class DetailedCategory : AppCompatActivity() {
                         .addOnSuccessListener {canteenDocument ->
                             if (canteenDocument.exists()) {
                                 var nama_kantin = canteenDocument.getString("name") as String
-                                var orderqueue = (canteenDocument.get("order_queue") as Long).toInt()
+                                var orderqueue = canteenDocument.get("order_queue")
                                 detalList.add(CategoryDetailData(
                                     nama_makanan,
                                     id_makanan,
