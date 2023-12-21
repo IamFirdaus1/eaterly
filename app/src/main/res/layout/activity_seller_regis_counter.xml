@@ -13,7 +13,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:backgroundTint="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,7 +60,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="354dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="20dp"
@@ -107,40 +108,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/interbold"
+                android:paddingBottom="7dp"
                 android:text="Location"
                 android:textColor="@color/green"
                 android:textSize="14sp" />
 
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="wrap_content"
+            <Spinner
+                android:id="@+id/spinnerLocation"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/radioButtonSBH"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:buttonTint="@color/green"
-                    android:checked="true"
-                    android:text="SBH" />
-
-                <RadioButton
-                    android:id="@+id/radioButtonNBH"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/green"
-                    android:text="NBH" />
-
-            </RadioGroup>
+                android:background="@drawable/arrow_spinner"
+                android:dropDownSelector="@color/green"
+                android:elevation="5dp"
+                android:paddingVertical="10dp"
+                android:spinnerMode="dropdown" />
 
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/interbold"
+                android:paddingTop="20dp"
                 android:text="Photo"
                 android:textColor="@color/green"
                 android:textSize="14sp" />
@@ -156,18 +144,18 @@
                 android:id="@+id/buttonImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:backgroundTint="@color/grey_light"
                 android:text="upload"
                 android:textColor="@color/white"
-                android:textSize="12dp"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="12dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                app:cardCornerRadius="20dp"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="30dp"
+                app:cardCornerRadius="20dp">
 
                 <ImageView
                     android:id="@+id/imagePreview"
@@ -181,11 +169,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:textSize="14sp"
-                android:padding="15dp"
-                android:fontFamily="@font/interbold"
                 android:backgroundTint="@color/green"
-                android:text="Submit" />
+                android:fontFamily="@font/interbold"
+                android:padding="15dp"
+                android:text="Submit"
+                android:textSize="14sp" />
 
         </LinearLayout>
 

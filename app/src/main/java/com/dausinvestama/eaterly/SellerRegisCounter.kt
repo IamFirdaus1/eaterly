@@ -11,10 +11,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +51,7 @@ class SellerRegisCounter : AppCompatActivity() {
     private lateinit var editTextName: EditText
     private lateinit var editTextDesc: EditText
     private lateinit var buttonSubmit: Button
+    private lateinit var dropDownLoc: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,7 @@ class SellerRegisCounter : AppCompatActivity() {
         buttonSubmit = binding.buttonSubmit
         editTextName = binding.editTextCounterName
         editTextDesc = binding.editTextCounterDesc
+        dropDownLoc = binding.spinnerLocation
 
         buttonBack.setOnClickListener {
             Intent(this@SellerRegisCounter, SellerActivity::class.java).also {
@@ -70,7 +74,9 @@ class SellerRegisCounter : AppCompatActivity() {
             }
         }
 
-        setupRadioGroup()
+        dropDownLoc.adapter = getLocationAdapter()
+
+//        setupRadioGroup()
 
         buttonImage.setOnClickListener {
             checkCameraPermission()
@@ -81,17 +87,23 @@ class SellerRegisCounter : AppCompatActivity() {
         }
     }
 
-    private fun setupRadioGroup() {
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val sbhChecked = checkedId == R.id.radioButtonSBH
-            val nbhChecked = checkedId == R.id.radioButtonNBH
+    private fun getLocationAdapter(): ArrayAdapter<String> {
+        val locationList = ArrayList<String>()
 
-            if (sbhChecked) {
-                binding.radioButtonNBH.isChecked = false
-            } else if (nbhChecked) {
-                binding.radioButtonSBH.isChecked = false
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, locationList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        FirebaseFirestore.getInstance().collection("locations")
+            .get().addOnCompleteListener{task ->
+                if(task.isSuccessful){
+                    for(document in task.result!!){
+                        val loc = document.getString("name")
+                        locationList.add(loc!!)
+                    }
+                    adapter.notifyDataSetChanged()
+                }
             }
-        }
+        return adapter
     }
 
     private fun checkCameraPermission() {
@@ -170,7 +182,7 @@ class SellerRegisCounter : AppCompatActivity() {
     private fun storeCounterData() {
         val name = editTextName.text.toString()
         val desc = editTextDesc.text.toString()
-        val locationId = if (binding.radioButtonSBH.isChecked) 1 else 2 // Change as needed
+        val locationId = dropDownLoc.selectedItem.toString()
         val uid = auth.currentUser?.uid
 
         if (uid != null) {

@@ -45,9 +45,9 @@
         <activity
             android:name=".pages.AccountActivity"
             android:exported="false" />
-        <activity
-            android:name=".SellerRegisCounter"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".SellerRegisCounter"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".pages.HistoryActivity"
             android:exported="false" />
@@ -73,6 +73,10 @@
         </activity>
         <activity
             android:name=".IntroActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".SellerRegisCounter"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
