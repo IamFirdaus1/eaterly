@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.dausinvestama.eaterly">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -39,6 +38,9 @@
 
 
         <activity
+            android:name=".SellerInsertMenu"
+            android:exported="false"/>
+        <activity
             android:name=".pages.EditProfileActivity"
             android:exported="false" />
         <activity
@@ -56,7 +58,7 @@
             tools:ignore="MissingClass" />
         <activity
             android:name=".SignInActivity"
-            android:exported="false" />
+            android:exported="true"/>
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
@@ -65,13 +67,13 @@
             android:exported="false" />
         <activity
             android:name=".SellerActivity"
-            android:exported="false" />
+            android:exported="true">
+        </activity>
         <activity
             android:name=".IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

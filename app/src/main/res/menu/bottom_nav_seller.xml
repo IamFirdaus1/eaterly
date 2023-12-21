@@ -9,9 +9,9 @@
         android:title="Orderlist"
         android:icon="@drawable/plus"/>
 
-    <item android:id="@+id/cart"
-        android:title="Cart"
-        android:icon="@drawable/cart"/>
+    <item android:id="@+id/counter"
+        android:title="Counter"
+        android:icon="@drawable/food"/>
 
     <item android:id="@+id/profile"
         android:title="Profile"

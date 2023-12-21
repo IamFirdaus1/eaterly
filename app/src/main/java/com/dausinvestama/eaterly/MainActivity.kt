@@ -53,12 +53,4 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.frameLayout, fragment, "HomeFragmentTag") // Add the fragment with tag
         fragmentTransaction.commit()
     }
-
-
-
-    fun signOut(){
-        auth.signOut()
-        startActivity(Intent(this, SignInActivity::class.java))
-        finish()
-    }
 }

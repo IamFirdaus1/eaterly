@@ -22,9 +22,18 @@ class LokasiAdapter(
 
     lateinit var pre: SharedPreferences
 
-    var OnItemClick: ((String) -> Unit)? = null // Callback function to handle location selection
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val btnlokasi: Button = itemView.findViewById(R.id.butonlokasi)
+
+    interface OnItemClickCallback {
+        fun onItemClick(location: String, locationId: Int)
+    }
+
+    private lateinit var onItemClicked: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClick: OnItemClickCallback){
+        this.onItemClicked = onItemClick
+    }
 
         init {
             Log.d(TAG, "Resource ID in ViewHolder: ${btnlokasi.id}")
@@ -53,19 +62,14 @@ class LokasiAdapter(
         }
     }
 
-
-
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.lokasiitem, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var lks = lokasi[position]
+    override fun onBindViewHolder(holder: viewHolder, position: Int) {
+        val lks = lokasi[position]
         holder.btnlokasi.text = lks
 
         Log.d(TAG, "WOI KAMU")
@@ -83,15 +87,14 @@ class LokasiAdapter(
             }
 
             pre = SharedPreferences(context)
-            var getlks = lokasi[position]
-            var getid = lokasi_id[position]
-            pre.location = getlks
-            pre.location_id = getid
+            pre.location = lokasi[position]
+            pre.location_id = lokasi_id[position]
             pre.nomor_meja = 0
-            var localsdb: AppDatabase = AppDatabase.getInstance(context)
-            var localdb: CartDatabase = CartDatabase.getInstance(context)
+            val localsdb: AppDatabase = AppDatabase.getInstance(context)
+            val localdb: CartDatabase = CartDatabase.getInstance(context)
             localdb.outerCartDao().delete()
             localsdb.cartDao().delete()
+            onItemClicked.onItemClick(lokasi[position], lokasi_id[position])
         }
     }
 

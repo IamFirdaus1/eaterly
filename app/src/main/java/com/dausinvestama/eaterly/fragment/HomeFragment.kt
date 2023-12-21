@@ -80,7 +80,7 @@ class HomeFragment() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         firebaseAuth = FirebaseAuth.getInstance()
         binding = FragmentHomeBinding.inflate(layoutInflater)
         val view = binding.root
@@ -92,11 +92,9 @@ class HomeFragment() : Fragment() {
         btnscan = binding.btnscan
         tvmeja = binding.tvmeja
 
-        initkategori1()
-        initkantin1()
-        initjenis1()
-
         pre = SharedPreferences(context)
+
+        initAll(pre.location_id)
 
         usernameview.text = firebaseAuth.currentUser?.displayName
 
@@ -109,6 +107,16 @@ class HomeFragment() : Fragment() {
 
         ubahkantin.setOnClickListener {
             val showPopUp = PopUpFragment(requireContext())
+            showPopUp.setOnLocationChangedCallback(object : PopUpFragment.OnPlaceChangedCallback {
+                override fun onPlaceChanged(location: String, loc_id: Int) {
+                    kantinviewer.text = location
+                    initAll(loc_id)
+                    adapterjenis.notifyDataSetChanged()
+                    adapterkategori.notifyDataSetChanged()
+                    adapterkantin.notifyDataSetChanged()
+                }
+
+            })
             showPopUp.show((activity as AppCompatActivity).supportFragmentManager, "showPopUp")
         }
 
@@ -234,14 +242,10 @@ class HomeFragment() : Fragment() {
         return false // No location selected or handled
     }
 
-
-
-    // Mapping between location names and LatLng coordinates
     val locationCoordinates = mapOf(
         "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
         "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
         "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
-        // Add other location cases here
     )
 
 
@@ -281,79 +285,11 @@ class HomeFragment() : Fragment() {
                 handleLocationSelection(selectedLocation)
             }
 
-            // Inside onViewCreated
-            /**if (selectedLocation != null) {
-            Log.d(TAG, "Selected location is not null: $selectedLocation")
-            val locationLatLng = convertLocationToLatLng(selectedLocation)
-            if (locationLatLng != null) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15f))
-            Log.d(TAG, "Map camera moved to selected location")
-            } else {
-            Log.e(TAG, "Failed to convert selected location to LatLng")
-            }
-            } else {
-
-            // Fetch the selected location here before calling handleLocationSelection
-            // For example, assuming "NBH" is the default selected location
-            selectedLocation = "NBH"
-
-            Log.d(TAG, "No selected location available")
-            checkLocationPermission()
-            handleLocationSelection(selectedLocation)
-            }*/
-
         }
     }
-
     fun convertLocationToLatLng(locationName: String?): LatLng? {
         return locationCoordinates[locationName]
     }
-
-
-
-    // Function to handle location selection from PopupFragment
-    /*
-    fun handleLocationSelection(selectedLocation: LatLng) {
-        this.selectedLocation = selectedLocation
-        // Move the map's camera to the selected location
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15f))
-    }
-    */
-
-    /*
-    fun getClosestLocationName(userLocation: Location): String {
-        // Define your locations with corresponding names
-        val locationsMap = mapOf(
-            "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
-            "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
-            "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
-        )
-
-        // Define the maximum distance (in meters) considered to be in bounds
-        val maxDistance = 1000 // Example value, defining a 1km scope
-
-        // Find closest location to the user's current location
-        var closestLocationName = "Out of bounds"
-        var smallestDistance = Float.MAX_VALUE // Change to Float
-        for ((name, location) in locationsMap) {
-            val result = FloatArray(1)
-            Location.distanceBetween(
-                userLocation.latitude,
-                userLocation.longitude,
-                location.latitude,
-                location.longitude,
-                result
-            )
-            val distance = result[0]
-            if (distance < smallestDistance) {
-                smallestDistance = distance
-                closestLocationName = name
-            }
-        }
-
-        // Check if the smallest distance is within the defined geographic scope
-        return if (smallestDistance > maxDistance) "too far away from Canteen" else closestLocationName
-    }*/
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -372,19 +308,12 @@ class HomeFragment() : Fragment() {
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
                 enableMyLocation()
             }
             shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION) -> {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected. In this UI,
-                // include a "cancel" or "no thanks" button that allows the user to
-                // continue using your app without granting the permission.
                 showInContextUI()
             }
             else -> {
-                // Directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
                 requestPermissionLauncher.launch(
                     android.Manifest.permission.ACCESS_FINE_LOCATION
                 )
@@ -431,22 +360,6 @@ class HomeFragment() : Fragment() {
         }
     }
 
-
-
-
-
-
-
-    /* the focusOnUserLocation function will not be needed if you only want to show a default location on the map and do not need to move the camera to the user's current location automatically.
-    private fun focusOnUserLocation(googleMap: GoogleMap) {
-        // Assuming you have already obtained the location elsewhere and have it stored:
-        val userLatLong = LatLng(pre.lastKnownLocationLatitude, pre.lastKnownLocationLongitude)
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 15f))
-        // Add marker or additional functionality as needed
-    }
-    */
-
-
     private fun showInContextUI() {
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle("Location Permission")
@@ -464,28 +377,33 @@ class HomeFragment() : Fragment() {
         alertDialog.show()
     }
 
-
-
-
-
     private fun initkategori1() {
         val listCategory:RecyclerView = binding.listcategory
 
-        pre = SharedPreferences(context)
-        db.collection("categories").whereArrayContains("location_id", pre.location_id)
+    private fun initAll(locationId: Int) {
+        initkategori1(locationId)
+        initkantin1(locationId)
+        initjenis1(locationId)
+    }
+
+    private fun initkategori1(locationId: Int) {
+        db.collection("categories").whereArrayContains("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
-                for (document in result){
-                    var x = document.getString("name") as String
-                    var y = document.getString("link") as String
-                    var z = document.id.toInt()
+                for (document in result) {
+                    val x = document.getString("name") as String
+                    val y = document.getString("link") as String
+                    val z = document.id.toInt()
 
                     listkategori.add(CategoryList(x, y, z))
                 }
 
                 adapterkategori = CategoryAdapter(requireContext(), listkategori)
-                listCategory.adapter = adapterkategori
-                listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                binding.apply {
+                    listcategory.adapter = adapterkategori
+                    listcategory.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                }
 
                 adapterkategori.OnItemClick = {
                     val intent = Intent(context, DetailedCategory::class.java)
@@ -499,21 +417,15 @@ class HomeFragment() : Fragment() {
             }
     }
 
-    private fun initjenis1() {
-        var listjenis: RecyclerView = binding.listJenis
+    private fun initjenis1(locationId: Int) {
 
-
-
-
-        pre = SharedPreferences(context)
-
-        db.collection("types").whereArrayContains("location_id", pre.location_id)
+        db.collection("types").whereArrayContains("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
-                for (document in result){
-                    var x = document.getString("name") as String
-                    var y = document.getString("url") as String
-                    var z = document.id.toInt()
+                for (document in result) {
+                    val x = document.getString("name") as String
+                    val y = document.getString("url") as String
+                    val z = document.id.toInt()
 
                     Log.d(TAG, "initjenis in fragmenthome: $x $y $z")
 
@@ -521,10 +433,12 @@ class HomeFragment() : Fragment() {
                 }
                 Log.d(TAG, "initjenis in fragmenthome outerloop: ${result.size()}")
                 adapterjenis = AdapterJenis(this, jenislist)
-                listjenis.setHasFixedSize(true)
-                listjenis.adapter = adapterjenis
-                var layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
-                listjenis.layoutManager = layoutmanager
+                binding.apply {
+                    listJenis.setHasFixedSize(true)
+                    listJenis.adapter = adapterjenis
+                    val layoutmanager: RecyclerView.LayoutManager = GridLayoutManager(context, 2)
+                    listJenis.layoutManager = layoutmanager
+                }
 
                 adapterjenis.OnItemClick = {
                     val intent = Intent(context, DetailedCategory::class.java)
@@ -539,15 +453,11 @@ class HomeFragment() : Fragment() {
             }
     }
 
-    private fun initkantin1(){
-        var listkantin: RecyclerView = binding.listkantin
-
-        pre = SharedPreferences(context)
-
-        db.collection("canteens").whereEqualTo("location_id", pre.location_id)
+    private fun initkantin1(locationId: Int) {
+        db.collection("canteens").whereEqualTo("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
-                for (document in result){
+                for (document in result) {
                     val x = document.get("name") as String
                     val y = document.get("url") as String
                     val z = document.id.toInt()
@@ -555,8 +465,11 @@ class HomeFragment() : Fragment() {
                     listcanteen.add(KantinList(y, x, z, 1))
                 }
                 adapterkantin = KantinAdapter(this, listcanteen)
-                listkantin.adapter = adapterkantin
-                listkantin.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                binding.apply {
+                    listkantin.adapter = adapterkantin
+                    listkantin.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                }
 
                 adapterkantin.OnItemClick = {
                     val intent = Intent(context, DetailedCategory::class.java)

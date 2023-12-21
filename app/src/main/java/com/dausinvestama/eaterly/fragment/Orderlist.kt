@@ -1,60 +1,130 @@
 package com.dausinvestama.eaterly.fragment
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dausinvestama.eaterly.R
+import android.widget.ProgressBar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.dausinvestama.eaterly.adapter.CanteenOrderAdapter
+import com.dausinvestama.eaterly.data.Menu
+import com.dausinvestama.eaterly.data.OrderListData
+import com.dausinvestama.eaterly.databinding.FragmentOrderlistBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [Orderlist.newInstance] factory method to
- * create an instance of this fragment.
- */
 class Orderlist : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentOrderlistBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var canteenAdapter: CanteenOrderAdapter
+
+    val db = FirebaseFirestore.getInstance()
+
+    private lateinit var recycler: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_orderlist, container, false)
+        binding = FragmentOrderlistBinding.inflate(layoutInflater)
+        val view = binding.root
+
+        recycler = binding.recyclerhistoryfragment
+        progressBar = binding.progressBar
+
+        recycler = binding.recyclerhistoryfragment
+        recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        canteenAdapter = CanteenOrderAdapter(mutableListOf())
+        recycler.adapter = canteenAdapter
+
+        getData()
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Orderlist.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Orderlist().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+    private fun getData() = CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.Main) { progressBar.visibility = View.VISIBLE }
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        Log.d(TAG, "getDataUid: $userId")
+        try {
+            var orders = db.collection("orders")
+                .whereEqualTo("user_id", userId)
+                .get()
+                .await()
+            val canteensWithMenusList = mutableListOf<OrderListData>()
+            Log.d(TAG, "Orderlist testing 1: ${orders.size()}")
+            for (orderDocument in orders) {
+                try {
+                    Log.d(TAG, "Orderlist testing 2: $")
+                    val canteenId = orderDocument.get("canteen_id")
+                    val price = orderDocument.get("total_price")
+                    Log.d(TAG, "Orderlist testing 3: $canteenId price $price")
+                    canteenId?.let { id ->
+                        var canteenDocument = db.collection("canteens")
+                            .document(id.toString())
+                            .get()
+                            .await()
+
+                        if (canteenDocument.exists()){
+                            var canteenName = canteenDocument.getString("name")
+
+                            var menuItemsMap = orderDocument.get("menu_items") as Map<*, *>?
+                            val menusList = mutableListOf<Menu>()
+
+                            menuItemsMap?.forEach { (menuId, quantity) ->
+                                val menuDocument = db.collection("menus")
+                                    .document(menuId.toString())
+                                    .get()
+                                    .await()
+
+                                if (menuDocument.exists()){
+                                    val menuName = menuDocument.getString("name")
+                                    val price = orderDocument.get("total_price")
+                                    val status = orderDocument.get("status")
+                                    val meja = orderDocument.get("meja")
+                                    val orderid = orderDocument.id
+                                    Log.d(TAG, "Orderlist testing4: $canteenName menu $menuName quantity $quantity price $price")
+                                    menusList.add(Menu(orderid, menuId, menuName, quantity, status, price, meja))
+
+                                }
+                            }
+                            val canteenWithMenus = OrderListData(canteenId, canteenName, menusList)
+                            canteensWithMenusList.add(canteenWithMenus)
+
+                        }else {
+
+                        }
+                    }
+                }catch (e: Exception) {
+                    Log.d(TAG, "getData error: $e")
+                }
+
+                }
+            withContext(Dispatchers.Main) {
+                if (canteensWithMenusList.isNotEmpty()) {
+                    canteenAdapter = CanteenOrderAdapter(canteensWithMenusList)
+                    recycler.adapter = canteenAdapter
+
+                    progressBar.visibility = View.GONE
+                } else {
                 }
             }
+        } catch (e: Exception){
+
+        }
     }
+
+
 }

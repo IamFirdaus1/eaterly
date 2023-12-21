@@ -25,8 +25,8 @@ class Cart : Fragment() {
     lateinit var cartAdapter: CartAdapter
     var arraycart: ArrayList<CartDb> = ArrayList()
     var arraycartorder = mutableListOf<CartItemDb>()
-    lateinit private var localdb: CartDatabase
-    lateinit private var Cartlocaldb: AppDatabase
+    private lateinit var localdb: CartDatabase
+    private lateinit var Cartlocaldb: AppDatabase
 
     private lateinit var binding: FragmentCartBinding
 

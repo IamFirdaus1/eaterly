@@ -23,10 +23,10 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
     :RecyclerView.Adapter<CartAdapter.myHolder>(){
 
     var arraycartorder = mutableListOf<CartItemDb>()
-    lateinit private var localdb: AppDatabase
+    private lateinit var localdb: AppDatabase
 
     var arraycart = mutableListOf<CartDb>()
-    lateinit private var Cartlocaldb: CartDatabase
+    private lateinit var Cartlocaldb: CartDatabase
 
     class myHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val nama_kantin: TextView = itemView.findViewById(R.id.namakantincart)
@@ -50,7 +50,6 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
         var ct = cartData[position]
         holder.nama_kantin.text = ct.nama_kantin
 
-        var sk: Long = 1
         if (cartData==null){
             Log.d(TAG, "onBindViewHolder: it was null" )
         }else {
@@ -59,7 +58,7 @@ class CartAdapter(var contex: Context?, var cartData: ArrayList<CartDb>)
             getData(ct.id_kantins!!)
 
 
-            var cartOrder = CartOrderAdapter(contex, arraycartorder)
+            val cartOrder = CartOrderAdapter(contex, arraycartorder)
 
             holder.recylercart.setHasFixedSize(true)
             holder.recylercart.adapter = cartOrder

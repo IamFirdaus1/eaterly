@@ -28,6 +28,7 @@
     <string name="map_description">This is a map</string>
     <string name="expand_map">Expand map</string>
     <string name="collapse_map">Collapse map</string>
+    <string name="submit">Submit</string>
 
     <string-array name="account_settings">
         <item>Orders</item>
