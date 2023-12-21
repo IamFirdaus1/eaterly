@@ -111,9 +111,7 @@ class HomeFragment() : Fragment() {
                 override fun onPlaceChanged(location: String, loc_id: Int) {
                     kantinviewer.text = location
                     initAll(loc_id)
-                    adapterjenis.notifyDataSetChanged()
-                    adapterkategori.notifyDataSetChanged()
-                    adapterkantin.notifyDataSetChanged()
+                    handleLocationSelection(location)
                 }
 
             })
@@ -224,17 +222,15 @@ class HomeFragment() : Fragment() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var googleMap: GoogleMap? = null // Declaring googleMap at the class level
 
-    fun handleLocationSelection(location: String?): Boolean {
+    private fun handleLocationSelection(location: String?): Boolean {
         if (location != null) {
             val latLng: LatLng? = when (location) {
                 "NBH" -> LatLng(-6.29862809919001, 107.16615125585714)
                 "SBH" -> LatLng(-6.282660058854142, 107.17077015160136)
-                // Handle other location names and their respective LatLng coordinates
                 else -> null // Handle the case where the location name is not recognized
             }
 
             if (latLng != null) {
-                // Update the map's camera to the selected location
                 googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                 return true // Successfully handled the selection without overriding
             }
@@ -287,7 +283,7 @@ class HomeFragment() : Fragment() {
 
         }
     }
-    fun convertLocationToLatLng(locationName: String?): LatLng? {
+    private fun convertLocationToLatLng(locationName: String?): LatLng? {
         return locationCoordinates[locationName]
     }
 
@@ -376,9 +372,6 @@ class HomeFragment() : Fragment() {
 
         alertDialog.show()
     }
-
-    private fun initkategori1() {
-        val listCategory:RecyclerView = binding.listcategory
 
     private fun initAll(locationId: Int) {
         initkategori1(locationId)

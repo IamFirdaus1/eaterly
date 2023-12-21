@@ -78,7 +78,7 @@
 
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:gravity="bottom"
@@ -119,11 +119,10 @@
                         android:textSize="10sp" />
 
 
-                    <FrameLayout
-                        android:layout_width="300dp"
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:clipToOutline="true"
-                        android:background="@drawable/rounded_corner"
+                        app:cardCornerRadius="40dp"
                         android:layout_gravity="center"
                         android:elevation="4dp">
 
@@ -134,15 +133,8 @@
                             android:layout_height="match_parent" />
 
 
-                    </FrameLayout>
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
-
-
-
-
-
-
-
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10dp"

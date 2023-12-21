@@ -24,6 +24,7 @@ class LokasiAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val btnlokasi: Button = itemView.findViewById(R.id.butonlokasi)
+    }
 
     interface OnItemClickCallback {
         fun onItemClick(location: String, locationId: Int)
@@ -31,36 +32,10 @@ class LokasiAdapter(
 
     private lateinit var onItemClicked: OnItemClickCallback
 
-    fun setOnItemClickCallback(onItemClick: OnItemClickCallback){
+    fun setOnItemClickCallback(onItemClick: OnItemClickCallback) {
         this.onItemClicked = onItemClick
     }
 
-        init {
-            Log.d(TAG, "Resource ID in ViewHolder: ${btnlokasi.id}")
-            Log.d(TAG, "View Hierarchy: $itemView")
-            Log.d(TAG, "Button ID: ${itemView.findViewById<Button>(R.id.butonlokasi)}")
-            Log.d(TAG, "View Holder: $adapterPosition")
-            Log.d(TAG, "No position: ${RecyclerView.NO_POSITION}")
-
-
-            val position = adapterPosition
-            // Set a click listener for the button
-            btnlokasi.setOnClickListener {
-                Log.d(TAG, "HELLO DAUS")
-                // val position = adapterPosition
-                Log.d(TAG, "Button clicked at position: $position")
-                if (position != RecyclerView.NO_POSITION) {
-                    val selectedLocation = lokasi.getOrNull(position)
-                    selectedLocation?.let {
-                        Log.d(TAG, "Location clicked: $it")
-                        OnItemClick?.invoke(it) // Trigger location selection callback
-                    }
-                } else {
-                    Log.d(TAG, "Invalid position: $position")
-                }
-            }
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -68,23 +43,10 @@ class LokasiAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: viewHolder, position: Int) {
-        val lks = lokasi[position]
-        holder.btnlokasi.text = lks
-
-        Log.d(TAG, "WOI KAMU")
-
-
-        Log.d(TAG, "Button clicked at position: $position")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.btnlokasi.text = lokasi[position]
 
         holder.btnlokasi.setOnClickListener {
-            Log.d(TAG, "HELLO DAUS")
-            val selectedLocation = lokasi.getOrNull(position)
-            Log.d(TAG, "THIS IS SELECTED LOCATION: $selectedLocation")
-            selectedLocation?.let {
-                Log.d(TAG, "Location clicked: $it")
-                OnItemClick?.invoke(it)
-            }
 
             pre = SharedPreferences(context)
             pre.location = lokasi[position]
