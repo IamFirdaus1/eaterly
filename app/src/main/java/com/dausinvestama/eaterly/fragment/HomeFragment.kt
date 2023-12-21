@@ -226,6 +226,8 @@ class HomeFragment() : Fragment() {
             val latLng: LatLng? = when (location) {
                 "NBH" -> LatLng(-6.29862809919001, 107.16615125585714)
                 "SBH" -> LatLng(-6.282660058854142, 107.17077015160136)
+                "President University" -> LatLng(-6.284986110758287, 107.17054802028917)
+                "City Walk" -> LatLng(-6.28278605122272, 107.16960481486011)
                 else -> null // Handle the case where the location name is not recognized
             }
 
@@ -240,7 +242,8 @@ class HomeFragment() : Fragment() {
     private val locationCoordinates = mapOf(
         "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
         "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
-        "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
+        "President University" to LatLng(-6.284986110758287, 107.17054802028917),
+        "City Walk" to LatLng(-6.28278605122272, 107.16960481486011)
     )
 
 
