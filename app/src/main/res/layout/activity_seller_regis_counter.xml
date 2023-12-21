@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/interbold"
                 android:text="Name"
-                android:textColor="@color/purple_700"
+                android:textColor="@color/green"
                 android:textSize="14sp" />
 
             <EditText
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/interbold"
                 android:text="Description"
-                android:textColor="@color/purple_700"
+                android:textColor="@color/green"
                 android:textSize="14sp" />
 
             <EditText
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/interbold"
                 android:text="Location"
-                android:textColor="@color/purple_700"
+                android:textColor="@color/green"
                 android:textSize="14sp" />
 
             <RadioGroup
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/interbold"
                 android:text="Photo"
-                android:textColor="@color/purple_700"
+                android:textColor="@color/green"
                 android:textSize="14sp" />
 
             <TextView
@@ -181,10 +181,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:padding="15dp"
                 android:fontFamily="@font/interbold"
-                android:backgroundTint="@color/purple_700"
+                android:backgroundTint="@color/green"
                 android:text="Submit" />
 
         </LinearLayout>
