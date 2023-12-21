@@ -113,7 +113,7 @@
                 android:fontFamily="@font/interbold"
                 android:shadowColor="#4CAE50"
                 android:text="Photo"
-                android:textColor="#4CAE50" />
+                android:textColor="@color/green" />
 
             <TextView
                 android:id="@+id/photoDesc"
@@ -136,7 +136,7 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/interbold"
                 android:text="Name*"
-                android:textColor="#4CAD50" />
+                android:textColor="@color/green" />
 
             <EditText
                 android:id="@+id/editName"
@@ -152,7 +152,7 @@
                 android:layout_height="20dp"
                 android:fontFamily="@font/interbold"
                 android:text="Description"
-                android:textColor="#4CAD50" />
+                android:textColor="@color/green" />
 
             <EditText
                 android:id="@+id/editDescription"
@@ -168,7 +168,7 @@
                 android:layout_height="20dp"
                 android:fontFamily="@font/interbold"
                 android:text="Price*"
-                android:textColor="#4CAD50" />
+                android:textColor="@color/green" />
 
             <EditText
                 android:id="@+id/editPrice"
@@ -184,7 +184,7 @@
                 android:layout_height="20dp"
                 android:fontFamily="@font/interbold"
                 android:text="Time Estimation"
-                android:textColor="#4CAD50" />
+                android:textColor="@color/green" />
 
 
             <EditText
