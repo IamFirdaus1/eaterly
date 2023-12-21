@@ -36,14 +36,13 @@ class Orderlist : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentOrderlistBinding.inflate(layoutInflater)
         val view = binding.root
 
         recycler = binding.recyclerhistoryfragment
         progressBar = binding.progressBar
 
-        recycler = binding.recyclerhistoryfragment
         recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         canteenAdapter = CanteenOrderAdapter(mutableListOf())
         recycler.adapter = canteenAdapter
@@ -59,7 +58,7 @@ class Orderlist : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         Log.d(TAG, "getDataUid: $userId")
         try {
-            var orders = db.collection("orders")
+            val orders = db.collection("orders")
                 .whereEqualTo("user_id", userId)
                 .get()
                 .await()
@@ -72,15 +71,15 @@ class Orderlist : Fragment() {
                     val price = orderDocument.get("total_price")
                     Log.d(TAG, "Orderlist testing 3: $canteenId price $price")
                     canteenId?.let { id ->
-                        var canteenDocument = db.collection("canteens")
+                        val canteenDocument = db.collection("canteens")
                             .document(id.toString())
                             .get()
                             .await()
 
-                        if (canteenDocument.exists()){
-                            var canteenName = canteenDocument.getString("name")
+                        if (canteenDocument.exists()) {
+                            val canteenName = canteenDocument.getString("name")
 
-                            var menuItemsMap = orderDocument.get("menu_items") as Map<*, *>?
+                            val menuItemsMap = orderDocument.get("menu_items") as Map<*, *>?
                             val menusList = mutableListOf<Menu>()
 
                             menuItemsMap?.forEach { (menuId, quantity) ->
@@ -89,29 +88,44 @@ class Orderlist : Fragment() {
                                     .get()
                                     .await()
 
-                                if (menuDocument.exists()){
+                                if (menuDocument.exists()) {
                                     val menuName = menuDocument.getString("name")
                                     val price = orderDocument.get("total_price")
                                     val status = orderDocument.get("status")
                                     val meja = orderDocument.get("meja")
                                     val orderid = orderDocument.id
-                                    Log.d(TAG, "Orderlist testing4: $canteenName menu $menuName quantity $quantity price $price")
-                                    menusList.add(Menu(orderid, menuId, menuName, quantity, status, price, meja))
+                                    val url = orderDocument.get("url")
+                                    Log.d(
+                                        TAG,
+                                        "Orderlist testing4: $canteenName menu $menuName quantity $quantity price $price"
+                                    )
+                                    menusList.add(
+                                        Menu(
+                                            orderid,
+                                            menuId,
+                                            menuName,
+                                            quantity,
+                                            status,
+                                            price,
+                                            meja,
+                                            url
+                                        )
+                                    )
 
                                 }
                             }
                             val canteenWithMenus = OrderListData(canteenId, canteenName, menusList)
                             canteensWithMenusList.add(canteenWithMenus)
 
-                        }else {
+                        } else {
 
                         }
                     }
-                }catch (e: Exception) {
+                } catch (e: Exception) {
                     Log.d(TAG, "getData error: $e")
                 }
 
-                }
+            }
             withContext(Dispatchers.Main) {
                 if (canteensWithMenusList.isNotEmpty()) {
                     canteenAdapter = CanteenOrderAdapter(canteensWithMenusList)
@@ -121,7 +135,7 @@ class Orderlist : Fragment() {
                 } else {
                 }
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
 
         }
     }

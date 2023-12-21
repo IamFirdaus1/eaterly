@@ -13,5 +13,6 @@ data class Menu(
     val menuQuantity: Any?,
     val menuStatus: Any?,
     val menuTotalprice: Any?,
-    val menuMeja: Any?
+    val menuMeja: Any?,
+    val menuUrl: Any?
 )

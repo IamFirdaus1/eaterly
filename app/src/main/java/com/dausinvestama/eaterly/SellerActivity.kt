@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.dausinvestama.eaterly.databinding.ActivitySellerMainBinding
 import com.dausinvestama.eaterly.fragment.Cart
 import com.dausinvestama.eaterly.fragment.HomeFragment
+import com.dausinvestama.eaterly.fragment.MenuFragment
 import com.dausinvestama.eaterly.fragment.Orderlist
 import com.dausinvestama.eaterly.fragment.Profile
 import com.dausinvestama.eaterly.fragment.SellerBlankFragment
@@ -75,7 +76,7 @@ class SellerActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.homes -> replaceFragment(if (hasCounter) SellerHomeFragment() else SellerBlankFragment())
                 R.id.orderlist -> replaceFragment(Orderlist())
-                R.id.counter -> replaceFragment(Cart())
+                R.id.counter -> replaceFragment(MenuFragment())
                 R.id.profile -> replaceFragment(Profile())
                 else -> {
                 }

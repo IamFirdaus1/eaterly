@@ -10,7 +10,7 @@
         android:icon="@drawable/plus"/>
 
     <item android:id="@+id/counter"
-        android:title="Counter"
+        android:title="Menu"
         android:icon="@drawable/food"/>
 
     <item android:id="@+id/profile"

@@ -1,6 +1,5 @@
 package com.dausinvestama.eaterly.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,7 @@ class CanteenOrderAdapter(val canteens: MutableList<OrderListData>): RecyclerVie
         fun bind(canteen: OrderListData) {
             canteenNameTxVw.text = canteen.canteenName.toString()
             menuRecycler.layoutManager = LinearLayoutManager(itemView.context)
-            menuRecycler.adapter = MenuAdapter(canteen.menus)
+            menuRecycler.adapter = MenuAdapter(canteen.menus, itemView.context)
             idorderTxt.text = canteen.menus.first().orderid.toString()
             menuMejaTxVw.text = canteen.menus.first().menuMeja.toString()
             when (canteen.menus.first().menuStatus.toString()) {
