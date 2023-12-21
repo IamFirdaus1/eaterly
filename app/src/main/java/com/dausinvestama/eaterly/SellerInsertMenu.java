@@ -174,6 +174,9 @@ public class SellerInsertMenu extends AppCompatActivity {
     }
 
     private void uploadMenuData(String name, String description, String price, String timeEstimation) {
+        // Remove commas from the price string
+        String cleanPrice = price.replaceAll(",", "");
+
         // Create a unique menu ID
         String menuId = db.collection("menus").document().getId();
 
@@ -181,7 +184,7 @@ public class SellerInsertMenu extends AppCompatActivity {
         Map<String, Object> menuData = new HashMap<>();
         menuData.put("name", name);
         menuData.put("description", description);
-        menuData.put("price", Double.parseDouble(price));
+        menuData.put("price", Double.parseDouble(cleanPrice)); // Use the cleaned price
         menuData.put("timeEstimation", timeEstimation);
         menuData.put("sellerId", currentUser.getUid());
 
