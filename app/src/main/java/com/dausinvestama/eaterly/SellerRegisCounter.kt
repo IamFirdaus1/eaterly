@@ -44,7 +44,6 @@ import java.io.IOException
 class SellerRegisCounter : AppCompatActivity() {
     private lateinit var binding: ActivitySellerRegisCounterBinding
     private lateinit var auth: FirebaseAuth
-
     private lateinit var buttonBack: ImageButton
     private lateinit var imagePreview: ImageView
     private lateinit var buttonImage: Button
