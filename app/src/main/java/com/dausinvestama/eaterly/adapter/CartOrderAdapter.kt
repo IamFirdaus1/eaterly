@@ -30,6 +30,16 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
 
     var subtotals: Int = 0;
 
+    interface OnItemChangedCallback {
+        fun onItemChanged()
+    }
+
+    private lateinit var onItemChanged: OnItemChangedCallback
+
+    fun setOnItemChangedCallback(onItemChanged : OnItemChangedCallback){
+        this.onItemChanged = onItemChanged
+    }
+
     class myHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val gambarcartOrder: ImageView = itemView.findViewById(R.id.gambarcartorder)
         val nama_makanan: TextView = itemView.findViewById(R.id.namamakanan)
@@ -61,32 +71,29 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
         Glide.with(context!!).load(ct.gambar_makanan).into(holder.gambarcartOrder)
         holder.harga.text = (ct.harga * ct.jumlah).toString()
         holder.jumlahmenu.text  = ct.jumlah.toString()
+        localdb = AppDatabase.getInstance(context!!)
+        val cartItemDao = localdb.cartDao()
         holder.clearmenu.setOnClickListener {
-            localdb = AppDatabase.getInstance(context!!)
-            val cartItemDao = localdb.cartDao()
             cartItemDao.deleteid(ct)
             cartOrderData!!.clear()
             updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
-            cartItemDao.deleteid(ct)
             getData(ct.id_kantin)
             notifyItemChanged(position)
+            onItemChanged.onItemChanged()
         }
 
         holder.butontambah.setOnClickListener {
-            localdb = AppDatabase.getInstance(context!!)
-            val cartItemDao = localdb.cartDao()
             cartItemDao.incrementJumlah(ct.id_makanan)
             updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
-
+            onItemChanged.onItemChanged()
         }
 
         holder.butonkurang.setOnClickListener {
-            localdb = AppDatabase.getInstance(context!!)
-            val cartItemDao = localdb.cartDao()
             cartItemDao.decrementJumlah(ct.id_makanan)
             updateData(localdb.cartDao().getBymakanan(ct.id_makanan).toMutableList())
-
+            onItemChanged.onItemChanged()
         }
+
         if (ct.jumlah == 1){
             holder.butonkurang.isEnabled = false
             holder.butonkurang.isActivated = false
@@ -96,13 +103,6 @@ class CartOrderAdapter(var context: Context?, var cartOrderData: MutableList<Car
             holder.butonkurang.isActivated = true
             holder.cvMin.alpha = 1f
         }
-
-        /* cartItemViewModel = ViewModelProvider(this).get(cartItemViewModel::class.java)
-
-        cartItemViewModel.allCartItems.observe(this, Observer { cartItems ->
-            // Update the cached copy of the cart items in the adapter.
-            cartOrderAdapter.setCartItems(cartItems)
-        }) */
 
 
     }

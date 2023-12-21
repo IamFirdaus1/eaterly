@@ -35,26 +35,18 @@ class Cart : Fragment() {
     lateinit var pre: SharedPreferences
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragmenthok
         binding = FragmentCartBinding.inflate(layoutInflater)
-        val subtotal: TextView = binding.subtotal
-        val jasa: TextView = binding.biayajasa
-        val total: TextView = binding.biayatotal
-        val nokursi: TextView = binding.nokursi
-
         pre = SharedPreferences(context)
-        nokursi.text = pre.nomor_meja.toString()
+        binding.apply {
+            binding.nokursi.text = pre.nomor_meja.toString()
+            getData(subtotal, biayajasa, biayatotal)
+        }
 
-        getData()
-        subtotal.text = subtotals.toString()
-        val tax: Int = (subtotals*0.05).toInt()
-        jasa.text = tax.toString()
-        total.text = (subtotals + tax).toString()
 
         initcart(binding.root)
 
@@ -67,12 +59,18 @@ class Cart : Fragment() {
             .withContext(requireContext()) // context is mandatory
             .withMerchantUrl("https://merchant-url-sandbox.com/") // set transaction finish callback (sdk callback)
             .enableLog(true) // enable sdk log (optional)
-            .withColorTheme(CustomColorTheme("#FFE51255", "#B61548", "#FFE51255")) // set theme. it will replace theme on snap theme on MAP ( optional)
+            .withColorTheme(
+                CustomColorTheme(
+                    "#FFE51255",
+                    "#B61548",
+                    "#FFE51255"
+                )
+            ) // set theme. it will replace theme on snap theme on MAP ( optional)
             .build()
     }
 
     private fun initcart(view: View) {
-        var listcart:RecyclerView = view.findViewById(R.id.cartlist)
+        val listcart: RecyclerView = view.findViewById(R.id.cartlist)
 
         listcart.setHasFixedSize(true)
 
@@ -81,7 +79,8 @@ class Cart : Fragment() {
 
     }
 
-    fun getData(){
+    fun getData(subtotal: TextView, jasa: TextView, total: TextView) {
+        var localSubtotals = 0
         localdb = CartDatabase.getInstance(requireContext())
         arraycart.clear()
         arraycart.addAll(localdb.outerCartDao().getAll())
@@ -91,12 +90,23 @@ class Cart : Fragment() {
         arraycartorder.addAll(Cartlocaldb.cartDao().getAll())
 
         for (i in 0 until arraycartorder.size) {
-            var penambahan: Int = arraycartorder[i].jumlah * arraycartorder[i].harga
-            subtotals = subtotals + penambahan
+            val penambahan: Int = arraycartorder[i].jumlah * arraycartorder[i].harga
+            localSubtotals += penambahan
         }
+        val subtotals = localSubtotals
+
+        subtotal.text = subtotals.toString()
+        val tax: Int = (subtotals * 0.05).toInt()
+        jasa.text = tax.toString()
+        total.text = (subtotals + tax).toString()
 
         cartAdapter = CartAdapter(context, arraycart)
-        cartAdapter.notifyDataSetChanged()
+        cartAdapter.setOnCartContentChangedCallback(object :
+            CartAdapter.OnCartContentChangedCallback {
+            override fun onCartContentChange() {
+                getData(subtotal, jasa, total)
+            }
+        })
     }
 
 

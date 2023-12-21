@@ -28,12 +28,20 @@ class CartAdapter(private var contex: Context?, var cartData: ArrayList<CartDb>)
     var arraycart = mutableListOf<CartDb>()
     private lateinit var Cartlocaldb: CartDatabase
 
+    interface OnCartContentChangedCallback{
+        fun onCartContentChange()
+    }
+
+    private lateinit var onContentChange: OnCartContentChangedCallback
+
+    fun setOnCartContentChangedCallback(onContentChange: OnCartContentChangedCallback){
+        this.onContentChange = onContentChange
+    }
+
     class myHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val nama_kantin: TextView = itemView.findViewById(R.id.namakantincart)
         val recylercart: RecyclerView = itemView.findViewById(R.id.recylercart)
     }
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): myHolder {
         val view = LayoutInflater
@@ -47,24 +55,25 @@ class CartAdapter(private var contex: Context?, var cartData: ArrayList<CartDb>)
     }
 
     override fun onBindViewHolder(holder: myHolder, position: Int) {
-        var ct = cartData[position]
+        val ct = cartData[position]
         holder.nama_kantin.text = ct.nama_kantin
 
-        if (cartData==null){
-            Log.d(TAG, "onBindViewHolder: it was null" )
-        }else {
-            Log.d(TAG, "onBindViewHolder: elsejalan" + ct.id_kantins)
+        Log.d(TAG, "onBindViewHolder: elsejalan" + ct.id_kantins)
 
-            getData(ct.id_kantins!!)
+        getData(ct.id_kantins!!)
 
 
-            val cartOrder = CartOrderAdapter(contex, arraycartorder)
+        val cartOrder = CartOrderAdapter(contex, arraycartorder)
 
-            holder.recylercart.setHasFixedSize(true)
-            holder.recylercart.adapter = cartOrder
-            holder.recylercart.layoutManager = LinearLayoutManager(contex, LinearLayoutManager.VERTICAL, false)
+        cartOrder.setOnItemChangedCallback(object: CartOrderAdapter.OnItemChangedCallback {
+            override fun onItemChanged() {
+                onContentChange.onCartContentChange()
+            }
+        })
 
-        }
+        holder.recylercart.setHasFixedSize(true)
+        holder.recylercart.adapter = cartOrder
+        holder.recylercart.layoutManager = LinearLayoutManager(contex, LinearLayoutManager.VERTICAL, false)
 
 
     }
