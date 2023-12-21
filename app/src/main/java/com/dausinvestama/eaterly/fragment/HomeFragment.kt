@@ -1,8 +1,11 @@
 package com.dausinvestama.eaterly.fragment
 
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,10 +15,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dausinvestama.eaterly.CartDatabase
+import com.dausinvestama.eaterly.MainActivity
+
 import com.dausinvestama.eaterly.R
 import com.dausinvestama.eaterly.adapter.AdapterJenis
 import com.dausinvestama.eaterly.adapter.CategoryAdapter
@@ -27,6 +37,13 @@ import com.dausinvestama.eaterly.data.KantinList
 import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
 import com.dausinvestama.eaterly.pages.QrScannerActivity
 import com.dausinvestama.eaterly.utils.SharedPreferences
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
@@ -56,6 +73,9 @@ class HomeFragment() : Fragment() {
     var jenislist: ArrayList<JenisList> = ArrayList()
 
     lateinit var pre: SharedPreferences
+
+    var selectedLocation: String? = null // Declare selectedLocation as a class-level variable
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -201,10 +221,164 @@ class HomeFragment() : Fragment() {
     }
 
 
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var googleMap: GoogleMap? = null // Declaring googleMap at the class level
+
+    fun handleLocationSelection(location: String?): Boolean {
+        if (location != null) {
+            val latLng: LatLng? = when (location) {
+                "NBH" -> LatLng(-6.29862809919001, 107.16615125585714)
+                "SBH" -> LatLng(-6.282660058854142, 107.17077015160136)
+                // Handle other location names and their respective LatLng coordinates
+                else -> null // Handle the case where the location name is not recognized
+            }
+
+            if (latLng != null) {
+                // Update the map's camera to the selected location
+                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                return true // Successfully handled the selection without overriding
+            }
+        }
+        return false // No location selected or handled
+    }
+
+    val locationCoordinates = mapOf(
+        "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
+        "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
+        "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
+    )
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "inikepanggil2")
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        val mapFragment = SupportMapFragment.newInstance()
+        childFragmentManager.beginTransaction().apply {
+            replace(binding.mapContainer.id, mapFragment)
+            commit()
+        }
+
+        Log.d(tag, "SELECTED LOCATION IN HOME FRAGMENT ${selectedLocation}")
+        Log.d(tag, "PRE LOCATION ${pre.location}")
+
+        mapFragment.getMapAsync { googleMap ->
+            val uiSettings = googleMap.uiSettings
+            uiSettings.isZoomControlsEnabled = true
+
+            // Permanent markers for your locations
+            locationCoordinates.forEach { (locationName, locationLatLng) ->
+                googleMap.addMarker(MarkerOptions().position(locationLatLng).title(locationName))
+            }
+
+            val locationLatLng = convertLocationToLatLng(pre.location)
+            if (locationLatLng != null) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, 15f))
+                Log.d(TAG, "Map camera moved to selected location")
+            } else {
+                selectedLocation = "NBH"
+
+                Log.d(TAG, "No selected location available")
+                checkLocationPermission()
+                handleLocationSelection(selectedLocation)
+            }
+
+        }
     }
+    fun convertLocationToLatLng(locationName: String?): LatLng? {
+        return locationCoordinates[locationName]
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission is granted, proceed with the location-related task
+                enableMyLocation()
+            } else {
+                // Permission is denied, show a message to the user
+                Toast.makeText(context, "Location permission is required for maps", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    private fun checkLocationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                enableMyLocation()
+            }
+            shouldShowRequestPermissionRationale(android.Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                showInContextUI()
+            }
+            else -> {
+                requestPermissionLauncher.launch(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+        }
+    }
+
+    private fun enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            val mapFragment = childFragmentManager.findFragmentById(binding.mapContainer.id) as SupportMapFragment?
+
+            mapFragment?.getMapAsync { googleMap ->
+                googleMap.isMyLocationEnabled = true
+
+
+                if (selectedLocation != null) {
+                    // Move the camera to the selected location if available
+                    val locationLatLng = convertLocationToLatLng(selectedLocation)
+                    locationLatLng?.let {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 15f))
+                    }
+                } else {
+                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        location?.let { userLocation ->
+                            // Move camera to the user's current location if no selected location
+                            val userLatLng = LatLng(userLocation.latitude, userLocation.longitude)
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
+                        }
+                    }
+                }
+            }
+        } else {
+            // Request permissions from the user
+            checkLocationPermission()
+        }
+    }
+
+    private fun showInContextUI() {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Location Permission")
+            .setMessage("This app needs location permission to show you on the map.")
+            .setPositiveButton("Ok") { _, _ ->
+                requestPermissionLauncher.launch(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+            .setNegativeButton("No Thanks") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+    }
+
+    private fun initkategori1() {
+        val listCategory:RecyclerView = binding.listcategory
 
     private fun initAll(locationId: Int) {
         initkategori1(locationId)
@@ -314,4 +488,6 @@ class HomeFragment() : Fragment() {
 
         kantinviewer.setText(pre.location)
     }
+
+
 }

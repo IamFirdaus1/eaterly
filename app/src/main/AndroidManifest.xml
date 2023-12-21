@@ -12,6 +12,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Allow camera -->
 
+    <!-- Location permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -26,6 +30,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Eaterly"
         tools:targetApi="31">
+
+        <!-- Insert your Google Maps API Key here -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCn7k1ML06-9lEVQj81IvCoIL8XTIAN5MM"/> <!-- API NYA JAYA -->
+
+
         <activity
             android:name=".SellerInsertMenu"
             android:exported="false"/>

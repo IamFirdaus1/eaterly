@@ -18,10 +18,10 @@ class SharedPreferences(val context: android.content.Context?) {
     var firstinstall = p.getBoolean(FIRST_INSTALL, false)
         set(value) = p.edit().putBoolean(FIRST_INSTALL, value).apply()
 
-    var location = p.getString(LOCATION, "SBH")
+    var location = p.getString(LOCATION, "NBH")
         set(value) = p.edit().putString(LOCATION, value).apply()
 
-    var location_id = p.getInt(LOCATION_ID, 0)
+    var location_id = p.getInt(LOCATION_ID, 1)
         set(value) = p.edit().putInt(LOCATION_ID, value).apply()
 
     var first_name = p.getString(FIRST_NAME, "Null")

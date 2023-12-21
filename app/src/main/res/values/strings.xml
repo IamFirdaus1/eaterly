@@ -25,6 +25,9 @@
     <string name="profile_picture_desc">Use a cool photo for everyone to see!</string>
     <string name="edit_prof_pic">Change photo</string>
     <string name="phone_number">Phone Number</string>
+    <string name="map_description">This is a map</string>
+    <string name="expand_map">Expand map</string>
+    <string name="collapse_map">Collapse map</string>
     <string name="submit">Submit</string>
 
     <string-array name="account_settings">
