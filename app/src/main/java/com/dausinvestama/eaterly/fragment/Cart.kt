@@ -98,9 +98,9 @@ class Cart : Fragment() {
                 .addOnSuccessListener {
                     showLoadingConfirmation()
                     listenForConfirmation(it.id, kantinId)
-                    Log.d(ContentValues.TAG, "uploadOrder: $it")
+                    Log.d(TAG, "uploadOrder: $it")
                 }.addOnFailureListener {
-                    Log.w(ContentValues.TAG, "uploadOrdererror: ",it)
+                    Log.w(TAG, "uploadOrdererror: ",it)
                 }
 
         }
@@ -131,14 +131,14 @@ class Cart : Fragment() {
             .document(orderId)
             .addSnapshotListener { value, error ->
                 if (error != null){
-                    Log.w(ContentValues.TAG, "listenForConfirmation: ", error)
+                    Log.w(TAG, "listenForConfirmation: ", error)
                     return@addSnapshotListener
                 }
 
                 if (value != null && value.exists()){
                     val status = value.getLong("status")
                     if (status == 1.toLong()){
-                        Log.d(ContentValues.TAG, "listenForConfirmation2: $value")
+                        Log.d(TAG, "listenForConfirmation2: $value")
                         orderConfirmations[orderId] = true
                         checkAllOrderConfirmed()
                         updatingOrderQueue(kantinId)
@@ -164,11 +164,11 @@ class Cart : Fragment() {
     }
 
     private fun hideLoadingScreen() {
-        Log.d(ContentValues.TAG, "hideLoadingScreen: ")
+        Log.d(TAG, "hideLoadingScreen: ")
 
         if (loadingDialog.isShowing) {
             loadingDialog.dismiss()
-            Log.d(ContentValues.TAG, "hideLoadingScreen2: ")
+            Log.d(TAG, "hideLoadingScreen2: ")
 
         }
     }
