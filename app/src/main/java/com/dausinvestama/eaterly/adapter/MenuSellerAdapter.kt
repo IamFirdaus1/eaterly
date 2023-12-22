@@ -17,13 +17,11 @@ class MenuSellerAdapter(private val menus: MutableList<MenuData>, private val co
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val tvName = itemView.findViewById<TextView>(R.id.namamakanan)
-        private val tvQuantity = itemView.findViewById<TextView>(R.id.quantity_1)
         private val tvHarga = itemView.findViewById<TextView>(R.id.harga)
         private val imgMenu = itemView.findViewById<ImageView>(R.id.gambarcartorder)
 
         fun bind(menuData: MenuData, context: Context) {
             tvName.text = menuData.name.toString()
-            tvQuantity.visibility = View.GONE
             tvHarga.text = menuData.price.toString()
             Glide.with(context)
                 .load(menuData.url)
@@ -32,7 +30,7 @@ class MenuSellerAdapter(private val menus: MutableList<MenuData>, private val co
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.cartfororderhistory, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.seller_menu_item, parent, false)
         return ViewHolder(view)
     }
 
