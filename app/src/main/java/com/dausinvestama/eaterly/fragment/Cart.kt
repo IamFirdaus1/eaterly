@@ -98,9 +98,9 @@ class Cart : Fragment() {
                 .addOnSuccessListener {
                     showLoadingConfirmation()
                     listenForConfirmation(it.id, kantinId)
-                    Log.d(TAG, "uploadOrder: $it")
+                    Log.d(ContentValues.TAG, "uploadOrder: $it")
                 }.addOnFailureListener {
-                    Log.w(TAG, "uploadOrdererror: ",it)
+                    Log.w(ContentValues.TAG, "uploadOrdererror: ",it)
                 }
 
         }
@@ -114,7 +114,7 @@ class Cart : Fragment() {
             .collection("canteens")
             .document(kantinId.toString())
             .get().addOnSuccessListener {
-                 orderqueue = it.get("order_queue") as Long
+                orderqueue = it.get("order_queue") as Long
             }.addOnSuccessListener {
                 FirebaseFirestore.getInstance()
                     .collection("canteens")
@@ -131,14 +131,14 @@ class Cart : Fragment() {
             .document(orderId)
             .addSnapshotListener { value, error ->
                 if (error != null){
-                    Log.w(TAG, "listenForConfirmation: ", error)
+                    Log.w(ContentValues.TAG, "listenForConfirmation: ", error)
                     return@addSnapshotListener
                 }
 
                 if (value != null && value.exists()){
                     val status = value.getLong("status")
                     if (status == 1.toLong()){
-                        Log.d(TAG, "listenForConfirmation2: $value")
+                        Log.d(ContentValues.TAG, "listenForConfirmation2: $value")
                         orderConfirmations[orderId] = true
                         checkAllOrderConfirmed()
                         updatingOrderQueue(kantinId)
@@ -164,11 +164,11 @@ class Cart : Fragment() {
     }
 
     private fun hideLoadingScreen() {
-        Log.d(TAG, "hideLoadingScreen: ")
+        Log.d(ContentValues.TAG, "hideLoadingScreen: ")
 
         if (loadingDialog.isShowing) {
             loadingDialog.dismiss()
-            Log.d(TAG, "hideLoadingScreen2: ")
+            Log.d(ContentValues.TAG, "hideLoadingScreen2: ")
 
         }
     }
