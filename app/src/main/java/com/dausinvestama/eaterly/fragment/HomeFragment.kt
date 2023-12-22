@@ -383,12 +383,12 @@ class HomeFragment() : Fragment() {
         db.collection("categories").whereArrayContains("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
+                val localListCateg = ArrayList<CategoryList>()
                 for (document in result) {
                     val x = document.getString("name") as String
                     val y = document.getString("link") as String
                     val z = document.id.toInt()
 
-                    val localListCateg = ArrayList<CategoryList>()
 
                     localListCateg.add(CategoryList(x, y, z))
                     listkategori = localListCateg
@@ -418,6 +418,7 @@ class HomeFragment() : Fragment() {
         db.collection("types").whereArrayContains("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
+                val localListJenis = ArrayList<JenisList>()
                 for (document in result) {
                     val x = document.getString("name") as String
                     val y = document.getString("url") as String
@@ -425,7 +426,6 @@ class HomeFragment() : Fragment() {
 
                     Log.d(TAG, "initjenis in fragmenthome: $x $y $z")
 
-                    val localListJenis = ArrayList<JenisList>()
                     localListJenis.add(JenisList(y, z, x))
 
                     jenislist = localListJenis
@@ -456,12 +456,12 @@ class HomeFragment() : Fragment() {
         db.collection("canteens").whereEqualTo("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
+                val localListCanteen = ArrayList<KantinList>()
                 for (document in result) {
                     val x = document.get("name") as String
                     val y = document.get("url") as String
                     val z = document.id.toInt()
 
-                    val localListCanteen = ArrayList<KantinList>()
 
                     localListCanteen.add(KantinList(y, x, z, 1))
                     listcanteen = localListCanteen

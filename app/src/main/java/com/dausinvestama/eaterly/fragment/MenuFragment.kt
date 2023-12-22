@@ -66,9 +66,18 @@ class MenuFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) { progressBar.visibility = View.VISIBLE }
             val sellerId = FirebaseAuth.getInstance().currentUser?.uid
+
+            val canteens = db.collection("canteens")
+                .whereEqualTo("seller", sellerId)
+                .limit(1)
+                .get()
+                .await()
+
+            val canteenId = canteens.documents.firstOrNull()?.id?.toInt()
+
             try {
                 val menuList = db.collection("menus")
-                    .whereEqualTo("canteen_id", sellerId)
+                    .whereEqualTo("canteen_id", canteenId)
                     .get()
                     .await()
 
