@@ -42,7 +42,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -223,9 +222,15 @@ class HomeFragment() : Fragment() {
 
     private fun handleLocationSelection(location: String?): Boolean {
         if (location != null) {
-            val latLng: LatLng? = when (location) {
-                "NBH" -> LatLng(-6.29862809919001, 107.16615125585714)
-                "SBH" -> LatLng(-6.282660058854142, 107.17077015160136)
+            val latLng: com.google.android.gms.maps.model.LatLng? = when (location) {
+                "NBH" -> com.google.android.gms.maps.model.LatLng(
+                    -6.29862809919001,
+                    107.16615125585714
+                )
+                "SBH" -> com.google.android.gms.maps.model.LatLng(
+                    -6.282660058854142,
+                    107.17077015160136
+                )
                 else -> null // Handle the case where the location name is not recognized
             }
 
@@ -238,9 +243,12 @@ class HomeFragment() : Fragment() {
     }
 
     private val locationCoordinates = mapOf(
-        "SBH" to LatLng(-6.282660058854142, 107.17077015160136),
-        "NBH" to LatLng(-6.29862809919001, 107.16615125585714),
-        "President University Canteen" to LatLng(-6.285365515156995, 107.17007529334688)
+        "SBH" to com.google.android.gms.maps.model.LatLng(-6.282660058854142, 107.17077015160136),
+        "NBH" to com.google.android.gms.maps.model.LatLng(-6.29862809919001, 107.16615125585714),
+        "President University Canteen" to com.google.android.gms.maps.model.LatLng(
+            -6.285365515156995,
+            107.17007529334688
+        )
     )
 
 
@@ -283,7 +291,7 @@ class HomeFragment() : Fragment() {
 
         }
     }
-    private fun convertLocationToLatLng(locationName: String?): LatLng? {
+    private fun convertLocationToLatLng(locationName: String?): com.google.android.gms.maps.model.LatLng? {
         return locationCoordinates[locationName]
     }
 
@@ -344,7 +352,10 @@ class HomeFragment() : Fragment() {
                     fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                         location?.let { userLocation ->
                             // Move camera to the user's current location if no selected location
-                            val userLatLng = LatLng(userLocation.latitude, userLocation.longitude)
+                            val userLatLng = com.google.android.gms.maps.model.LatLng(
+                                userLocation.latitude,
+                                userLocation.longitude
+                            )
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
                         }
                     }
@@ -383,12 +394,13 @@ class HomeFragment() : Fragment() {
         db.collection("categories").whereArrayContains("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
+                val localListCateg = ArrayList<CategoryList>()
                 for (document in result) {
                     val x = document.getString("name") as String
                     val y = document.getString("link") as String
                     val z = document.id.toInt()
 
-                    val localListCateg = ArrayList<CategoryList>()
+
 
                     localListCateg.add(CategoryList(x, y, z))
                     listkategori = localListCateg
@@ -418,6 +430,7 @@ class HomeFragment() : Fragment() {
         db.collection("types").whereArrayContains("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
+                val localListJenis = ArrayList<JenisList>()
                 for (document in result) {
                     val x = document.getString("name") as String
                     val y = document.getString("url") as String
@@ -425,7 +438,7 @@ class HomeFragment() : Fragment() {
 
                     Log.d(TAG, "initjenis in fragmenthome: $x $y $z")
 
-                    val localListJenis = ArrayList<JenisList>()
+
                     localListJenis.add(JenisList(y, z, x))
 
                     jenislist = localListJenis
@@ -456,17 +469,18 @@ class HomeFragment() : Fragment() {
         db.collection("canteens").whereEqualTo("location_id", locationId)
             .get()
             .addOnSuccessListener { result ->
+                val localListCanteen = ArrayList<KantinList>()
                 for (document in result) {
                     val x = document.get("name") as String
                     val y = document.get("url") as String
                     val z = document.id.toInt()
 
-                    val localListCanteen = ArrayList<KantinList>()
-
                     localListCanteen.add(KantinList(y, x, z, 1))
                     listcanteen = localListCanteen
+                    Log.d(TAG, "initkantin1: $x")
                 }
                 adapterkantin = KantinAdapter(this, listcanteen)
+                Log.d(TAG, "initkantin1item: " + adapterkantin.itemCount + " a " +listcanteen.size)
                 binding.apply {
                     listkantin.adapter = adapterkantin
                     listkantin.layoutManager =

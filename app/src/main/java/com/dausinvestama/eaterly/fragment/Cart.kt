@@ -1,6 +1,10 @@
 package com.dausinvestama.eaterly.fragment
 
+import android.app.Dialog
+import android.app.ProgressDialog
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +21,9 @@ import com.dausinvestama.eaterly.database.CartItemDb
 import com.dausinvestama.eaterly.databinding.FragmentCartBinding
 import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
 import com.dausinvestama.eaterly.utils.SharedPreferences
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.midtrans.sdk.uikit.api.model.CustomColorTheme
 import com.midtrans.sdk.uikit.external.UiKitApi
 
@@ -27,8 +34,11 @@ class Cart : Fragment() {
     var arraycartorder = mutableListOf<CartItemDb>()
     private lateinit var localdb: CartDatabase
     private lateinit var Cartlocaldb: AppDatabase
+    private var orderConfirmations: MutableMap<String, Boolean> = mutableMapOf()
+
 
     private lateinit var binding: FragmentCartBinding
+    private lateinit var loadingDialog: Dialog
 
     var subtotals: Int = 0
 
@@ -44,6 +54,13 @@ class Cart : Fragment() {
         pre = SharedPreferences(context)
         binding.apply {
             binding.nokursi.text = pre.nomor_meja.toString()
+            binding.bayarcash.setOnClickListener {
+                uploadOrder()
+                arraycart.clear()
+                cartAdapter.notifyDataSetChanged()
+                Cartlocaldb.cartDao().delete()
+                resetOrderConfirmations()
+            }
             getData(subtotal, biayajasa, biayatotal)
         }
 
@@ -53,21 +70,113 @@ class Cart : Fragment() {
         return binding.root
     }
 
-    private fun initmidtrans() {
-        UiKitApi.Builder()
-            .withMerchantClientKey("Mid-client-JhBFk4qvSkRkQyNi") // client_key is mandatory
-            .withContext(requireContext()) // context is mandatory
-            .withMerchantUrl("https://merchant-url-sandbox.com/") // set transaction finish callback (sdk callback)
-            .enableLog(true) // enable sdk log (optional)
-            .withColorTheme(
-                CustomColorTheme(
-                    "#FFE51255",
-                    "#B61548",
-                    "#FFE51255"
-                )
-            ) // set theme. it will replace theme on snap theme on MAP ( optional)
-            .build()
+    private fun uploadOrder() {
+
+        val OrderByKantin = arraycartorder.groupBy { it.id_kantin }
+
+        OrderByKantin.forEach { (kantinId, items) ->
+
+            val menuItems = items.groupBy { it.id_makanan.toString() }
+                .mapValues { (_, items) -> items.sumOf { it.jumlah } }
+
+            val totalPrice = arraycartorder.sumOf { it.harga * it.jumlah }
+            val tableNumber = pre.nomor_meja ?: return
+            val userid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+            val orderData = hashMapOf(
+                "canteen_id" to kantinId,
+                "meja" to tableNumber,
+                "menu_items" to menuItems,
+                "order_time" to FieldValue.serverTimestamp(),
+                "status" to 0,
+                "total_price" to totalPrice,
+                "user_id" to userid
+            )
+
+            FirebaseFirestore.getInstance().collection("orders")
+                .add(orderData)
+                .addOnSuccessListener {
+                    showLoadingConfirmation()
+                    listenForConfirmation(it.id, kantinId)
+                    Log.d(TAG, "uploadOrder: $it")
+                }.addOnFailureListener {
+                    Log.w(TAG, "uploadOrdererror: ",it)
+                }
+
+        }
+
+
     }
+
+    private fun updatingOrderQueue(kantinId: Int){
+        var orderqueue: Long =0
+        FirebaseFirestore.getInstance()
+            .collection("canteens")
+            .document(kantinId.toString())
+            .get().addOnSuccessListener {
+                 orderqueue = it.get("order_queue") as Long
+            }.addOnSuccessListener {
+                FirebaseFirestore.getInstance()
+                    .collection("canteens")
+                    .document(kantinId.toString())
+                    .update("order_queue", orderqueue+1)
+            }
+    }
+
+    private fun listenForConfirmation(orderId: String, kantinId: Int){
+        orderConfirmations[orderId] = false
+
+        FirebaseFirestore.getInstance()
+            .collection("orders")
+            .document(orderId)
+            .addSnapshotListener { value, error ->
+                if (error != null){
+                    Log.w(TAG, "listenForConfirmation: ", error)
+                    return@addSnapshotListener
+                }
+
+                if (value != null && value.exists()){
+                    val status = value.getLong("status")
+                    if (status == 1.toLong()){
+                        Log.d(TAG, "listenForConfirmation2: $value")
+                        orderConfirmations[orderId] = true
+                        checkAllOrderConfirmed()
+                        updatingOrderQueue(kantinId)
+                    }
+                }
+            }
+    }
+
+    private fun checkAllOrderConfirmed() {
+        if (orderConfirmations.values.all { it }) { // Check if all orders are confirmed
+            hideLoadingScreen()
+        }
+    }
+
+    private fun showLoadingConfirmation() {
+        if (::loadingDialog.isInitialized && loadingDialog.isShowing) {
+            return // Dialog is already showing, no need to create a new one
+        }
+        loadingDialog = Dialog(requireContext())
+        loadingDialog.setContentView(R.layout.dialog_confirmation)
+        loadingDialog.setCancelable(false)
+        loadingDialog.show()
+    }
+
+    private fun hideLoadingScreen() {
+        Log.d(TAG, "hideLoadingScreen: ")
+
+        if (loadingDialog.isShowing) {
+            loadingDialog.dismiss()
+            Log.d(TAG, "hideLoadingScreen2: ")
+
+        }
+    }
+
+    private fun resetOrderConfirmations() {
+        orderConfirmations.clear()
+    }
+
 
     private fun initcart(view: View) {
         val listcart: RecyclerView = view.findViewById(R.id.cartlist)
