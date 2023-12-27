@@ -1,7 +1,6 @@
 package com.dausinvestama.eaterly.fragment
 
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
@@ -19,13 +18,10 @@ import com.dausinvestama.eaterly.adapter.CartAdapter
 import com.dausinvestama.eaterly.database.CartDb
 import com.dausinvestama.eaterly.database.CartItemDb
 import com.dausinvestama.eaterly.databinding.FragmentCartBinding
-import com.dausinvestama.eaterly.databinding.FragmentHomeBinding
 import com.dausinvestama.eaterly.utils.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.midtrans.sdk.uikit.api.model.CustomColorTheme
-import com.midtrans.sdk.uikit.external.UiKitApi
 
 class Cart : Fragment() {
 
@@ -72,14 +68,14 @@ class Cart : Fragment() {
 
     private fun uploadOrder() {
 
-        val OrderByKantin = arraycartorder.groupBy { it.id_kantin }
+        val orderByKantin = arraycartorder.groupBy { it.id_kantin }
 
-        OrderByKantin.forEach { (kantinId, items) ->
+        orderByKantin.forEach { (kantinId, items) ->
 
             val menuItems = items.groupBy { it.id_makanan.toString() }
                 .mapValues { (_, items) -> items.sumOf { it.jumlah } }
 
-            val totalPrice = arraycartorder.sumOf { it.harga * it.jumlah }
+            val totalPrice = items.sumOf { it.harga * it.jumlah }
             val tableNumber = pre.nomor_meja ?: return
             val userid = FirebaseAuth.getInstance().currentUser?.uid ?: return
 

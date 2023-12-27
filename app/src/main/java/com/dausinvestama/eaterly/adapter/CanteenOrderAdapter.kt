@@ -47,6 +47,10 @@ class CanteenOrderAdapter(val canteens: MutableList<OrderListData>): RecyclerVie
                     statusTxtVw.text = "On Way"
                     statusTxtVw.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_green))
                 }
+                "2" -> {
+                    statusCoordinator.setBackgroundResource(R.drawable.background_preparing)
+                    statusTxtVw.text = "Pending"
+                }
                 else -> {}
             }
         }
