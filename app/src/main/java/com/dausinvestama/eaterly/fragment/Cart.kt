@@ -84,7 +84,7 @@ class Cart : Fragment() {
                 "meja" to tableNumber,
                 "menu_items" to menuItems,
                 "order_time" to FieldValue.serverTimestamp(),
-                "status" to 0,
+                "status" to 2,
                 "total_price" to totalPrice,
                 "user_id" to userid
             )
