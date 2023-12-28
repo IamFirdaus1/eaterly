@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     tools:context=".fragment.SellerQueue">
 
     <LinearLayout
@@ -16,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/green"
-            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <TextView
@@ -25,7 +23,19 @@
                 android:layout_weight="1"
                 android:background="@color/green"
                 android:padding="5dp"
-                android:text="PENDING ACCEPTANCE"
+                android:text="PENDING"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_pending_count"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/green"
+                android:padding="5dp"
+                android:text="0"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -41,6 +51,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/fl_pending"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -54,23 +65,23 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_pending"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
 
             <LinearLayout
                 android:id="@+id/ll_empty_pending"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/empty_icon" />
 
                 <TextView
+                    android:layout_marginStart="10dp"
                     style="@style/InfoTextView.ProfileFieldTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,7 +103,19 @@
                 android:layout_weight="1"
                 android:background="@color/green"
                 android:padding="5dp"
-                android:text="PREPARING MEAL"
+                android:text="PREPARING"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_preparing_count"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/green"
+                android:padding="5dp"
+                android:text="0"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -108,6 +131,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/fl_prepping"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -121,27 +145,27 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_prep"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
 
             <LinearLayout
                 android:id="@+id/ll_empty_prepping"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/empty_icon" />
 
                 <TextView
                     style="@style/InfoTextView.ProfileFieldTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No pending orders yet!"
+                    android:layout_marginStart="10dp"
+                    android:text="No orders being prepared yet!"
                     android:textColor="@color/green" />
             </LinearLayout>
         </FrameLayout>
@@ -165,6 +189,18 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tv_delivering_count"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/green"
+                android:padding="5dp"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
             <ImageButton
                 android:id="@+id/btn_min_deliv"
                 android:layout_width="48dp"
@@ -175,6 +211,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/fl_delivering"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -188,30 +225,30 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_delivering"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
 
             <LinearLayout
                 android:id="@+id/ll_empty_delivering"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/empty_icon" />
 
                 <TextView
                     style="@style/InfoTextView.ProfileFieldTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:text="No orders being delivered yet!"
                     android:textColor="@color/green" />
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

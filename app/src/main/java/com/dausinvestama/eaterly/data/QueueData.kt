@@ -1,17 +1,9 @@
 package com.dausinvestama.eaterly.data
 
-data class QueueData(
-    val buyerName: Any?,
-    val queues: List<Queue>
-)
+import com.google.firebase.Timestamp
+import java.util.Date
 
-data class Queue(
-    val orderid: Any?,
-    val time: Any?,
-    val menuName: Any?,
-    val menuQuantity: Any?,
-    val menuStatus: Any?,
-    val menuTotalprice: Any?,
-    val menuMeja: Any?,
-    val menuUrl: Any?
+data class QueueData(
+    val time: String,
+    val queues: MutableList<Menu>
 )

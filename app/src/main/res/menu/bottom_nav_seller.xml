@@ -6,7 +6,7 @@
         android:icon="@drawable/housegray"/>
 
     <item android:id="@+id/orderlist"
-        android:title="Orderlist"
+        android:title="Queue"
         android:icon="@drawable/plus"/>
 
     <item android:id="@+id/counter"

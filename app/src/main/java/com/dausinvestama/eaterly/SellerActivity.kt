@@ -13,6 +13,7 @@ import com.dausinvestama.eaterly.fragment.Orderlist
 import com.dausinvestama.eaterly.fragment.Profile
 import com.dausinvestama.eaterly.fragment.SellerBlankFragment
 import com.dausinvestama.eaterly.fragment.SellerHomeFragment
+import com.dausinvestama.eaterly.fragment.SellerQueue
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -75,7 +76,7 @@ class SellerActivity : AppCompatActivity() {
 
             when (it.itemId) {
                 R.id.homes -> replaceFragment(if (hasCounter) SellerHomeFragment() else SellerBlankFragment())
-                R.id.orderlist -> replaceFragment(Orderlist())
+                R.id.orderlist -> replaceFragment(SellerQueue())
                 R.id.counter -> replaceFragment(MenuFragment())
                 R.id.profile -> replaceFragment(Profile())
                 else -> {

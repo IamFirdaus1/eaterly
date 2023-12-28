@@ -2,80 +2,98 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="10dp">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/empty_icon"/>
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="menu name" />
-
-            <TextView
-                android:id="@+id/tv_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="miftahul" />
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_table"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                style="@style/InfoTextView.ProfileFieldTitle"
+                android:layout_width="0dp"
+                android:layout_margin="0dp"
                 android:layout_height="wrap_content"
-                android:text="table number 1" />
+                android:text="Table 10" />
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/statusCoordinator"
+                android:background="@drawable/background_preparing"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:lineSpacingExtra="1sp"
+                    android:layout_gravity="center"
+                    android:textAppearance="@style/havent_paid"
+                    android:text="Preparing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <TextView
-                android:id="@+id/tv_price"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:id="@+id/tv_time"
+                style="@style/InfoTextView.ProfileFieldTitle"
+                android:layout_margin="0dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Rp. 20.000" />
-
+                android:text="00:00:00" />
         </LinearLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/InfoTextView.ProfileFieldTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rp. 100.000" />
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_accept"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/green"
                 android:drawableLeft="@drawable/baseline_check_24"
                 android:drawableTint="@color/white"
-                android:text="accept"/>
+                android:text="accept" />
 
             <Button
                 android:id="@+id/btn_deny"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="48dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/red"
                 android:drawableLeft="@drawable/ic_cross"
                 android:drawableTint="@color/white"
-                android:text="deny"/>
-
+                android:text="deny" />
         </LinearLayout>
+
     </LinearLayout>
 
 
