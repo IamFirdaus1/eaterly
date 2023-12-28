@@ -1,6 +1,7 @@
 package com.dausinvestama.eaterly
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -25,8 +26,10 @@ import androidx.core.content.ContextCompat
 import com.dausinvestama.eaterly.databinding.ActivitySellerRegisCounterBinding
 import com.dausinvestama.eaterly.utils.DialogUtils.showConfirmationDialog
 import com.dausinvestama.eaterly.utils.ImagePickerUtils
+import com.dausinvestama.eaterly.utils.ImagePickerUtils.checkCameraPermission
 import com.dausinvestama.eaterly.utils.ImagePickerUtils.cropImageToSquare
 import com.dausinvestama.eaterly.utils.ImagePickerUtils.cropToSquare
+import com.dausinvestama.eaterly.utils.ImagePickerUtils.openImagePicker
 import com.dausinvestama.eaterly.utils.ImagePickerUtils.setPreviewImage
 import com.dausinvestama.eaterly.utils.ImageStoreUtils.storeImage
 import com.dausinvestama.eaterly.utils.ImageStoreUtils.updateUrlField
@@ -76,7 +79,7 @@ class SellerRegisCounter : AppCompatActivity() {
         dropDownLoc.adapter = getLocationAdapter()
 
         buttonImage.setOnClickListener {
-            checkCameraPermission()
+            checkCameraPermission(this)
         }
 
         buttonSubmit.setOnClickListener {
@@ -103,22 +106,6 @@ class SellerRegisCounter : AppCompatActivity() {
         return adapter
     }
 
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_REQUEST_CODE
-            )
-        } else {
-            openImagePicker()
-        }
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -127,22 +114,13 @@ class SellerRegisCounter : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openImagePicker()
+                openImagePicker(this)
             } else {
                 val pickPhotoIntent =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 startActivityForResult(pickPhotoIntent, PICK_IMAGE)
             }
         }
-    }
-
-    private fun openImagePicker() {
-        ImagePickerUtils.showImagePickDialog(
-            context = this,
-            activity = this,
-            imageCaptureCode = REQUEST_IMAGE_CAPTURE,
-            pickImageCode = PICK_IMAGE
-        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

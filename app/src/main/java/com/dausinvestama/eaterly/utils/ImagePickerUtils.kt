@@ -1,16 +1,21 @@
 package com.dausinvestama.eaterly.utils
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.ImageView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.dausinvestama.eaterly.SellerRegisCounter
 import java.io.IOException
 
 object ImagePickerUtils {
@@ -96,4 +101,33 @@ object ImagePickerUtils {
             imageContainer.setImageBitmap(it)
         }
     }
+
+    fun checkCameraPermission(activity: Activity) {
+        if (ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            openImagePicker(activity)
+        }
+    }
+
+    fun openImagePicker(activity: Activity) {
+        showImagePickDialog(
+            context = activity,
+            activity = activity,
+            imageCaptureCode = REQUEST_IMAGE_CAPTURE,
+            pickImageCode = PICK_IMAGE
+        )
+    }
+
+    private const val REQUEST_IMAGE_CAPTURE = 1
+    private const val PICK_IMAGE = 2
+    private const val CAMERA_PERMISSION_REQUEST_CODE = 1001
 }

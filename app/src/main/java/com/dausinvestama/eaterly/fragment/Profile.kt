@@ -31,24 +31,9 @@ class Profile : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
-        val user = firebaseAuth.currentUser
+        initInfo()
 
         binding.apply {
-
-            tvUsername.text = user?.displayName
-            tvEmail.text = user?.email
-            if (user?.photoUrl != null) {
-                if (isAdded) {
-                    Glide.with(requireActivity())
-                        .load(user.photoUrl)
-                        .circleCrop()
-                        .into(imgPp)
-                }
-            } else {
-                imgPp.setImageResource(R.drawable.user_icon)
-            }
-
-
             rvAccSettings.setHasFixedSize(true)
             val accAdapter = SettingsAdapter(
                 setSettingList(
@@ -100,5 +85,28 @@ class Profile : Fragment() {
         return binding.root
     }
 
+    private fun initInfo() {
+        binding.apply {
+            val user = firebaseAuth.currentUser
+
+            tvUsername.text = user?.displayName
+            tvEmail.text = user?.email
+            if (user?.photoUrl != null) {
+                if (isAdded) {
+                    Glide.with(requireActivity())
+                        .load(user.photoUrl)
+                        .circleCrop()
+                        .into(imgPp)
+                }
+            } else {
+                imgPp.setImageResource(R.drawable.user_icon)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initInfo()
+    }
 
 }
