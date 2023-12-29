@@ -124,7 +124,6 @@ class SellerQueue : Fragment() {
                         val time = get("order_time").toString()
                         val price = get("total_price")
                         val id = queueDoc.id
-                        val url = queueDoc.get("url")
 
                         val menuItemsMap = get("menu_items") as Map<*, *>?
                         val menusList = mutableListOf<Menu>()
@@ -136,6 +135,7 @@ class SellerQueue : Fragment() {
 
                             if (menuDocument.exists()){
                                 val menuName = menuDocument.getString("name")
+                                val url = menuDocument.getString("url")
 
                                 menusList.add(
                                     Menu(

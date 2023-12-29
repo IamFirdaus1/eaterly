@@ -14,6 +14,16 @@ import com.dausinvestama.eaterly.data.MenuData
 
 class MenuSellerAdapter(private val menus: MutableList<MenuData>, private val context: Context) : RecyclerView.Adapter<MenuSellerAdapter.ViewHolder>() {
 
+    interface OnItemClickCallback{
+        fun onItemClick(position: Int)
+    }
+
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val tvName = itemView.findViewById<TextView>(R.id.namamakanan)
@@ -38,5 +48,9 @@ class MenuSellerAdapter(private val menus: MutableList<MenuData>, private val co
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(menus[position], context)
+
+        holder.itemView.setOnClickListener{
+            onItemClickCallback.onItemClick(position)
+        }
     }
 }

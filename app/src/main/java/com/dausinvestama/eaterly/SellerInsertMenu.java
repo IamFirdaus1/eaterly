@@ -75,46 +75,6 @@ public class SellerInsertMenu extends AppCompatActivity {
             }
         });
 
-        editTime.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty() && !s.toString().endsWith(" min") && !s.toString().endsWith(" hour")) {
-                    int timeInMinutes;
-                    try {
-                        timeInMinutes = Integer.parseInt(s.toString());
-                    } catch (NumberFormatException e) {
-                        return;
-                    }
-
-                    int hours = timeInMinutes / 60;
-                    int minutes = timeInMinutes % 60;
-
-                    String timeFormatted;
-                    if (hours > 0) {
-                        timeFormatted = hours + " hour" + (hours > 1 ? "s" : "");
-                        if (minutes > 0) {
-                            timeFormatted += " " + minutes + " min";
-                        }
-                    } else {
-                        timeFormatted = minutes + " min";
-                    }
-
-                    editTime.removeTextChangedListener(this);
-                    editTime.setText(timeFormatted);
-                    editTime.setSelection(timeFormatted.length());
-                    editTime.addTextChangedListener(this);
-                }
-            }
-        });
-
         btnInsert = findViewById(R.id.btn_insert);
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +90,7 @@ public class SellerInsertMenu extends AppCompatActivity {
                 String name = editName.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
                 String price = editPrice.getText().toString().trim();
-                String timeEstimation = editTime.getText().toString().trim();
+                String timeEstimation = (editTime.getText().toString() + " Min").trim();
 
                 // Check if the fields are empty
                 if (name.isEmpty() || price.isEmpty()) {
@@ -139,42 +99,6 @@ public class SellerInsertMenu extends AppCompatActivity {
                 }
                 //Upload menu data to Firestore
                 uploadMenuData(name, description, price, timeEstimation);
-            }
-        });
-
-        editPrice.addTextChangedListener(new TextWatcher() {
-            private String current = "";
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!s.toString().equals(current)) {
-                    editPrice.removeTextChangedListener(this);
-
-                    String cleanString = s.toString().replaceAll("[Rp,.]", "");
-
-                    double parsed;
-                    try {
-                        parsed = Double.parseDouble(cleanString);
-                    } catch (NumberFormatException e) {
-                        parsed = 0.00;
-                    }
-
-                    String formatted = NumberFormat.getNumberInstance(Locale.US).format(parsed);
-
-                    current = formatted;
-                    editPrice.setText(formatted);
-                    editPrice.setSelection(formatted.length());
-
-                    editPrice.addTextChangedListener(this);
-                }
             }
         });
     }
@@ -217,6 +141,7 @@ public class SellerInsertMenu extends AppCompatActivity {
                         menuData.put("timeEstimation", timeEstimation);
                         menuData.put("sellerId", currentUser.getUid());
                         menuData.put("canteen_id", canteenId);
+                        menuData.put("url", "");
 
                         // Add the menu data to Firestore
                         db.collection("menus").document(menuId)
@@ -260,16 +185,12 @@ public class SellerInsertMenu extends AppCompatActivity {
     }
 
     private void updateMenuImageUrl(String menuId, StorageReference menuImageRef) {
-        menuImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            // Update Firestore with the image URL
-            db.collection("menus").document(menuId)
-                    .update("imageUrl", uri.toString())
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getApplicationContext(), "Menu added successfully", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getApplicationContext(), "Failed to update menu image URL", Toast.LENGTH_SHORT).show();
-                    });
+        menuImageRef.getDownloadUrl().addOnSuccessListener(uri -> { // Update Firestore with the image URL
+            db.collection("menus").document(menuId).update("url", uri.toString()).addOnSuccessListener(aVoid -> {
+                Toast.makeText(getApplicationContext(), "Menu added successfully", Toast.LENGTH_SHORT).show();
+            }).addOnFailureListener(e -> {
+                Toast.makeText(getApplicationContext(), "Failed to update menu image URL", Toast.LENGTH_SHORT).show();
+            });
         });
     }
 

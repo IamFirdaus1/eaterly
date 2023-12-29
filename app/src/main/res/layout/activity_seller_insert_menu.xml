@@ -82,8 +82,8 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardElevation="9dp"
         android:layout_margin="8dp"
+        app:cardElevation="9dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_top_bar">
@@ -157,7 +157,8 @@
             <EditText
                 android:id="@+id/editDescription"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:maxHeight="100dp"
                 android:ems="10"
                 android:hint="E.g. Behold the Ciken Katsoo, dish of noble..."
                 android:inputType="text" />
@@ -170,13 +171,28 @@
                 android:text="Price*"
                 android:textColor="@color/green" />
 
-            <EditText
-                android:id="@+id/editPrice"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:ems="10"
-                android:hint="Rp. 25,000"
-                android:inputType="number" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/interbold"
+                    android:gravity="center_vertical"
+                    android:text="Rp."
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/editPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="25,000"
+                    android:inputType="number" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/timeEstimation"
@@ -187,13 +203,30 @@
                 android:textColor="@color/green" />
 
 
-            <EditText
-                android:id="@+id/editTimeEstimation"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:ems="10"
-                android:hint="15 minutes"
-                android:inputType="number" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editTimeEstimation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".1"
+                    android:hint="15"
+                    android:inputType="number"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/interbold"
+                    android:gravity="center_vertical"
+                    android:text="Minutes"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -201,11 +234,11 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSave"
         style="@style/NavButton.RoundedButton"
-        app:layout_constraintTop_toBottomOf="@id/cardView"
+        android:layout_marginTop="8dp"
+        android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"
-        android:text="@string/submit" />
+        app:layout_constraintTop_toBottomOf="@id/cardView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

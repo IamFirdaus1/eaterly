@@ -36,6 +36,10 @@ class MenuAdapter(private val menus: List<Menu>, private val context: Context) :
             menuNameTextView.text = menu.menuName.toString()
             menuQuantityTxtView.text = menu.menuQuantity.toString()
             totalTxtView.text = menu.menuTotalprice.toString()
+
+            Glide.with(context)
+                .load(menu.menuUrl.toString())
+                .into(urlImgVw)
         }
     }
 }

@@ -94,7 +94,7 @@ class Orderlist : Fragment() {
                                     val status = orderDocument.get("status")
                                     val meja = orderDocument.get("meja")
                                     val orderid = orderDocument.id
-                                    val url = orderDocument.get("url")
+                                    val url = menuDocument.getString("url")
                                     Log.d(
                                         TAG,
                                         "Orderlist testing4: $canteenName menu $menuName quantity $quantity price $price"
