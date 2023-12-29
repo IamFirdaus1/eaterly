@@ -1,5 +1,7 @@
 package com.dausinvestama.eaterly;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,9 +12,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,12 +26,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +45,10 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class SellerInsertMenu extends AppCompatActivity {
 
@@ -114,46 +126,54 @@ public class SellerInsertMenu extends AppCompatActivity {
                 .limit(1)
                 .get();
 
-        canteens.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    QuerySnapshot querySnapshot = task.getResult();
-                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                        // Retrieve the first document and get its ID
-                        DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+        canteens.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot querySnapshot = task.getResult();
+                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                    // Retrieve the first document and get its ID
+                    DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+                    canteenId = Integer.parseInt(documentSnapshot.getId());
+
+                    // Use an executor to perform the getNextDocumentName operation in the background
+                    Executor executor = Executors.newSingleThreadExecutor();
+                    Handler handler = new Handler(Looper.getMainLooper());
+
+                    executor.execute(() -> {
                         try {
-                            // Assuming the document ID can be converted to an integer
-                            canteenId = Integer.parseInt(documentSnapshot.getId());
-                        } catch (NumberFormatException e) {
-                            // Handle the potential number format exception if the ID isn't a valid integer
-                            e.printStackTrace();
+                            String menuId = getNextDocumentName();
+                            Log.d(TAG, "NextDoc: " + menuId);
+
+                            // Post the result back to the main thread to continue with Firestore update
+                            handler.post(() -> {
+                                // Create a map with menu data
+                                Map<String, Object> menuData = new HashMap<>();
+                                menuData.put("name", name);
+                                menuData.put("description", description);
+                                menuData.put("price", Double.parseDouble(cleanPrice)); // Use the cleaned price
+                                menuData.put("timeEstimation", timeEstimation);
+                                menuData.put("sellerId", currentUser.getUid());
+                                menuData.put("canteen_id", canteenId);
+                                menuData.put("url", "");
+
+                                // Add the menu data to Firestore
+                                db.collection("menus").document(menuId)
+                                        .set(menuData)
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Menu data added successfully, now upload the image
+                                            uploadMenuImage(menuId);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(getApplicationContext(), "Failed to add menu data", Toast.LENGTH_SHORT).show();
+                                        });
+                            });
+                        } catch (InterruptedException | ExecutionException e) {
+                            // Handle exceptions here
+                            handler.post(() -> {
+                                Toast.makeText(getApplicationContext(), "Failed to generate a new menu ID: ", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, e.getLocalizedMessage());
+                            });
                         }
-
-                        // Create a unique menu ID
-                        String menuId = db.collection("menus").document().getId();
-
-                        // Create a map with menu data
-                        Map<String, Object> menuData = new HashMap<>();
-                        menuData.put("name", name);
-                        menuData.put("description", description);
-                        menuData.put("price", Double.parseDouble(cleanPrice)); // Use the cleaned price
-                        menuData.put("timeEstimation", timeEstimation);
-                        menuData.put("sellerId", currentUser.getUid());
-                        menuData.put("canteen_id", canteenId);
-                        menuData.put("url", "");
-
-                        // Add the menu data to Firestore
-                        db.collection("menus").document(menuId)
-                                .set(menuData)
-                                .addOnSuccessListener(aVoid -> {
-                                    // Menu data added successfully, now upload the image
-                                    uploadMenuImage(menuId);
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(getApplicationContext(), "Failed to add menu data", Toast.LENGTH_SHORT).show();
-                                });
-                    }
+                    });
                 }
             }
         });
@@ -227,5 +247,24 @@ public class SellerInsertMenu extends AppCompatActivity {
                 btnInsert.setImageURI(selectedImage);
             }
         }
+    }
+
+    public String getNextDocumentName() throws InterruptedException, ExecutionException {
+        Query lastDocumentQuery = FirebaseFirestore.getInstance()
+                .collection("menus")
+                .orderBy(FieldPath.documentId(), Query.Direction.DESCENDING)
+                .limit(1);
+
+        // Wait for the query to complete and retrieve the result synchronously
+        QuerySnapshot querySnapshot = Tasks.await(lastDocumentQuery.get());
+
+        String nextDocumentName = "1"; // Default if no documents are found
+        if (!querySnapshot.isEmpty()) {
+            String highestDocumentName = querySnapshot.getDocuments().get(0).getId();
+            int incrementedValue = Integer.parseInt(highestDocumentName) + 1;
+            nextDocumentName = Integer.toString(incrementedValue);
+        }
+
+        return nextDocumentName;
     }
 }

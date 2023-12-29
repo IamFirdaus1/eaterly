@@ -187,7 +187,7 @@ class DetailedCategory : AppCompatActivity() {
                     var id_kantin: Long = document.get("canteen_id") as Long
                     var nama_makanan: String = document.get("name") as String
                     var desc_makanan: String = document.get("description") as String
-                    var harga_makanan: Long = document.get("price") as Long
+                    var harga_makanan: Long = document.get("price").toString().toDouble().toLong()
                     var gambar_makanan: String = document.get("url") as String
                     var id_jenis2: Long = document.id.toLong()
 
