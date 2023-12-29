@@ -31,7 +31,7 @@
     <string name="submit">Submit</string>
 
     <string-array name="account_settings">
-        <item>Orders</item>
+        <item>History</item>
         <item>Promotions</item>
         <item>Payment Methods</item>
         <item>Help &amp; My Reports</item>
@@ -41,7 +41,7 @@
     </string-array>
 
     <string-array name="acc_settings_desc">
-        <item>Check history &amp; active orders</item>
+        <item>Check history</item>
         <item> </item>
         <item> </item>
         <item> </item>

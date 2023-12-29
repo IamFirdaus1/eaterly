@@ -55,6 +55,9 @@ class CanteenOrderAdapter(val canteens: MutableList<OrderListData>): RecyclerVie
                     statusCoordinator.setBackgroundResource(R.drawable.background_denied)
                     statusTxtVw.text = "Cancelled"
                 }
+                "4" -> {
+                    itemView.visibility = View.GONE
+                }
                 else -> {}
             }
         }

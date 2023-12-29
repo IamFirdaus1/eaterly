@@ -133,7 +133,7 @@ class Cart : Fragment() {
 
                 if (value != null && value.exists()){
                     val status = value.getLong("status")
-                    if (status == 1.toLong()){
+                    if (status == 1.toLong() || status == 2.toLong() || status == 0.toLong()){
                         Log.d(TAG, "listenForConfirmation2: $value")
                         orderConfirmations[orderId] = true
                         checkAllOrderConfirmed()

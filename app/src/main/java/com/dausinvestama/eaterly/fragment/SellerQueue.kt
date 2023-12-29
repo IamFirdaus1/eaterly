@@ -1,6 +1,7 @@
 package com.dausinvestama.eaterly.fragment
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,7 +23,9 @@ import com.dausinvestama.eaterly.data.Menu
 import com.dausinvestama.eaterly.data.QueueData
 import com.dausinvestama.eaterly.databinding.FragmentSellerQueueBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +37,17 @@ class SellerQueue : Fragment() {
 
     private val db = FirebaseFirestore.getInstance()
 
+    private lateinit var pendingAdapter: QueueAdapter
+    private lateinit var prepAdapter: QueueAdapter
+    private lateinit var deliveringAdapter: QueueAdapter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        pendingAdapter = QueueAdapter(mutableListOf(), context)
+        prepAdapter = QueueAdapter(mutableListOf(), context)
+        deliveringAdapter = QueueAdapter(mutableListOf(), context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,50 +55,44 @@ class SellerQueue : Fragment() {
     ): View {
         binding = FragmentSellerQueueBinding.inflate(layoutInflater)
 
-        binding.apply {
-            val pendingAdapter = QueueAdapter(mutableListOf(), requireContext())
-            val prepAdapter = QueueAdapter(mutableListOf(), requireContext())
-            val deliveringAdapter = QueueAdapter(mutableListOf(), requireContext())
-
-            rvPending.apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = pendingAdapter
-                setHasFixedSize(true)
-            }
-
-            rvPrep.apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = prepAdapter
-                setHasFixedSize(true)
-            }
-
-            rvDelivering.apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = deliveringAdapter
-                setHasFixedSize(true)
-            }
-
-            setUpMinimizeAndExpand(btnMinPending, flPending)
-            setUpMinimizeAndExpand(btnMinPrep, flPrepping)
-            setUpMinimizeAndExpand(btnMinDeliv, flDelivering)
-
-            initAll()
+        binding.rvPending.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = pendingAdapter
+            setHasFixedSize(true)
         }
+
+        binding.rvPrep.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = prepAdapter
+            setHasFixedSize(true)
+        }
+
+        binding.rvDelivering.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = deliveringAdapter
+            setHasFixedSize(true)
+        }
+
+        initAll()
 
         return binding.root
     }
 
-    private fun initAll(){
+    private fun initAll() {
         binding.apply {
-            getData(pbPending, rvPending, llEmptyPending, 2, tvPendingCount)
-            getData(pbPrepping, rvPrep, llEmptyPrepping, 0, tvPreparingCount)
-            getData(pbDelivering, rvDelivering, llEmptyDelivering, 1, tvDeliveringCount)
+            getData(pendingAdapter, pbPending, rvPending, llEmptyPending, 2, tvPendingCount)
+            getData(prepAdapter, pbPrepping, rvPrep, llEmptyPrepping, 0, tvPreparingCount)
+            getData(deliveringAdapter, pbDelivering, rvDelivering, llEmptyDelivering, 1, tvDeliveringCount)
+
+            setUpMinimizeAndExpand(btnMinPending, flPending)
+            setUpMinimizeAndExpand(btnMinPrep, flPrepping)
+            setUpMinimizeAndExpand(btnMinDeliv, flDelivering)
         }
     }
 
-    private fun setUpMinimizeAndExpand(btnMin: ImageButton, frameLayout: FrameLayout){
+    private fun setUpMinimizeAndExpand(btnMin: ImageButton, frameLayout: FrameLayout) {
         btnMin.setOnClickListener {
-            if (frameLayout.visibility == View.VISIBLE){
+            if (frameLayout.visibility == View.VISIBLE) {
                 frameLayout.visibility = View.GONE
                 btnMin.setImageResource(R.drawable.ic_expand_more)
             } else {
@@ -94,8 +102,15 @@ class SellerQueue : Fragment() {
         }
     }
 
-    private fun getData(pb: ProgressBar, rv: RecyclerView, ll: LinearLayout, status: Int, tvCount: TextView) = CoroutineScope(Dispatchers.IO).launch {
-        withContext(Dispatchers.Main) {pb.visibility = View.VISIBLE}
+    private fun getData(
+        adapter: QueueAdapter,
+        pb: ProgressBar,
+        rv: RecyclerView,
+        ll: LinearLayout,
+        status: Int,
+        tvCount: TextView
+    ) = CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.Main) { pb.visibility = View.VISIBLE }
         val sellerId = FirebaseAuth.getInstance().currentUser?.uid
 
         val canteens = db.collection("canteens")
@@ -133,7 +148,7 @@ class SellerQueue : Fragment() {
                                 .get()
                                 .await()
 
-                            if (menuDocument.exists()){
+                            if (menuDocument.exists()) {
                                 val menuName = menuDocument.getString("name")
                                 val url = menuDocument.getString("url")
 
@@ -153,9 +168,11 @@ class SellerQueue : Fragment() {
                         }
 
 
-                        queues.add(QueueData(
-                            time, menusList
-                        ))
+                        queues.add(
+                            QueueData(
+                                time, menusList
+                            )
+                        )
                     }
                 } catch (e: Exception) {
                     Log.d(TAG, "err: ${e.localizedMessage}")
@@ -163,16 +180,13 @@ class SellerQueue : Fragment() {
             }
 
 
-
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.d(TAG, "getData error: $e")
         }
 
         withContext(Dispatchers.Main) {
             if (queues.isNotEmpty()) {
-                val adapter = QueueAdapter(queues, requireContext())
-
-                when(status.toString()){
+                when (status.toString()) {
                     "0" -> {
                         adapter.setOnAcceptClickCallback(object : OnAcceptClickCallback {
                             override fun onAcceptClick(orderId: String) {
@@ -180,31 +194,42 @@ class SellerQueue : Fragment() {
                             }
                         })
                     }
-                    "1" -> { }
-                    "2" -> {
+
+                    "1" -> {
                         adapter.setOnAcceptClickCallback(object : OnAcceptClickCallback {
                             override fun onAcceptClick(orderId: String) {
-                                changeStatus(orderId, 1)
+                                changeStatus(orderId, 4)
+                                decrementQueue(canteens)
                             }
                         })
                     }
+                    "2" -> {
+                        adapter.setOnAcceptClickCallback(object : OnAcceptClickCallback {
+                            override fun onAcceptClick(orderId: String) {
+                                changeStatus(orderId, 0)
+                            }
+                        })
+                    }
+
                     else -> {}
                 }
 
                 adapter.setOnDenyClickCallback(object : QueueAdapter.OnDenyClickCallback {
                     override fun onDenyClick(orderId: String) {
                         changeStatus(orderId, 3)
+                        decrementQueue(canteens)
                     }
                 })
 
-                rv.adapter = adapter
-                tvCount.text = queues.size.toString()
+                adapter.updateData(queues)
 
                 ll.visibility = View.GONE
+                rv.visibility = View.VISIBLE
             } else {
                 ll.visibility = View.VISIBLE
                 rv.visibility = View.GONE
             }
+            tvCount.text = queues.size.toString()
             pb.visibility = View.GONE
         }
     }
@@ -223,4 +248,27 @@ class SellerQueue : Fragment() {
                 Toast.makeText(requireContext(), "Action Failed", Toast.LENGTH_SHORT).show()
             }
     }
+
+    private fun decrementQueue(canteens: QuerySnapshot){
+        if (!canteens.isEmpty) {
+            val firstCanteenId = canteens.documents.firstOrNull()?.id
+            firstCanteenId?.let { canteenId ->
+                db.collection("canteens")
+                    .document(canteenId)
+                    .update("order_queue", FieldValue.increment(-1)) // Decrement by 1
+                    .addOnSuccessListener {
+                        Log.d(TAG, "order_queue decremented successfully")
+                        // Handle the success case
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error decrementing order_queue", e)
+                        // Handle the failure case
+                    }
+            }
+        } else {
+            Log.d(TAG, "No documents found in canteens collection query snapshot.")
+            // Handle the case when the canteens query snapshot is empty
+        }
+    }
+
 }

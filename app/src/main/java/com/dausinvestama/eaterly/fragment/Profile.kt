@@ -91,15 +91,13 @@ class Profile : Fragment() {
 
             tvUsername.text = user?.displayName
             tvEmail.text = user?.email
-            if (user?.photoUrl != null) {
-                if (isAdded) {
-                    Glide.with(requireActivity())
-                        .load(user.photoUrl)
-                        .circleCrop()
-                        .into(imgPp)
-                }
-            } else {
-                imgPp.setImageResource(R.drawable.user_icon)
+            if (isAdded) {
+                Glide.with(requireActivity())
+                    .load(user?.photoUrl)
+                    .placeholder(R.drawable.user_icon)
+                    .error(R.drawable.user_icon)
+                    .circleCrop()
+                    .into(imgPp)
             }
         }
     }

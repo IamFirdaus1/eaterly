@@ -66,8 +66,8 @@ class QueueAdapter(val queues: MutableList<QueueData>, private val context: Cont
                 "1" -> {
                     statusCoordinator.setBackgroundResource(R.drawable.background_onway)
                     tvStatus.text = "On Way"
-                    btnAcc.visibility = View.GONE
                     btnDeny.visibility = View.GONE
+                    btnAcc.text = "Confirm Payment"
                     tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_green))
                 }
                 "2" -> {
@@ -80,6 +80,13 @@ class QueueAdapter(val queues: MutableList<QueueData>, private val context: Cont
                     tvStatus.text = "Cancelled"
                     btnAcc.visibility = View.GONE
                     btnDeny.visibility = View.GONE
+                }
+                "4" -> {
+                    statusCoordinator.setBackgroundResource(R.drawable.background_onway)
+                    tvStatus.text = "Finished"
+                    btnAcc.visibility = View.GONE
+                    btnDeny.visibility = View.GONE
+                    tvStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_green))
                 }
                 else -> {}
             }
@@ -110,4 +117,9 @@ class QueueAdapter(val queues: MutableList<QueueData>, private val context: Cont
 
     }
 
+    fun updateData(newData: List<QueueData>) {
+        this.queues.clear()
+        this.queues.addAll(newData)
+        notifyDataSetChanged()
+    }
 }

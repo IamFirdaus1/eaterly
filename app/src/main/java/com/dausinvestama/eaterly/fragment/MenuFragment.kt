@@ -54,7 +54,7 @@ class MenuFragment : Fragment() {
 
             getData(pbLoading, rvMenu, llEmpty)
 
-            fabAdd.setOnClickListener{
+            fabAdd.setOnClickListener {
                 Intent(requireContext(), SellerInsertMenu::class.java).also {
                     startActivity(it)
                 }
@@ -64,7 +64,11 @@ class MenuFragment : Fragment() {
         return binding.root
     }
 
-    private fun getData(progressBar: ProgressBar, recyclerView: RecyclerView, ifGone: LinearLayout) =
+    private fun getData(
+        progressBar: ProgressBar,
+        recyclerView: RecyclerView,
+        ifGone: LinearLayout
+    ) =
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) { progressBar.visibility = View.VISIBLE }
             val sellerId = FirebaseAuth.getInstance().currentUser?.uid
@@ -108,9 +112,13 @@ class MenuFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     if (menus.isNotEmpty() && isAdded) {
                         menuAdapter = MenuSellerAdapter(menus, requireContext())
-                        menuAdapter.setOnItemClickCallback(object : MenuSellerAdapter.OnItemClickCallback {
+                        menuAdapter.setOnItemClickCallback(object :
+                            MenuSellerAdapter.OnItemClickCallback {
                             override fun onItemClick(position: Int) {
-                                Intent(requireContext(), DetailMenuSellerActivity::class.java).also {
+                                Intent(
+                                    requireContext(),
+                                    DetailMenuSellerActivity::class.java
+                                ).also {
                                     it.putExtra(NAME, menus[position].name.toString())
                                     it.putExtra(URL, menus[position].url.toString())
                                     it.putExtra(TIME, menus[position].time.toString())
@@ -124,15 +132,20 @@ class MenuFragment : Fragment() {
                         })
                         recyclerView.adapter = menuAdapter
                         ifGone.visibility = View.GONE
-                        progressBar.visibility = View.GONE
                     } else {
-                        progressBar.visibility = View.GONE
                         ifGone.visibility = View.VISIBLE
                     }
+                    progressBar.visibility = View.GONE
                 }
             } catch (e: Exception) {
                 Log.d(TAG, "getData error: $e")
             }
         }
 
+    override fun onResume() {
+        super.onResume()
+        binding.apply {
+            getData(pbLoading, rvMenu, llEmpty)
+        }
+    }
 }

@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.Orderlist"
-    android:gravity="center|top">
+    tools:context=".fragment.Orderlist">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerhistoryfragment"
         android:layout_marginTop="50dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
@@ -20,4 +19,27 @@
         android:layout_gravity="center"
         android:visibility="gone"/>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/empty_icon"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Orders Yet!"
+            style="@style/InfoTextView.ProfileFieldTitle"
+            android:textColor="@color/green"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+</FrameLayout>

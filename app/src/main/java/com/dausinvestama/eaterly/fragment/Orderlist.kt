@@ -58,8 +58,11 @@ class Orderlist : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         Log.d(TAG, "getDataUid: $userId")
         try {
+            val statusList = listOf(0, 1, 2)
+
             val orders = db.collection("orders")
                 .whereEqualTo("user_id", userId)
+                .whereIn("status", statusList)
                 .get()
                 .await()
             val canteensWithMenusList = mutableListOf<OrderListData>()
@@ -130,10 +133,11 @@ class Orderlist : Fragment() {
                 if (canteensWithMenusList.isNotEmpty()) {
                     canteenAdapter = CanteenOrderAdapter(canteensWithMenusList)
                     recycler.adapter = canteenAdapter
-
-                    progressBar.visibility = View.GONE
+                    binding.llEmpty.visibility = View.GONE
                 } else {
+                    binding.llEmpty.visibility = View.VISIBLE
                 }
+                progressBar.visibility = View.GONE
             }
         } catch (e: Exception) {
 

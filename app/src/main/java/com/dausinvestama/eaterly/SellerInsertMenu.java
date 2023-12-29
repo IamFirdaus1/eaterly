@@ -82,7 +82,6 @@ public class SellerInsertMenu extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SellerInsertMenu.this, SellerActivity.class));
                 finish();
             }
         });
@@ -208,6 +207,7 @@ public class SellerInsertMenu extends AppCompatActivity {
         menuImageRef.getDownloadUrl().addOnSuccessListener(uri -> { // Update Firestore with the image URL
             db.collection("menus").document(menuId).update("url", uri.toString()).addOnSuccessListener(aVoid -> {
                 Toast.makeText(getApplicationContext(), "Menu added successfully", Toast.LENGTH_SHORT).show();
+                finish();
             }).addOnFailureListener(e -> {
                 Toast.makeText(getApplicationContext(), "Failed to update menu image URL", Toast.LENGTH_SHORT).show();
             });

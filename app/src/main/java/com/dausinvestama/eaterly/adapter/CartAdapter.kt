@@ -82,7 +82,6 @@ class CartAdapter(private var contex: Context?, var cartData: ArrayList<CartDb>)
         localdb = AppDatabase.getInstance(contex!!)
         arraycartorder.clear()
         arraycartorder.addAll(localdb.cartDao().getById(id_kantins))
-
     }
 
 
