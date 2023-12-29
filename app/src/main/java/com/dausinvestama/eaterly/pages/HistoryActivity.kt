@@ -100,7 +100,6 @@ class HistoryActivity : AppCompatActivity() {
             val queueList = db.collection("orders")
                 .whereEqualTo("canteen_id", canteenId)
                 .whereEqualTo("status", status)
-                .orderBy("order_time", Query.Direction.DESCENDING)
                 .get()
                 .await()
 
